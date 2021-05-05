@@ -20,8 +20,8 @@ public class Game implements Serializable {
 	
 //	private GameState state; 
 	private String gameState; // waiting for players, ready, playing, stopped, game over
-	private ArrayList<Card> stack;
-	private ArrayList<Card> heap;
+//	private ArrayList<Card> stack;
+//	private ArrayList<Card> heap;
 	
 	public Game(String name, String password, int numPlayers, User host) {
 		this.name = name;
@@ -133,18 +133,18 @@ public class Game implements Serializable {
 	public void setGameState(String gameState) {
 		this.gameState = gameState;
 	}
-	
-	public ArrayList<Card> getStack() {
-		return stack;
-	}
-	public void setStack(ArrayList<Card> stack) {
-		this.stack = stack;
-	}
-	
-	public ArrayList<Card> getHeap() {
-		return heap;
-	}
-	public void setHeap(ArrayList<Card> heap) {
-		this.heap = heap;
-	}
+
+//	public ArrayList<Card> getStack() {
+//		return stack;
+//	}
+//	public void setStack(ArrayList<Card> stack) {
+//		this.stack = stack;
+//	}
+//	
+//	public ArrayList<Card> getHeap() {
+//		return heap;
+//	}
+//	public void setHeap(ArrayList<Card> heap) {
+//		this.heap = heap;
+//	}
 }

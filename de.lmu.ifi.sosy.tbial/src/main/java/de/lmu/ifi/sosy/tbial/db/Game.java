@@ -37,23 +37,9 @@ public class Game implements Serializable {
 		for (int i=1; i<numPlayers; i++) {
 			this.players.add(null);
 		}
-//		System.out.println("players: " + this.players);
-//		System.out.println("playersSize: " + this.players.size());
 		this.host = host;
 	}
-//	
-//	public Game(String name, int numPlayers, User host) {
-//		this.name = name;
-//		this.password = "";
-//		this.pwProtected = false;
-//		this.numPlayers = numPlayers;
-//		this.players.add(host);
-//		for (int i=1; i<numPlayers; i++) {
-//			this.players.add(null);
-//		}
-//		this.host = host;
-//	}
-//	
+
 	public void addPlayer(User player) {
 		for (int i=0; i<this.players.size(); i++) {
 			if (this.players.get(i) == null) {

@@ -4,6 +4,7 @@ target
 tbial_test
 bin
 .idea/libraries/
-.settings
+
+.settings/
 .classpath
 

@@ -9,15 +9,21 @@
   <wicket:extend>
     <h3>The Game Lobby</h3>
     <h3><span wicket:id="gamename">Game Name</span></h3>
+    <div wicket:id="gamestatecontainer">
+      Game State: 
+      <span wicket:id="gamestate">loading state ...</span>
+    </div>
     <div wicket:id="joinedPlayerListContainer">
         List of joined Players:
        <ul wicket:id="joinedPlayers">
             <li wicket:id="name">joined Player</li>
        </ul>
+       Game State: 
+      <span wicket:id="gamestate1">loading state ...</span>
     </div>
     <form wicket:id="form">
-      <input type="submit" wicket:id="leavebutton" value="Leave"/>
-      <input type="submit" wicket:id="startbutton" value="Start"/>
+      <input type="button" wicket:id="leavebutton" value="Leave"/>
+      <input type="button" wicket:id="startbutton" value="Start"/>
     </form>
   </wicket:extend>
 </body>

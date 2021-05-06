@@ -8,6 +8,7 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -27,47 +28,71 @@ public class GameLobby extends BasePage {
   /** UID for serialization. */
   private static final long serialVersionUID = 1L;
   
-  private final Button leaveButton;
+  private final AjaxButton leaveButton;
   
-  private final Button startButton;
+  private final AjaxButton startButton;
   
   private Game game;
   
   private User user;
 
+//  public GameLobby(int gameId) {
   public GameLobby() {
   	
-  	game = new Game("newGame is the game name", "pw", 5, new User("host", "pw"));
+  	user = getSession().getUser();
+  	game = new Game("newGame is the game name", "pw", 5, user);
   	game.addPlayer(new User("Player 2", "pw"));
   	game.addPlayer(new User("Player 3", "pw"));
+  	
+//  	game = getSession().getGame(gameId);
   		
   	final Label label = new Label("gamename", game.getName());
   	add(label);
   	
-  	leaveButton = new Button("leavebutton") {
+  	leaveButton = new AjaxButton("leavebutton") {
 
       /** UID for serialization. */
       private static final long serialVersionUID = 1;
 
-      public void onSubmit() {
+      @Override
+      public void onSubmit(AjaxRequestTarget target) {
         System.out.println("leavebutton");
       }
+
+      @Override
+      protected void onError(AjaxRequestTarget target) {}
   	};
   	
-  	startButton = new Button("startbutton") {
+  	startButton = new AjaxButton("startbutton") {
 
       /** UID for serialization. */
       private static final long serialVersionUID = 1;
 
-      public void onSubmit() {
+      @Override
+      public void onSubmit(AjaxRequestTarget target) {
         System.out.println("startbutton");
+        game.addPlayer(new User("new Player", "pw"));
+        System.out.println(game.getGameState());
       }
+      
+      @Override
+      protected void onError(AjaxRequestTarget target) {}
   	};
   	
   	Form<?> form = new Form<>("form");
   	form.add(leaveButton).add(startButton);
   	add(form);
-	  
+  	
+    Label gameStateLabel = new Label("gamestate", game.getGameState());
+    WebMarkupContainer gameStateContainer = new WebMarkupContainer("gamestatecontainer");
+//    gameStateLabel.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+//    gameStateLabel.setOutputMarkupId(true);
+    gameStateContainer.add(gameStateLabel);
+    gameStateContainer.setOutputMarkupId(true);
+    gameStateContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    
+    add(gameStateContainer);
+
     // get joined Users / Players
 		IModel<List<User>> playerModel = (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
 	    
@@ -84,9 +109,12 @@ public class GameLobby extends BasePage {
       	}
       }
     };
-
+    
+    Label gameStateLabel1 = new Label("gamestate1", game.getGameState());
+    
     WebMarkupContainer joinedPlayerListContainer = new WebMarkupContainer("joinedPlayerListContainer");
     joinedPlayerListContainer.add(joinedPlayerList);
+    joinedPlayerListContainer.add(gameStateLabel1);
     joinedPlayerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
     joinedPlayerListContainer.setOutputMarkupId(true);
 

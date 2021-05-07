@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.time.Duration;
 
 import de.lmu.ifi.sosy.tbial.db.Game;
@@ -49,6 +50,13 @@ public class GameLobby extends BasePage {
   	final Label label = new Label("gamename", game.getName());
   	add(label);
   	
+  	/**
+  	 * self updating game status
+  	 */
+  	Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
+  	add(gameState);
+  	gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+  	
   	leaveButton = new AjaxButton("leavebutton") {
 
       /** UID for serialization. */
@@ -73,6 +81,7 @@ public class GameLobby extends BasePage {
         System.out.println("startbutton");
         game.addPlayer(new User("new Player", "pw"));
         System.out.println(game.getGameState());
+        System.out.println(game.getPlayers().toString());
       }
       
       @Override
@@ -82,20 +91,7 @@ public class GameLobby extends BasePage {
   	Form<?> form = new Form<>("form");
   	form.add(leaveButton).add(startButton);
   	add(form);
-  	
-    Label gameStateLabel = new Label("gamestate", game.getGameState());
-    WebMarkupContainer gameStateContainer = new WebMarkupContainer("gamestatecontainer");
-//    gameStateLabel.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-//    gameStateLabel.setOutputMarkupId(true);
-    gameStateContainer.add(gameStateLabel);
-    gameStateContainer.setOutputMarkupId(true);
-    gameStateContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-    
-    add(gameStateContainer);
-
-    // get joined Users / Players
-		IModel<List<User>> playerModel = (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
-	    
+  	 
     ListView<User> joinedPlayerList = new PropertyListView<>("joinedPlayers", game.getPlayers()) {
  
       private static final long serialVersionUID = 1L;
@@ -110,11 +106,8 @@ public class GameLobby extends BasePage {
       }
     };
     
-    Label gameStateLabel1 = new Label("gamestate1", game.getGameState());
-    
     WebMarkupContainer joinedPlayerListContainer = new WebMarkupContainer("joinedPlayerListContainer");
     joinedPlayerListContainer.add(joinedPlayerList);
-    joinedPlayerListContainer.add(gameStateLabel1);
     joinedPlayerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
     joinedPlayerListContainer.setOutputMarkupId(true);
 

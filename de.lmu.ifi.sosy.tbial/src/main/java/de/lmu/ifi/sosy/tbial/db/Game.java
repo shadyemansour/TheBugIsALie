@@ -41,21 +41,13 @@ public class Game implements Serializable {
 	}
 
 	public void addPlayer(User player) {
-		int openSpots = 0;
 		for (int i=0; i<this.players.size(); i++) {
 			if (this.players.get(i) == null) {
 				this.players.set(i, player);
-				openSpots = this.players.size() - 1 - i;
 				break;
 			}
 		}
-		if (openSpots > 1) {
-			this.setGameState(String.valueOf(openSpots) + " players missing");
-		} else if (openSpots == 1) {
-			this.setGameState("1 player missing");
-		} else {
-			this.setGameState("ready");
-		}
+		this.gameLobbyGameState();
 	}
 	
 	public void removePlayer(User player) {
@@ -64,7 +56,28 @@ public class Game implements Serializable {
 				this.players.set(i, null);
 			}
 		}
-		this.setGameState("missing player(s)");
+		this.gameLobbyGameState();
+	}
+	
+	private int calcOpenSpots() {
+		int openSpots = 0;
+		for (int i=0; i<this.players.size(); i++) {
+			if (this.players.get(i) == null) {
+				openSpots++;
+			}
+		}
+		return openSpots;
+	}
+	
+	private void gameLobbyGameState() {
+		int openSpots = this.calcOpenSpots();
+		if (openSpots > 1) {
+			this.setGameState(String.valueOf(openSpots) + " players missing");
+		} else if (openSpots == 1) {
+			this.setGameState("1 player missing");
+		} else {
+			this.setGameState("ready");
+		}
 	}
 	
 	public String getName() {

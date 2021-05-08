@@ -8,6 +8,7 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -41,7 +42,7 @@ public class GameLobby extends BasePage {
   public GameLobby() {
   	
   	user = getSession().getUser();
-  	game = new Game("newGame is the game name", "pw", 5, user);
+  	game = new Game("newGame is the game name", "pw", 6, user);
   	game.addPlayer(new User("Player 2", "pw"));
   	game.addPlayer(new User("Player 3", "pw"));
   	
@@ -98,10 +99,32 @@ public class GameLobby extends BasePage {
 
       @Override
       protected void populateItem(final ListItem<User> listItem) {
+      	AjaxLink<Object> removePlayerButton = (new AjaxLink<Object>("removeplayerbutton") {
+
+          /** UID for serialization. */
+          private static final long serialVersionUID = 1;
+
+          @Override
+          public void onClick(AjaxRequestTarget target) {
+            System.out.println("remove player button");
+            game.removePlayer(listItem.getModelObject());
+          }
+
+					@Override
+					public MarkupContainer setDefaultModel(IModel<?> model) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+    		});
+      	listItem.add(removePlayerButton);
+    		removePlayerButton.setVisible(false);
       	if (listItem.getModelObject() == null) {
       		listItem.add(new Label("name", "free spot"));
       	} else {
       		listItem.add(new Label("name"));
+      		if (user == game.getHost() && user != listItem.getModelObject()) {
+      			removePlayerButton.setVisible(true);
+      		}
       	}
       }
     };

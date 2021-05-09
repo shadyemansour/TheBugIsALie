@@ -32,4 +32,8 @@ public interface Database {
    *     database.
    */
   User register(String name, String password);
+  
+  Game createGame(String name, User host, String password, String gamestate, Integer numplayers);
+  
+  Game getGames();
 }

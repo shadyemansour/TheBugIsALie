@@ -88,6 +88,40 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while registering user " + name, ex);
     }
   }
+  
+  @Override
+  public createGame(String name, User host, String password, String gamestate, Integer numplayers) {
+    Objects.requireNonNull(name, "name is null");
+    try (Connection connection = getConnection(false);
+        PreparedStatement insert = insertGameStatement(name, host, password, gamestate, numplayers, connection);
+        ResultSet result = executeUpdate(insert)) {
+
+      if (result != null && result.next()) {
+        int id = result.getInt(1);
+        Game game = new Game(id, name, host, password, gamestate, numplayers);
+        connection.commit();
+        return game;
+      } else {
+        connection.rollback();
+        return null;
+      }
+
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while creating game " + name, ex);
+    }
+  }
+  
+  @Override
+  public getGames() {
+    try (Connection connection = getConnection();
+        PreparedStatement query = getGameQuery(connection);
+        ResultSet result = query.executeQuery()) {
+
+      return getGameFromResult(result);
+    } catch (SQLException e) {
+      throw new DatabaseException("Error while querying for games in DB.", e);
+    }
+  }
 
   private User getUserFromResult(ResultSet result) throws SQLException {
     if (result.next()) {
@@ -99,6 +133,19 @@ public class SQLDatabase implements Database {
       return null;
     }
   }
+  
+  private Game getGameFromResult(ResultSet result) throws SQLException {
+	  if (result.next()) {
+		  int id = result.getInt("ID");
+	      String name = result.getString("NAME");
+	      User host = result.getObject("HOST");
+	      String password = result.getString("PASSWORD");
+	      String gamestate = result.getString("GAMESTATE");
+	      int numplayers = result.getInt("NUMPLAYERS");
+	    } else {
+	      return null;
+	    }
+	  }
 
   private Connection getConnection() throws SQLException {
     return dataSource.getConnection();
@@ -135,5 +182,22 @@ public class SQLDatabase implements Database {
     insertUser.setString(1, name);
     insertUser.setString(2, password);
     return insertUser;
+  }
+  
+  private PreparedStatement insertGameStatement(String name, User host, String password, String gamestate, Integer numplayers, Connection connection) 
+		  throws SQLException {
+	  PreparedStatement insertGame;
+	  insertGame = connection.prepareStatement("INSERT INTO GAMES (NAME, HOST, PASSWORD, GAMESTATE, NUMPLAYERS) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);		    
+	  insertGame.setString(1, name);
+	  insertGame.setObject(2, host);
+	  insertGame.setString(3, password);
+	  insertGame.setString(4, gamestate);
+	  insertGame.setInt(5, numplayers);    
+	  return insertGame;
+  }
+  
+  private PreparedStatement getGameQuery(Connection connection) throws SQLException {
+	  PreparedStatement statement = connection.prepareStatement("SELECT * FROM GAMES");
+	  return statement;
   }
 }

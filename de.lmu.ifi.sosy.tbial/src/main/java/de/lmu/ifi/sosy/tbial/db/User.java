@@ -21,6 +21,8 @@ public class User implements Serializable {
 
   private String password;
 
+  private Boolean joinedGame;
+
   public User(String name, String password) {
     this(-1, name, password);
   }
@@ -29,6 +31,7 @@ public class User implements Serializable {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
+    this.joinedGame = false;
   }
 
   public String getName() {
@@ -85,5 +88,13 @@ public class User implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(name, password);
+  }
+
+  public void setJoinedGame(Boolean joinedGame) {
+    this.joinedGame = joinedGame;
+  }
+
+  public Boolean getJoinedGame() {
+    return joinedGame;
   }
 }

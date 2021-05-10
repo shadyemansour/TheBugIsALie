@@ -131,9 +131,6 @@ public class TBIALApplication extends WebApplication {
   public int getUsersLoggedInCount() {
     return loggedInUsers.size();
   }
-  public int getAvailableGamesCount() {
-    return availableGames.size();
-  }
 
   public List<User> getLoggedInUsers() {
     return new ArrayList<>(loggedInUsers);

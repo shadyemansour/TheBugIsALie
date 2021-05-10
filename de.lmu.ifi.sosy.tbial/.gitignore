@@ -4,3 +4,10 @@ target
 tbial_test
 bin
 .idea/libraries/
+.idea/shelf/
+.idea/codestream.xml
+.idea/google-java-format.xml
+.idea/jarRepositories.xml
+.idea/sqldialects.xml
+.idea/workspace.xml
+.idea/artifacts/*

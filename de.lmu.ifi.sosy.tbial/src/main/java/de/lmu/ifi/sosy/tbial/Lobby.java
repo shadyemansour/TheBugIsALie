@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial;
 
+import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.User;
 
 import java.util.ArrayList;

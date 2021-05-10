@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosy.tbial;
 
 import de.lmu.ifi.sosy.tbial.db.Database;
+import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
@@ -134,15 +135,24 @@ public class TBIALApplication extends WebApplication {
   public List<User> getLoggedInUsers() {
     return new ArrayList<>(loggedInUsers);
   }
-  public List<Game> getAvailableGames(){
-    return new ArrayList<>(availableGames);
-  }
-
   public void userLoggedIn(final User pUser) {
     loggedInUsers.add(pUser);
   }
 
   public void userLoggedOut(final User pUser) {
     loggedInUsers.remove(pUser);
+  }
+  public List<Game> getAvailableGames(){
+    return new ArrayList<>(availableGames);
+  }
+  public int getAvailableGamesCount() {
+    return availableGames.size();
+  }
+
+  public void addGame(final Game game) {
+    availableGames.add(game);
+  }
+  public void removeGame(final Game game) {
+    availableGames.remove(game);
   }
 }

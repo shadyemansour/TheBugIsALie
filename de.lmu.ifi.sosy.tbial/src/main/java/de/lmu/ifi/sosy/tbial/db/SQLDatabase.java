@@ -133,20 +133,22 @@ public class SQLDatabase implements Database {
       return null;
     }
   }
-
+  
   private Game getGameFromResult(ResultSet result) throws SQLException {
-    if (result.next()) {
-      int id = result.getInt("ID");
-      String name = result.getString("NAME");
-      String host = result.getString("HOST");
-      String password = result.getString("PASSWORD");
-      String gamestate = result.getString("GAMESTATE");
-      int numplayers = result.getInt("NUMPLAYERS");
-      return new Game(name, password, numplayers, getUser(host));
-    } else {
-      return null;
-    }
-  }
+	  if (result.next()) {
+		  int id = result.getInt("ID");
+	      String name = result.getString("NAME");
+	      String host = result.getString("HOST");
+	      String password = result.getString("PASSWORD");
+	      String gamestate = result.getString("GAMESTATE");
+	      int numplayers = result.getInt("NUMPLAYERS");
+	      return new Game(name, password, numplayers, getUser(host));
+	    } else {
+	      return null;
+	    }
+	  }
+
+
 
   private Connection getConnection() throws SQLException {
     return dataSource.getConnection();

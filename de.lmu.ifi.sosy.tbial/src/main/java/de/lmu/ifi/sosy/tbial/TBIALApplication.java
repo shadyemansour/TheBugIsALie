@@ -138,7 +138,6 @@ public class TBIALApplication extends WebApplication {
   public void userLoggedIn(final User pUser) {
     loggedInUsers.add(pUser);
   }
-
   public void userLoggedOut(final User pUser) {
     loggedInUsers.remove(pUser);
   }

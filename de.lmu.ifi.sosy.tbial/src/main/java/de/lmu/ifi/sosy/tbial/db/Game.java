@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosy.tbial.db;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ public class Game implements Serializable {
 	private int id;
 	private Boolean pwProtected;
 	private String password;
-	private int numPlayers; // 4 - 7
+	private Integer numPlayers; // 4 - 7
 	private List<User> players;
 	private User host;
 	private int playersTurn; // 1 - 7
@@ -23,21 +25,21 @@ public class Game implements Serializable {
 //	private ArrayList<Card> stack;
 //	private ArrayList<Card> heap;
 	
-	public Game(String name, String password, int numPlayers, User host) {
-		this.name = name;
+	public Game(String name, String password, Integer numPlayers, User host) {
+		this.name = requireNonNull(name);
 		this.password = password;
 		if (password.length() == 0) {
 			this.pwProtected = false;
 		} else {
 			this.pwProtected = true;
 		}
-		this.numPlayers = numPlayers;
+		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>(numPlayers);
 		this.players.add(host);
 		for (int i=1; i<numPlayers; i++) {
 			this.players.add(null);
 		}
-		this.host = host;
+		this.host = requireNonNull(host);
 	}
 
 	public void addPlayer(User player) {
@@ -59,7 +61,7 @@ public class Game implements Serializable {
 		this.gameLobbyGameState();
 	}
 	
-	private int calcOpenSpots() {
+	private Integer calcOpenSpots() {
 		int openSpots = 0;
 		for (int i=0; i<this.players.size(); i++) {
 			if (this.players.get(i) == null) {
@@ -84,14 +86,14 @@ public class Game implements Serializable {
 		return name;
 	}
 	public void setName(String name) {
-		this.name = name;
+		this.name = requireNonNull(name);
 	}
 	
 	public int getId() {
 		return id;
 	}
 	void setId(int id) {
-		this.id = id;
+		this.id = requireNonNull(id);
 	}
 	
 	public Boolean getPwProtected() {
@@ -108,18 +110,18 @@ public class Game implements Serializable {
 		this.password = password;
 	}
 	
-	public int getNumPlayers() {
+	public Integer getNumPlayers() {
 		return numPlayers;
 	}
-	public void setNumPlayers(int numPlayers) {
-		this.numPlayers = numPlayers;
+	public void setNumPlayers(Integer numPlayers) {
+		this.numPlayers = requireNonNull(numPlayers);
 	}
 	
 	public User getHost() {
 		return host;
 	}
 	public void setHost(User host) {
-		this.host = host;
+		this.host = requireNonNull(host);
 	}
 	
 	public int getPlayersTurn() {

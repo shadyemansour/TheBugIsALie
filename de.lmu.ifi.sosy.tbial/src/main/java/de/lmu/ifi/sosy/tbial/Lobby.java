@@ -38,6 +38,7 @@ public class Lobby extends BasePage {
   public Lobby() {
     //setDefaultModel(new Model<>("tabpanel"));
 
+
     final List<ITab> tabs = new ArrayList<>();
     tabs.add(
         new AbstractTab(new Model<>("Online Players")) {
@@ -72,6 +73,9 @@ public class Lobby extends BasePage {
     final TabbedPanel<ITab> tabbedPanel = new TabbedPanel<>("tabs", tabs);
     tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
     add(tabbedPanel);
+
+    Form<?> form = new Form<>("creating");
+    add(form);
   }
 
   private class TabPanel1 extends Panel {
@@ -125,8 +129,7 @@ public class Lobby extends BasePage {
   }
   ;
     
-    Form<?> form = new Form<>("creating");
-    add(form);
+  
   private static class TabPanel3 extends Panel {
     public TabPanel3(String id) {
       super(id);

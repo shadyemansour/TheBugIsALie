@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosy.tbial;
 
 import de.lmu.ifi.sosy.tbial.db.Database;
+import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
@@ -34,6 +35,7 @@ public class TBIALApplication extends WebApplication {
 
   // Use LinkedHashSet to keep iteration order over current users always the same
   private final Set<User> loggedInUsers = Collections.synchronizedSet(new LinkedHashSet<>());
+  private final Set<Game> availableGames = Collections.synchronizedSet(new LinkedHashSet<>());
 
   public static Database getDatabase() {
     return ((TBIALApplication) get()).database;
@@ -128,16 +130,28 @@ public class TBIALApplication extends WebApplication {
   public int getUsersLoggedInCount() {
     return loggedInUsers.size();
   }
+  public int getAvailableGamesCount() {
+    return availableGames.size();
+  }
 
   public List<User> getLoggedInUsers() {
     return new ArrayList<>(loggedInUsers);
+  }
+  public List<Game> availableGames() {
+    return new ArrayList<>(availableGames);
   }
 
   public void userLoggedIn(final User pUser) {
     loggedInUsers.add(pUser);
   }
-
   public void userLoggedOut(final User pUser) {
     loggedInUsers.remove(pUser);
+  }
+
+  public void addGame(final Game game) {
+    availableGames.add(game);
+  }
+  public void removeGame(final Game game) {
+    availableGames.remove(game);
   }
 }

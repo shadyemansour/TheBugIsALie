@@ -11,3 +11,5 @@ bin
 .idea/sqldialects.xml
 .idea/workspace.xml
 .idea/artifacts/*
+.settings/
+.classpath

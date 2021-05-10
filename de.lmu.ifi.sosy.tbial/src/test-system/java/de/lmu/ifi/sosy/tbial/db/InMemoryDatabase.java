@@ -39,14 +39,14 @@ public class InMemoryDatabase implements Database {
   }
 
   @Override
-  public boolean nameTaken(String name) {
+  public boolean nameTaken(String name, String what) {
     return getUser(name) != null;
   }
 
   @Override
   public User register(String name, String password) {
     synchronized (users) {
-      if (nameTaken(name)) {
+      if (nameTaken(name,"user")) {
         return null;
       }
 

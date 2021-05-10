@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.markup.html.form.Form;
 
 /**
  * Basic lobby page. It <b>should</b> show the list of currently available games. Needs to be
@@ -42,6 +43,9 @@ public class Lobby extends BasePage {
     playerListContainer.setOutputMarkupId(true);
 
     add(playerListContainer);
+    
+    Form<?> form = new Form<>("creating");
+    add(form);
   }
 
 }

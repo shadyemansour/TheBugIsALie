@@ -2,11 +2,12 @@
 <html xmlns:wicket="http://wicket.apache.org">
 <head>
 <meta charset="utf-8" />
-<title>Create</title>
+<title>Lobby</title>
 </head>
 
 <body>
   <wicket:extend>
+  <div wicket:id="feedback"></div>
     <h3>Create a new game</h3>
     
     <form wicket:id="create" class="boxedform">
@@ -17,14 +18,16 @@
 		<label for="ddc">Players</label>
     	<select wicket:id="ddc" name="ddc"></select>
 		<div class="spacer"></div>
-		<label for="checkbox">Private</label>
-    	<input type="checkbox" wicket:id="checkboxPrivate" name="checkbox" id="checkbox">
+		
+		<label for="checkbox">Public</label>
+		<input type="checkbox" wicket:id="publicGame" />
 		<div class="spacer"></div>
-    	<label for="password">Password</label>
-      	<input wicket:id="password" type="password" name="password" />
+      	<label for="password">Password</label>
+      	<input wicket:id="password" type="text" name="password" size="20" />
+    	
 		<div class="spacer"></div>
     	<input type="submit" value="Create game" wicket:id="submitgame" />
-    	<input type="submit" value="Cancel" class="button_active" onclick="location.href='lobby';" />
+    	<input type="submit" value="Cancel" wicket:id="cancelgame" />
     	<div class="spacer"></div>
     </form>
 </wicket:extend>

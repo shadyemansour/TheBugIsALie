@@ -21,6 +21,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.markup.html.form.Form;
 
 /**
  * Basic lobby page. It <b>should</b> show the list of currently available games. Needs to be
@@ -36,6 +37,7 @@ public class Lobby extends BasePage {
 
   public Lobby() {
     //setDefaultModel(new Model<>("tabpanel"));
+
 
     final List<ITab> tabs = new ArrayList<>();
     tabs.add(
@@ -71,6 +73,9 @@ public class Lobby extends BasePage {
     final TabbedPanel<ITab> tabbedPanel = new TabbedPanel<>("tabs", tabs);
     tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
     add(tabbedPanel);
+
+    Form<?> form = new Form<>("creating");
+    add(form);
   }
 
   private class TabPanel1 extends Panel {
@@ -123,7 +128,8 @@ public class Lobby extends BasePage {
     }
   }
   ;
-
+    
+  
   private static class TabPanel3 extends Panel {
     public TabPanel3(String id) {
       super(id);

@@ -33,7 +33,7 @@ public interface Database {
    */
   User register(String name, String password);
   
-  Game createGame(String name, User host, String password, String gamestate, Integer numplayers);
+  Game createGame(String name, String host, String password, String gamestate, int numplayers);
   
   Game getGames();
 }

@@ -90,10 +90,10 @@ public class SQLDatabase implements Database {
   }
   
   @Override
-  public createGame(String name, User host, String password, String gamestate, Integer numplayers) {
+  public createGame(String name, String host, String password, String gamestate, int numplayers) {
     Objects.requireNonNull(name, "name is null");
     try (Connection connection = getConnection(false);
-        PreparedStatement insert = insertGameStatement(name, host, password, gamestate, numplayers, connection);
+    	PreparedStatement insert = insertGameStatement(name, host, password, gamestate, numplayers, connection);
         ResultSet result = executeUpdate(insert)) {
 
       if (result != null && result.next()) {
@@ -184,12 +184,12 @@ public class SQLDatabase implements Database {
     return insertUser;
   }
   
-  private PreparedStatement insertGameStatement(String name, User host, String password, String gamestate, Integer numplayers, Connection connection) 
+  private PreparedStatement insertGameStatement(String name, String host, String password, String gamestate, int numplayers, Connection connection) 
 		  throws SQLException {
 	  PreparedStatement insertGame;
 	  insertGame = connection.prepareStatement("INSERT INTO GAMES (NAME, HOST, PASSWORD, GAMESTATE, NUMPLAYERS) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);		    
 	  insertGame.setString(1, name);
-	  insertGame.setObject(2, host);
+	  insertGame.setString(2, host);
 	  insertGame.setString(3, password);
 	  insertGame.setString(4, gamestate);
 	  insertGame.setInt(5, numplayers);    

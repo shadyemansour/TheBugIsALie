@@ -7,6 +7,7 @@ import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.time.Duration;
 
@@ -53,17 +54,25 @@ public abstract class BasePage extends WebPage {
             session.invalidate();
           }
         };
-
     users = new Label("users", new PropertyModel<>(this, "usersString"));
     users.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
-
     add(link);
     add(users);
+    Model<String> usernameMDL = Model.of("");
+    Label username = new Label("username", usernameMDL);
+    username.setOutputMarkupId(true);
+    add(username);
 
     if (!getSession().isSignedIn()) {
       link.setVisible(false);
       link.setEnabled(false);
+      username.setVisible(false);
+    }else{
+
+      usernameMDL.setObject("Logged in as " + ((TBIALSession)getSession()).getUser().getName());
+      username.setVisible(true);
     }
+
   }
 
   public String getUsersString() {

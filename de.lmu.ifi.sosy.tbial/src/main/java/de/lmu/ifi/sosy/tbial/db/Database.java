@@ -16,12 +16,13 @@ public interface Database {
   User getUser(String name);
 
   /**
-   * Returns whether a user with the given name exits.
+   * Returns whether a user or a game with the given name exits.
    *
    * @param name should not be null.
+   * @param what user or game
    * @return {@code true} if the name is already taken, {@code false} otherwise.
    */
-  boolean nameTaken(String name);
+  boolean nameTaken(String name, String what);
 
   /**
    * Registers a new user with the given name and password.
@@ -32,7 +33,7 @@ public interface Database {
    *     database.
    */
   User register(String name, String password);
-  
+
 //  Game createGame(String name, String host, String password, String gamestate, int numplayers);
 //
 //  Game getGames();

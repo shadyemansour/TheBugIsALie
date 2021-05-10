@@ -24,6 +24,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
 
 
+
 /**
  * The web application "The Bug Is A Lie".
  *
@@ -137,15 +138,17 @@ public class TBIALApplication extends WebApplication {
   public List<User> getLoggedInUsers() {
     return new ArrayList<>(loggedInUsers);
   }
-  public List<Game> availableGames() {
-    return new ArrayList<>(availableGames);
-  }
-
   public void userLoggedIn(final User pUser) {
     loggedInUsers.add(pUser);
   }
   public void userLoggedOut(final User pUser) {
     loggedInUsers.remove(pUser);
+  }
+  public List<Game> getAvailableGames(){
+    return new ArrayList<>(availableGames);
+  }
+  public int getAvailableGamesCount() {
+    return availableGames.size();
   }
 
   public void addGame(final Game game) {

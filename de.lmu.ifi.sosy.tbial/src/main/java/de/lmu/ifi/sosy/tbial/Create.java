@@ -92,14 +92,14 @@ public class Create extends BasePage {
 	}
 	
 	public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
-		Game game = getDatabase().createGame(name, host, pw, gamestate, numplayers);
-		if (game != null) {
-		    setResponsePage(getApplication().getHomePage());
-		    info("Registration successful! You are now logged in.");
-		    LOGGER.info("New game '" + name + "' created");
-		} else {
-			error("could not create game");
-			LOGGER.debug("New game '" + name + "' creation failed");
-		}
+//		Game game = getDatabase().createGame(name, host, pw, gamestate, numplayers);
+//		if (game != null) {
+//		    setResponsePage(getApplication().getHomePage());
+//		    info("Registration successful! You are now logged in.");
+//		    LOGGER.info("New game '" + name + "' created");
+//		} else {
+//			error("could not create game");
+//			LOGGER.debug("New game '" + name + "' creation failed");
+//		}
 	}
 }

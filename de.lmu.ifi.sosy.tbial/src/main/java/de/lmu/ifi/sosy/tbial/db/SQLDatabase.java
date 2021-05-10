@@ -138,7 +138,7 @@ public class SQLDatabase implements Database {
 	  if (result.next()) {
 		  int id = result.getInt("ID");
 	      String name = result.getString("NAME");
-	      User host = result.getObject("HOST");
+	      String host = result.getString("HOST");
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");

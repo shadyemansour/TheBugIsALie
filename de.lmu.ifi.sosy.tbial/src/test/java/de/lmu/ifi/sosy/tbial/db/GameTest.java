@@ -95,35 +95,26 @@ public class GameTest {
   
   @Test
   public void getPlayers_returnPlayers() {
-  	List<User> expected = new ArrayList<User>(5);
+  	List<User> expected = new ArrayList<User>(2);
   	expected.add(host);
   	expected.add(user1);
-  	expected.add(null);
-  	expected.add(null);
-  	expected.add(null);
   	assertThat(game.getPlayers(), is(expected));
   }
   
   @Test
   public void addPlayer_addsPlayer() {
-  	List<User> expected = new ArrayList<User>(5);
+  	List<User> expected = new ArrayList<User>(3);
   	expected.add(host);
   	expected.add(user1);
   	expected.add(user2);
-  	expected.add(null);
-  	expected.add(null);
   	game.addPlayer(user2);
   	assertThat(game.getPlayers(), is(expected));
   }
   
   @Test
   public void removePlayer_removesPlayer() {
-  	List<User> expected = new ArrayList<User>(5);
+  	List<User> expected = new ArrayList<User>(1);
   	expected.add(host);
-  	expected.add(null);
-  	expected.add(null);
-  	expected.add(null);
-  	expected.add(null);
   	game.removePlayer(user1);
   	assertThat(game.getPlayers(), is(expected));
   }

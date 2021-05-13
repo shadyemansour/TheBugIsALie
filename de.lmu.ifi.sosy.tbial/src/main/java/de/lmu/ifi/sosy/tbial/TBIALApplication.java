@@ -141,8 +141,18 @@ public class TBIALApplication extends WebApplication {
   public void userLoggedOut(final User pUser) {
     loggedInUsers.remove(pUser);
   }
-  public List<Game> getAvailableGames(){
+ /* public List<Game> getAvailableGames(){
     return new ArrayList<>(availableGames);
+  }  */
+  public List<Game> getAvailableGames(){
+      if(availableGames.isEmpty()){
+          List<Game> games = ((SQLDatabase) database).getGames();
+          for (Game g:games) {
+              availableGames.add(g);
+          }
+      }
+      return new ArrayList<>(availableGames);
+
   }
   public int getAvailableGamesCount() {
     return availableGames.size();

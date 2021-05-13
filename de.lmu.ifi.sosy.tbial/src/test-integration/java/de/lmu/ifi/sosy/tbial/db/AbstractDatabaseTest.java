@@ -79,6 +79,14 @@ public abstract class AbstractDatabaseTest {
     assertThat(user, is(nullValue()));
   }
 
+//  @Test
+//  public void getGameWhenGameDoesNotExistReturnsNull() {
+//    addUser(new Game("someoneelse", "withsomepassword"));
+//    User user = database.getUser(name);
+//
+//    assertThat(user, is(nullValue()));
+//  }
+
   @Test
   public void getUserWhenNoUserExistsReturnsNull() {
     User user = database.getUser(name);

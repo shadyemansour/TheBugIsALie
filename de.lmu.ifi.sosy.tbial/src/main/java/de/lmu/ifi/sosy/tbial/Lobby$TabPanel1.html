@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
-    <div wicket:id="playerlistContainer">
-       <br> Online Users:
-        <ul wicket:id="loggedInUsers">
-            <li wicket:id="name">Player</li>
-        </ul>
-    </div>
+    <br/>
+    <div wicket:id="feedback"></div>
+    <h3>Online Users</h3>
+
+    <form wicket:id="onlinePlayers" class="boxedform">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr wicket:id="loggedInUsers">
+                <td wicket:id="name">Player</td>
+                <td wicket:id="status">Status</td>
+            </tr>
+            </tbody>
+        </table>>
+        <span wicket:id = "navigator"/>
+
+    </form>
+
+
 </wicket:panel>
 </html>

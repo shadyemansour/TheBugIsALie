@@ -35,41 +35,45 @@ public class Game implements Serializable {
 			this.pwProtected = true;
 		}
 		this.numPlayers = requireNonNull(numPlayers);
-		this.players = new ArrayList<User>(numPlayers);
+		this.players = new ArrayList<User>();
 		this.players.add(host);
-		for (int i=1; i<numPlayers; i++) {
-			this.players.add(null);
-		}
+//		for (int i=1; i<numPlayers; i++) {
+//			this.players.add(null);
+//		}
 		this.host = requireNonNull(host);
 	}
 
 	public void addPlayer(User player) {
-		for (int i=0; i<this.players.size(); i++) {
-			if (this.players.get(i) == null) {
-				this.players.set(i, player);
-				break;
-			}
+//		for (int i=0; i<this.players.size(); i++) {
+//			if (this.players.get(i) == null) {
+//				this.players.set(i, player);
+//				break;
+//			}
+//		}
+		if (!players.contains(player)){
+			players.add(player);
 		}
 		this.gameLobbyGameState();
 	}
-	
+
 	public void removePlayer(User player) {
-		for (int i=0; i<this.players.size(); i++) {
-			if (this.players.get(i) == player) {
-				this.players.set(i, null);
-			}
-		}
+//		for (int i=0; i<this.players.size(); i++) {
+//			if (this.players.get(i) == player) {
+//				this.players.set(i, null);
+//			}
+//		}
+		this.players.remove(player);
 		this.gameLobbyGameState();
 	}
 	
 	private Integer calcOpenSpots() {
-		int openSpots = 0;
-		for (int i=0; i<this.players.size(); i++) {
-			if (this.players.get(i) == null) {
-				openSpots++;
-			}
-		}
-		return openSpots;
+//		int openSpots = 0;
+//		for (int i=0; i<this.players.size(); i++) {
+//			if (this.players.get(i) == null) {
+//				openSpots++;
+//			}
+//		}
+		return numPlayers-players.size();
 	}
 	
 	private void gameLobbyGameState() {

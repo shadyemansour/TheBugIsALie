@@ -111,7 +111,7 @@ div.tabpanel div.tab-row a:hover {
 	background: #fff;
 }
 /* username on side*/
-div.nav ul li label username {
+div.nav a li label username {
 	position: absolute;
 	right: 0px;
 	float: right;
@@ -246,9 +246,14 @@ table tr th {
 table tr td {
 	border-bottom: 1px solid #dddddd;
 }
+table td:link:hover {
+	text-decoration: underline;
+}
+
+
 
 /* default links */
-a, a:visited {
+td:visited, a, a:visited {
 	color: #F77924;
 }
 

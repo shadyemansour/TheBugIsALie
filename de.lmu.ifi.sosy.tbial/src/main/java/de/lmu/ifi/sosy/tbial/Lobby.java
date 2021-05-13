@@ -11,20 +11,29 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -39,13 +48,12 @@ import org.apache.wicket.util.time.Duration;
  */
 @AuthenticationRequired
 public class Lobby extends BasePage {
+    private Model<String> mdl = Model.of("Create Game");
 
   /** UID for serialization. */
   private static final long serialVersionUID = 1L;
 
   public Lobby() {
-    //setDefaultModel(new Model<>("tabpanel"));
-
 
     final List<ITab> tabs = new ArrayList<>();
     tabs.add(
@@ -69,16 +77,18 @@ public class Lobby extends BasePage {
         });
 
     tabs.add(
-        new AbstractTab(new Model<>("Create Game")) {
+
+        new AbstractTab(mdl) {
           private static final long serialVersionUID = 1L;
 
           @Override
           public Panel getPanel(String panelId) {
-            return new TabPanel3(panelId);
+              return new TabPanel3(panelId);
+
           }
         });
 
-    final TabbedPanel<ITab> tabbedPanel = new TabbedPanel<>("tabs", tabs);
+    final AjaxTabbedPanel<ITab> tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
     tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
     add(tabbedPanel);
 
@@ -89,49 +99,89 @@ public class Lobby extends BasePage {
 
     public TabPanel1(String id) {
       super(id);
+
+      add(new FeedbackPanel("feedback"));
       IModel<List<User>> playerModel =
           (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
-      ListView<User> playerList =
-          new PropertyListView<>("loggedInUsers", playerModel) {
+      PageableListView<User> playerList =
+          new PageableListView<User>("loggedInUsers", playerModel,4) {
 
             private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(final ListItem<User> listItem) {
-              listItem.add(new Label("name"));
+
+                listItem.add(new Label("name", new PropertyModel(listItem.getModel(), "name")));
+                listItem.add(new Label("status","in game"));
             }
           };
-      WebMarkupContainer playerListContainer = new WebMarkupContainer("playerlistContainer");
-      playerListContainer.add(playerList);
-      playerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
-      playerListContainer.setOutputMarkupId(true);
-
-      add(playerListContainer);
+      Form<?> form = new Form<>("onlinePlayers");
+      form.add(playerList);
+      form.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+      form.setOutputMarkupId(true);
+      form.add(new PagingNavigator("navigator", playerList));
+      add(form);
 
     }
   }
   ;
 
+
   private class TabPanel2 extends Panel {
     public TabPanel2(String id) {
       super(id);
 
+      add(new FeedbackPanel("feedback"));
+
       IModel<List<Game>> gameModel =
           (IModel<List<Game>>) () -> getTbialApplication().getAvailableGames();
-      ListView<Game> gameList = new PropertyListView<>("availableGames", gameModel) {
+
+        PageableListView<Game> gameList = new PageableListView<>("availableGames", gameModel,4) {
           private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(final ListItem<Game> listItem) {
-              listItem.add(new Label("name"));
+                listItem.add(new Label("name", new PropertyModel(listItem.getModel(), "name")));
+                listItem.add(new Label("players", listItem.getModelObject().getPlayers().size() + "/" + listItem.getModelObject().getNumPlayers()));
+                listItem.add(new Label("status", listItem.getModelObject().getGameState()));
+                listItem.add(new Label("protection", listItem.getModelObject().getPwProtected() == false ? "Public" : "Private"));
+                listItem.add(new Link<>("joinGame") {
+                    public void onClick() {
+                        User user = ((TBIALSession)getSession()).getUser();
+                        if(!user.getJoinedGame()){
+                            listItem.getModelObject().addPlayer(user);
+                            user.setJoinedGame(true);
+                            setResponsePage(GameLobby.class);
+//                            HighlitableDataItem<Game> hitem = (HighlitableDataItem<Game>)listItem;
+//                            hitem.toggleHighlite();
+
+                        }else{
+
+                        }
+                    }
+                });
+//                listItem.add(new AjaxEventBehavior("onclick") {
+//
+//                    private static final long serialVersionUID = 1L;
+//
+//                    @Override
+//                    protected void onEvent(final AjaxRequestTarget target) {
+//                        HighlitableDataItem<Game> hitem = (HighlitableDataItem<Game>) listItem;
+//                        hitem.toggleHighlite();
+//                        target.add(hitem);
+//                    }
+//                });
             }
           };
-      WebMarkupContainer gameListContainer = new WebMarkupContainer("gamelistContainer");
-      gameListContainer.add(gameList);
-      gameListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
-      gameListContainer.setOutputMarkupId(true);
 
-      add(gameListContainer);
+        Form<?> form = new Form<>("gamelist");
+        form.add(gameList);
+        form.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
+        form.setOutputMarkupId(true);
+        form.add(new PagingNavigator("navigator", gameList));
+        add(form);
+
+
     }
   }
   ;
@@ -213,12 +263,17 @@ public class Lobby extends BasePage {
         form.add(gameName).add(submitGame).add(choice).add(cancelGame).add(password, publicGame);
         add(form);
     }
+
       public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
           Game game = ((SQLDatabase) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
           if (game != null) {
               setResponsePage(getApplication().getHomePage());
               info("Registration successful! You are now logged in.");
               LOGGER.info("New game '" + name + "' created");
+              getTbialApplication().addGame(game);
+              ((TBIALSession)getSession()).getUser().setJoinedGame(true);
+              mdl.setObject("Lobby");
+
           } else {
               error("could not create game");
               LOGGER.debug("New game '" + name + "' creation failed");
@@ -226,5 +281,30 @@ public class Lobby extends BasePage {
       }
   }
   ;
+//    private static class HighlitableDataItem<T> extends ListItem<T>
+//    {
+//        private static final long serialVersionUID = 1L;
+//
+//        private boolean highlite = false;
+//
+//        public void toggleHighlite(){
+//            highlite = !highlite;
+//        }
+//
+//        public HighlitableDataItem(String id, int index, IModel<T> model)
+//        {
+//            super(id, index, model);
+//            add(new AttributeModifier("style", "background-color:#80b6ed;")
+//            {
+//                private static final long serialVersionUID = 1L;
+//
+//                @Override
+//                public boolean isEnabled(Component component)
+//                {
+//                    return HighlitableDataItem.this.highlite;
+//                }
+//            });
+//        }
+//    }
 
 }

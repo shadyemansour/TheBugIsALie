@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -101,6 +103,7 @@ public class SQLDatabase implements Database {
         int id = result.getInt(1);
         Game game = new Game(name, password, numplayers, getUser(host));
         connection.commit();
+
         return game;
       } else {
         connection.rollback();
@@ -112,7 +115,17 @@ public class SQLDatabase implements Database {
     }
   }
 
-  public Game getGames() {
+  public List<Game> getGame() {
+    try (Connection connection = getConnection();
+         PreparedStatement query = getGameQuery(connection);
+         ResultSet result = query.executeQuery()) {
+
+      return getGameFromResult(result);
+    } catch (SQLException e) {
+      throw new DatabaseException("Error while querying for games in DB.", e);
+    }
+  }
+  public List<Game> getGames() {
     try (Connection connection = getConnection();
          PreparedStatement query = getGameQuery(connection);
          ResultSet result = query.executeQuery()) {
@@ -134,19 +147,19 @@ public class SQLDatabase implements Database {
     }
   }
   
-  private Game getGameFromResult(ResultSet result) throws SQLException {
-	  if (result.next()) {
+  private List<Game> getGameFromResult(ResultSet result) throws SQLException {
+    List<Game> games = new ArrayList<>();
+	  while (result.next()) {
 		  int id = result.getInt("ID");
 	      String name = result.getString("NAME");
 	      String host = result.getString("HOST");
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");
-	      return new Game(name, password, numplayers, getUser(host));
-	    } else {
-	      return null;
+	      games.add(new Game(name, password, numplayers, getUser(host)));
 	    }
-	  }
+    return games;
+  }
 
 
 

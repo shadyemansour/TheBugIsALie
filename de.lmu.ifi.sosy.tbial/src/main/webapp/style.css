@@ -246,8 +246,15 @@ table tr th {
 table tr td {
 	border-bottom: 1px solid #dddddd;
 }
-table td:link:hover {
+table td.joinGame:hover {
 	text-decoration: underline;
+	cursor: pointer;
+}
+#gameList table tr:hover {
+	background-color: white;
+}
+table tr.currentGame {
+	background: #ff912a;
 }
 
 

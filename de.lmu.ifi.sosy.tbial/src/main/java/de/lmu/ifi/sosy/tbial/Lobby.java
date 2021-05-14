@@ -166,13 +166,19 @@ public class Lobby extends BasePage {
                                 tabs.remove(2);
                                 tabs.add(tab4);
                                 tabbedPanel.setSelectedTab(2);
-//                            HighlitableDataItem<Game> hitem = (HighlitableDataItem<Game>)listItem;
-//                            hitem.toggleHighlite();
+                                listItem.add(new AttributeModifier("class", Model.of("currentGame")));
+//                                WebMarkupContainer template = new WebMarkupContainer("joinGame");
+//                                add(template);
+//
+//                                template.add(new AttributeModifier("class", new Model("currentGame")));
+
                             } else {
 
                             }
                         }
                     });
+                    //HighlitableDataItem<Game> hitem = (HighlitableDataItem<Game>)listItem;
+//                            hitem.toggleHighlite();
 //                listItem.add(new AjaxEventBehavior("onclick") {
 //
 //                    private static final long serialVersionUID = 1L;
@@ -187,9 +193,10 @@ public class Lobby extends BasePage {
                 }
             };
 
+            gameList.setOutputMarkupId(true);
             Form<?> form = new Form<>("gamelist");
             form.add(gameList);
-            form.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
+            form.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
             form.setOutputMarkupId(true);
             form.add(new PagingNavigator("navigator", gameList));
             add(form);

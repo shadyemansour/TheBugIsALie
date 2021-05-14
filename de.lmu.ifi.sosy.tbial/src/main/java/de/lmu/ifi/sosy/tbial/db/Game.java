@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosy.tbial.db;
 
+import org.apache.wicket.model.IModel;
+
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
@@ -37,43 +39,44 @@ public class Game implements Serializable {
 		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>();
 		this.players.add(host);
-//		for (int i=1; i<numPlayers; i++) {
-//			this.players.add(null);
-//		}
+		for (int i=1; i<numPlayers; i++) {
+			this.players.add(null);
+		}
 		this.host = requireNonNull(host);
 	}
 
 	public void addPlayer(User player) {
-//		for (int i=0; i<this.players.size(); i++) {
-//			if (this.players.get(i) == null) {
-//				this.players.set(i, player);
-//				break;
-//			}
-//		}
-		if (!players.contains(player)){
-			players.add(player);
+		for (int i=0; i<this.players.size(); i++) {
+			if (this.players.get(i) == null) {
+				this.players.set(i, player);
+				break;
+			}
 		}
+//		if (!players.contains(player)){
+//			players.add(player);
+//		}
 		this.gameLobbyGameState();
 	}
 
 	public void removePlayer(User player) {
-//		for (int i=0; i<this.players.size(); i++) {
-//			if (this.players.get(i) == player) {
-//				this.players.set(i, null);
-//			}
-//		}
-		this.players.remove(player);
-		this.gameLobbyGameState();
+		for (int i=0; i<this.players.size(); i++) {
+			if (this.players.get(i) == player) {
+				this.players.set(i, null);
+			}
+		}
+//		this.players.remove(player);
+//		this.gameLobbyGameState();
 	}
 	
 	private Integer calcOpenSpots() {
-//		int openSpots = 0;
-//		for (int i=0; i<this.players.size(); i++) {
-//			if (this.players.get(i) == null) {
-//				openSpots++;
-//			}
-//		}
-		return numPlayers-players.size();
+		int openSpots = 0;
+		for (int i=0; i<this.players.size(); i++) {
+			if (this.players.get(i) == null) {
+				openSpots++;
+			}
+		}
+//		return numPlayers-players.size();
+		return openSpots;
 	}
 	
 	private void gameLobbyGameState() {
@@ -167,6 +170,16 @@ public class Game implements Serializable {
 	}
 	public void setGameState(String gameState) {
 		this.gameState = gameState;
+	}
+
+	public int getActivePlayers() {
+		int ap=0;
+		for (User player:players){
+			if(player!=null){
+				ap++;
+			}
+		}
+		return ap;
 	}
 
 //	public ArrayList<Card> getStack() {

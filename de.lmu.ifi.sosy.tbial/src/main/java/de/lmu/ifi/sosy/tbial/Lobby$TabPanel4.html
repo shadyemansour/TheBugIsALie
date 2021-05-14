@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+
+<wicket:panel>
+    <br/>
+    <h3><span wicket:id="gamename">Game Name</span></h3>
+
+    <div wicket:id="boxedGameLobby" class="boxedgamelobby">
+        <div wicket:id="joinedPlayerListContainer">
+            List of joined Players:
+            <ul wicket:id="joinedPlayers">
+                <li>
+                    <span wicket:id="name">joined Player</span>
+                    <input type="button" wicket:id="removeplayerbutton" value="remove Player"/>
+                </li>
+            </ul>
+        </div>
+        Game State: <span wicket:id="gamestate">loading state ...</span>
+        <form wicket:id="form">
+            <input type="button" wicket:id="leavebutton" value="Leave"/>
+            <input type="button" wicket:id="startbutton" value="Start"/>
+        </form>
+    </div>
+</wicket:panel>
+
+</html>

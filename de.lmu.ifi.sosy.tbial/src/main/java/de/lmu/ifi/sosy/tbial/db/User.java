@@ -23,6 +23,8 @@ public class User implements Serializable {
 
   private Boolean joinedGame;
 
+  private Game game;
+
   public User(String name, String password) {
     this(-1, name, password);
   }
@@ -96,5 +98,13 @@ public class User implements Serializable {
 
   public Boolean getJoinedGame() {
     return joinedGame;
+  }
+
+  public Game getGame() {
+    return game;
+  }
+
+  public void setGame(Game game) {
+    this.game = game;
   }
 }

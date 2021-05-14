@@ -134,9 +134,7 @@ public class Lobby extends BasePage {
             add(form);
 
         }
-    }
-
-    ;
+    };
 
 
     private class TabPanel2 extends Panel {
@@ -154,7 +152,7 @@ public class Lobby extends BasePage {
                 @Override
                 protected void populateItem(final ListItem<Game> listItem) {
                     listItem.add(new Label("name", new PropertyModel(listItem.getModel(), "name")));
-                    listItem.add(new Label("players", listItem.getModelObject().getPlayers().size() + "/" + listItem.getModelObject().getNumPlayers()));
+                    listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
                     listItem.add(new Label("protection", listItem.getModelObject().getPwProtected() == false ? "Public" : "Private"));
                     listItem.add(new Link<>("joinGame") {
@@ -162,6 +160,7 @@ public class Lobby extends BasePage {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
                                 listItem.getModelObject().addPlayer(user);
+                                user.setGame(listItem.getModelObject());
                                 user.setJoinedGame(true);
                                 tabs.remove(2);
                                 tabs.add(tab4);
@@ -203,9 +202,7 @@ public class Lobby extends BasePage {
 
 
         }
-    }
-
-    ;
+    };
 
 
     private class TabPanel3 extends Panel {
@@ -294,7 +291,9 @@ public class Lobby extends BasePage {
                 info("Registration successful! You are now logged in.");
                 LOGGER.info("New game '" + name + "' created");
                 getTbialApplication().addGame(game);
-                ((TBIALSession) getSession()).getUser().setJoinedGame(true);
+                User user = ((TBIALSession) getSession()).getUser();
+                user.setJoinedGame(true);
+                user.setGame(game);
                 tabs.remove(2);
                 tabs.add(tab4);
                 tabbedPanel.setSelectedTab(2);
@@ -331,30 +330,24 @@ public class Lobby extends BasePage {
 //            });
 //        }
 //    }
-    protected class TabPanel4 extends Panel {
-        /**
-         * UID for serialization.
-         */
+    private class TabPanel4 extends Panel {
+        /** UID for serialization. */
         private static final long serialVersionUID = 1L;
 
         private final AjaxButton leaveButton;
-
         private final AjaxButton startButton;
-
         private Game game;
-
         private User user;
 
-        //  public TabPanel4(int gameId) {
         public TabPanel4(String id) {
             super(id);
 
-            user = ((TBIALSession) getSession()).getUser();
-            game = new Game("newGame is the game name", "pw", 6, user);
-            game.addPlayer(new User("Player 2", "pw"));
-            game.addPlayer(new User("Player 3", "pw"));
+            user = ((TBIALSession)getSession()).getUser();
+            game = user.getGame();
+//            game.addPlayer(new User("Player 2", "pw"));
+//            game.addPlayer(new User("Player 3", "pw"));
 
-//  	game = getSession().getGame(gameId);
+//    	game = getSession().getGame(gameId);
 
             final Label label = new Label("gamename", game.getName());
             add(label);
@@ -363,7 +356,7 @@ public class Lobby extends BasePage {
              * self updating game status
              */
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
-            add(gameState);
+//    	add(gameState);
             gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
 
             leaveButton = new AjaxButton("leavebutton") {
@@ -377,8 +370,7 @@ public class Lobby extends BasePage {
                 }
 
                 @Override
-                protected void onError(AjaxRequestTarget target) {
-                }
+                protected void onError(AjaxRequestTarget target) {}
             };
 
             startButton = new AjaxButton("startbutton") {
@@ -395,8 +387,7 @@ public class Lobby extends BasePage {
                 }
 
                 @Override
-                protected void onError(AjaxRequestTarget target) {
-                }
+                protected void onError(AjaxRequestTarget target) {}
             };
 
             Form<?> form = new Form<>("form");
@@ -444,7 +435,13 @@ public class Lobby extends BasePage {
             joinedPlayerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
             joinedPlayerListContainer.setOutputMarkupId(true);
 
-            add(joinedPlayerListContainer);
+//      add(joinedPlayerListContainer);
+
+            WebMarkupContainer boxedGameLobby = new WebMarkupContainer("boxedGameLobby");
+            boxedGameLobby.add(gameState).add(form).add(joinedPlayerListContainer);
+            add(boxedGameLobby);
+
+
         }
 
     };

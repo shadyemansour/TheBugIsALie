@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:wicket="http://wicket.apache.org">
-<head>
-<meta charset="utf-8" />
-<title>Game Lobby</title>
-</head>
-
-<body>
-  <wicket:extend>
+<wicket:panel>
+    <br/>
     <h3>The Game Lobby</h3>
     <h3><span wicket:id="gamename">Game Name</span></h3>
     Game State: 
@@ -24,7 +19,5 @@
       <input type="button" wicket:id="leavebutton" value="Leave"/>
       <input type="button" wicket:id="startbutton" value="Start"/>
     </form>
-  </wicket:extend>
-</body>
-
+</wicket:panel>
 </html>

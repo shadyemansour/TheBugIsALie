@@ -1,6 +1,8 @@
 package de.lmu.ifi.sosy.tbial;
 
-//import de.lmu.ifi.sosy.tbial.db.Game;
+import de.lmu.ifi.sosy.tbial.db.Game;
+import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
+
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -72,7 +74,7 @@ public class Create extends BasePage {
 	    			pw = password.getModelObject();
 	    		}
 	    		//info("name: " + name + " pub: " + pub + " pw: " + pw + " host: " + host + " player: " + numplayers);
-	        	//performCreation(name, host, pw, gamestate, numplayers);
+	        	performCreation(name, host, pw, gamestate, numplayers);
 	        }
 		};
 		cancelGame = new Button("cancelgame") {
@@ -92,14 +94,14 @@ public class Create extends BasePage {
 	}
 	
 	public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
-//		Game game = getDatabase().createGame(name, host, pw, gamestate, numplayers);
-//		if (game != null) {
-//		    setResponsePage(getApplication().getHomePage());
-//		    info("Registration successful! You are now logged in.");
-//		    LOGGER.info("New game '" + name + "' created");
-//		} else {
-//			error("could not create game");
-//			LOGGER.debug("New game '" + name + "' creation failed");
-//		}
+		Game game = ((SQLDatabase)getDatabase()).createGame(name, host, pw, gamestate, numplayers);
+		if (game != null) {
+		    setResponsePage(getApplication().getHomePage());
+		    info("Registration successful! You are now logged in.");
+		    LOGGER.info("New game '" + name + "' created");
+		} else {
+			error("could not create game");
+			LOGGER.debug("New game '" + name + "' creation failed");
+		}
 	}
 }

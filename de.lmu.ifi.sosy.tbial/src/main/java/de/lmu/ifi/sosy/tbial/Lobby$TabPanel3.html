@@ -2,6 +2,29 @@
 <html xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
     <br/>
-    You'll soon be able to create a game here!
+    <div wicket:id="feedback"></div>
+    <h3>Create a new game</h3>
+
+    <form wicket:id="create" class="boxedform">
+
+        <label for="name">Game name</label>
+        <input wicket:id="name" type="text" name="name" />
+        <div class="spacer"></div>
+        <label for="ddc">Players</label>
+        <select wicket:id="ddc" name="ddc"></select>
+        <div class="spacer"></div>
+
+        <label for="checkbox">Public</label>
+        <input type="checkbox" wicket:id="publicGame" />
+        <div class="spacer"></div>
+        <label for="password">Password</label>
+        <input wicket:id="password" type="text" name="password" size="20" />
+
+        <div class="spacer"></div>
+        <input type="submit" value="Create game" wicket:id="submitgame" />
+        <input type="submit" value="Cancel" wicket:id="cancelgame" />
+        <div class="spacer"></div>
+    </form>
 </wicket:panel>
 </html>
+

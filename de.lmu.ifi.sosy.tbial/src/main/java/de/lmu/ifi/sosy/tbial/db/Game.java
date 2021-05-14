@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Game implements Serializable {
 
@@ -80,6 +81,25 @@ public class Game implements Serializable {
 		} else {
 			this.setGameState("ready");
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Game(" + id + ", " + name + ", " + password + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Game)) {
+			return false;
+		}
+		Game other = (Game) o;
+		return name.equals(other.name) && password.equals(other.password);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, password);
 	}
 	
 	public String getName() {

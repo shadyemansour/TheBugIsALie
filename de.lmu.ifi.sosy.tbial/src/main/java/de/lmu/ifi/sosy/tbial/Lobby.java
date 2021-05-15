@@ -224,8 +224,6 @@ public class Lobby extends BasePage {
         private TabPanel3(String id) {
 
             super(id);
-//        Form<?> form1 = new Form<>("creating");
-//        add(form1);
 
             add(new FeedbackPanel("feedback"));
 

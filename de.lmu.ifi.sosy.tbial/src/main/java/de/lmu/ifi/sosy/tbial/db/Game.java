@@ -4,6 +4,8 @@ import org.apache.wicket.model.IModel;
 
 import static java.util.Objects.requireNonNull;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +23,11 @@ public class Game implements Serializable {
 	private Integer numPlayers; // 4 - 7
 	private List<User> players;
 	private User host;
-	private int playersTurn; // 1 - 7
+	private int playersTurn; //1 - 7
 	
 //	private GameState state; 
-	private String gameState; // waiting for players, ready, playing, stopped, game over
+	private volatile String gameState; // waiting for players, ready, playing, stopped, game over
+	protected PropertyChangeSupport propertyChangeSupport;
 //	private ArrayList<Card> stack;
 //	private ArrayList<Card> heap;
 	
@@ -43,6 +46,7 @@ public class Game implements Serializable {
 			this.players.add(null);
 		}
 		this.host = requireNonNull(host);
+		propertyChangeSupport = new PropertyChangeSupport(this);
 	}
 
 	public void addPlayer(User player) {
@@ -168,8 +172,13 @@ public class Game implements Serializable {
 	public String getGameState() {
 		return gameState;
 	}
-	public void setGameState(String gameState) {
+	public synchronized void setGameState(String gameState) {
 		this.gameState = gameState;
+		propertyChangeSupport.firePropertyChange("GameStateProperty",id, gameState);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 
 	public int getActivePlayers() {

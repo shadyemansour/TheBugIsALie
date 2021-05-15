@@ -92,7 +92,20 @@ public class SQLDatabase implements Database {
     }
   }
 
+  public void setGameState(int id, String gameState){
+    try (Connection connection = getConnection(false);
+         PreparedStatement insert = updateGameState(id, gameState, connection);
+         ResultSet result = executeUpdate(insert)) {
+      if (result != null && result.next()) {
+        connection.commit();
+      } else {
+        connection.rollback();
+      }
 
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameState " + id, ex);
+    }
+  }
   public Game createGame(String name, String host, String password, String gamestate, int numplayers) {
     Objects.requireNonNull(name, "name is null");
     try (Connection connection = getConnection(false);
@@ -220,6 +233,14 @@ public class SQLDatabase implements Database {
     insertUser.setString(2, password);
     return insertUser;
   }
+  private PreparedStatement updateGameState(int id, String gameState, Connection connection)
+          throws SQLException {
+    PreparedStatement updateGameState;
+    updateGameState = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
+    updateGameState.setString(1, gameState);
+    updateGameState.setInt(2, id);
+    return updateGameState;
+  }
 
   private PreparedStatement insertGameStatement(String name, String host, String password, String gamestate, Integer numplayers, Connection connection)
           throws SQLException {
@@ -232,6 +253,8 @@ public class SQLDatabase implements Database {
     insertGame.setInt(5, numplayers);
     return insertGame;
   }
+
+
 
   private PreparedStatement getGameQuery(Connection connection) throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT * FROM GAMES");

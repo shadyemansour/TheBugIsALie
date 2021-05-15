@@ -89,7 +89,46 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       }
     }
   }
+  protected void addGame(Game game) {
+    Connection con = null;
+    PreparedStatement ps = null;
+    try {
+      con = dataSource.getConnection();
+      con.setAutoCommit(true);
 
+      ps =
+              con.prepareStatement(
+                      "INSERT INTO GAMES (NAME) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, game.getName());
+
+      ps.executeUpdate();
+
+      ResultSet generatedIds = ps.getGeneratedKeys();
+      int id = -1;
+      if (generatedIds.next()) {
+        id = generatedIds.getInt(1);
+      } else {
+        throw new SQLException("No id was generated for new row in table Games.");
+      }
+
+      user.setId(id);
+
+    } catch (SQLException ex) {
+      throw new ConfigurationException("msg.exception.ConfigException", ex);
+
+    } finally {
+      try {
+        if (ps != null) {
+          ps.close();
+        }
+        if (con != null) {
+          con.close();
+        }
+      } catch (Exception ex) {
+        ex.printStackTrace(System.err);
+      }
+    }
+  }
   @Override
   protected void addUser(User user) {
     Connection con = null;
@@ -103,6 +142,7 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
               "INSERT INTO USERS (NAME, PASSWORD) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, user.getName());
       ps.setString(2, user.getPassword());
+      //ps.setString(3,user.getGame() == null? "NULL": user.getGame().getName());
 
       ps.executeUpdate();
 

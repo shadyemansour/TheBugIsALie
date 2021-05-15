@@ -30,14 +30,20 @@ public class User implements Serializable {
   private List<Card> hand= new ArrayList<Card>();
 
 
-  public User(String name, String password) {
-    this(-1, name, password);
+  private Boolean joinedGame;
+
+  private Game game;
+
+  public User(String name, String password, Game game) {
+    this(-1, name, password, game);
   }
 
-  public User(int id, String name, String password) {
+  public User(int id, String name, String password,Game game) {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
+    this.joinedGame = false;
+    this.game = game;
     this.prestige=-1;
     this.health=-1;
     this.hand=null;
@@ -106,11 +112,6 @@ public class User implements Serializable {
 
   }
   
-  
-  
-  
-  
-  
 
   @Override
   public String toString() {
@@ -129,5 +130,21 @@ public class User implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(name, password);
+  }
+
+  public void setJoinedGame(Boolean joinedGame) {
+    this.joinedGame = joinedGame;
+  }
+
+  public Boolean getJoinedGame() {
+    return joinedGame;
+  }
+
+  public Game getGame() {
+    return game;
+  }
+
+  public void setGame(Game game) {
+    this.game = game;
   }
 }

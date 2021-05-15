@@ -22,7 +22,7 @@ public abstract class AbstractDatabaseTest {
   public void initGeneral() {
     name = "name";
     password = "pass";
-    user = new User(name, password);
+    user = new User(name, password,null);
   }
 
   protected void addUser() {
@@ -43,13 +43,13 @@ public abstract class AbstractDatabaseTest {
 
   @Test
   public void hasUserWithNameWhenUserNotRegisteredReturnsFalse() {
-    assertThat(database.nameTaken(name), is(false));
+    assertThat(database.nameTaken(name,"user"), is(false));
   }
 
   @Test
   public void hasUserWithNameWhenUserRegisteredReturnsTrue() {
     addUser();
-    assertThat(database.nameTaken(name), is(true));
+    assertThat(database.nameTaken(name,"user"), is(true));
   }
 
   @Test
@@ -73,11 +73,19 @@ public abstract class AbstractDatabaseTest {
 
   @Test
   public void getUserWhenUserDoesNotExistReturnsNull() {
-    addUser(new User("someoneelse", "withsomepassword"));
+    addUser(new User("someoneelse", "withsomepassword",null));
     User user = database.getUser(name);
 
     assertThat(user, is(nullValue()));
   }
+
+//  @Test
+//  public void getGameWhenGameDoesNotExistReturnsNull() {
+//    addUser(new Game("someoneelse", "withsomepassword"));
+//    User user = database.getUser(name);
+//
+//    assertThat(user, is(nullValue()));
+//  }
 
   @Test
   public void getUserWhenNoUserExistsReturnsNull() {
@@ -98,7 +106,7 @@ public abstract class AbstractDatabaseTest {
   @Test
   public void getUserWhenMultipleUsersExistsReturnsCorrectUser() {
     addUser();
-    addUser(new User("AnotherName", "AnotherPass"));
+    addUser(new User("AnotherName", "AnotherPass",null));
 
     User user = database.getUser(name);
 

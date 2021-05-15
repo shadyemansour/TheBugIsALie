@@ -166,6 +166,7 @@ public class Lobby extends BasePage {
                     	 	/** UID for serialization. */
                     		private static final long serialVersionUID = 1L;
 
+
                         public void onClick() {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
@@ -175,7 +176,7 @@ public class Lobby extends BasePage {
                                 tabs.remove(2);
                                 tabs.add(tab4);
                                 tabbedPanel.setSelectedTab(2);
-                                listItem.add(new AttributeModifier("class", Model.of("currentGame")));
+                                listItem.add(AttributeModifier.append("class", "currentGame"));                                listItem.add(new AttributeModifier("class", Model.of("currentGame")));
 //                                WebMarkupContainer template = new WebMarkupContainer("joinGame");
 //                                add(template);
 //
@@ -186,6 +187,7 @@ public class Lobby extends BasePage {
                             }
                         }
                     });
+//                    User user = ((TBIALSession) getSession()).getUser();  
                     //HighlitableDataItem<Game> hitem = (HighlitableDataItem<Game>)listItem;
 //                            hitem.toggleHighlite();
 //                listItem.add(new AjaxEventBehavior("onclick") {

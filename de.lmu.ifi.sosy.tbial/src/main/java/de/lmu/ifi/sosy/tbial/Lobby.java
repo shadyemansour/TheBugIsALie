@@ -108,6 +108,8 @@ public class Lobby extends BasePage {
 
 
     private class TabPanel1 extends Panel {
+    	 	/** UID for serialization. */
+      	private static final long serialVersionUID = 1L;
 
         public TabPanel1(String id) {
             super(id);
@@ -123,7 +125,7 @@ public class Lobby extends BasePage {
                         @Override
                         protected void populateItem(final ListItem<User> listItem) {
 
-                            listItem.add(new Label("name", new PropertyModel(listItem.getModel(), "name")));
+                            listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
                             listItem.add(new Label("status", "in game"));
                         }
                     };
@@ -139,6 +141,10 @@ public class Lobby extends BasePage {
 
 
     private class TabPanel2 extends Panel {
+    	 	/** UID for serialization. */
+    		private static final long serialVersionUID = 1L;
+
+    	
         public TabPanel2(String id) {
             super(id);
 
@@ -152,11 +158,14 @@ public class Lobby extends BasePage {
 
                 @Override
                 protected void populateItem(final ListItem<Game> listItem) {
-                    listItem.add(new Label("name", new PropertyModel(listItem.getModel(), "name")));
+                    listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
                     listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
                     listItem.add(new Label("protection", listItem.getModelObject().getPwProtected() == false ? "Public" : "Private"));
                     listItem.add(new Link<>("joinGame") {
+                    	 	/** UID for serialization. */
+                    		private static final long serialVersionUID = 1L;
+
                         public void onClick() {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {

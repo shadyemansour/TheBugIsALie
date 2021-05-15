@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A user with a user name and a plain-text password.
@@ -20,6 +22,13 @@ public class User implements Serializable {
   private String name;
 
   private String password;
+  
+  
+  
+  private int prestige;
+  private int health;
+  private List<Card> hand= new ArrayList<Card>();
+
 
   private Boolean joinedGame;
 
@@ -35,6 +44,10 @@ public class User implements Serializable {
     this.password = requireNonNull(password);
     this.joinedGame = false;
     this.game = game;
+    this.prestige=-1;
+    this.health=-1;
+    this.hand=null;
+
   }
 
   public String getName() {
@@ -73,6 +86,32 @@ public class User implements Serializable {
   void setId(int id) {
     this.id = id;
   }
+  
+  public void setPrestige(int prestige) {
+      this.prestige=prestige;
+  }
+
+  public int getPrestige() {
+      return prestige;
+  }
+  
+  public void setHealth(int health) {
+      this.health = health;
+  }
+
+  public int getHealth() {
+      return health;
+  }
+  
+  public void setHand(List<Card> hand) {
+      this.hand=hand;
+  }
+  public List<Card> getHand(){
+
+      return hand;
+
+  }
+  
 
   @Override
   public String toString() {

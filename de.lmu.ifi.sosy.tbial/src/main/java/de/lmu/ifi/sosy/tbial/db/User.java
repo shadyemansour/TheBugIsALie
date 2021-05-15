@@ -30,17 +30,17 @@ public class User implements Serializable {
   private List<Card> hand= new ArrayList<Card>();
 
 
-  public User(String name, String password,int prestige,int health, List<Card> hand) {
-    this(-1, name, password, prestige, health,hand);
+  public User(String name, String password) {
+    this(-1, name, password);
   }
 
-  public User(int id, String name, String password,int prestige,int health, List<Card> hand) {
+  public User(int id, String name, String password) {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
-    this.prestige=prestige;
-    this.health=health;
-    this.hand=hand;
+    this.prestige=-1;
+    this.health=-1;
+    this.hand=null;
 
   }
 

@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
@@ -344,7 +345,7 @@ public class Lobby extends BasePage {
 
             user = ((TBIALSession)getSession()).getUser();
             game = user.getGame();
-//            game.addPlayer(new User("Player 2", "pw"));
+            game.addPlayer(new User("Player 2", "pw"));
 //            game.addPlayer(new User("Player 3", "pw"));
 
 //    	game = getSession().getGame(gameId);
@@ -357,6 +358,7 @@ public class Lobby extends BasePage {
              */
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
 //    	add(gameState);
+            gameState.setOutputMarkupId(true);
             gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
 
             leaveButton = new AjaxButton("leavebutton") {
@@ -367,6 +369,12 @@ public class Lobby extends BasePage {
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("leavebutton");
+                    game.removePlayer(user);
+                    user.setGame(null);
+                    user.setJoinedGame(false);
+                    tabs.remove(2);
+                    tabs.add(tab3);
+                    tabbedPanel.setSelectedTab(1);
                 }
 
                 @Override
@@ -382,8 +390,6 @@ public class Lobby extends BasePage {
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("startbutton");
                     game.addPlayer(new User("new Player", "pw"));
-                    System.out.println(game.getGameState());
-                    System.out.println(game.getPlayers().toString());
                 }
 
                 @Override
@@ -408,6 +414,8 @@ public class Lobby extends BasePage {
                         @Override
                         public void onClick(AjaxRequestTarget target) {
                             System.out.println("remove player button");
+                            listItem.getModelObject().setGame(null);
+                            listItem.getModelObject().setJoinedGame(false);
                             game.removePlayer(listItem.getModelObject());
                         }
 
@@ -423,7 +431,7 @@ public class Lobby extends BasePage {
                         listItem.add(new Label("name", "free spot"));
                     } else {
                         listItem.add(new Label("name"));
-                        if (user == game.getHost() && user != listItem.getModelObject()) {
+                        if (user.equals(game.getHost()) && !user.equals(listItem.getModelObject())) {
                             removePlayerButton.setVisible(true);
                         }
                     }

@@ -65,7 +65,7 @@ public class Game implements Serializable {
 			}
 		}
 //		this.players.remove(player);
-//		this.gameLobbyGameState();
+		this.gameLobbyGameState();
 	}
 	
 	private Integer calcOpenSpots() {

@@ -368,7 +368,7 @@ public class Lobby extends BasePage {
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
 //    	add(gameState);
             gameState.setOutputMarkupId(true);
-            gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+            gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
 
             leaveButton = new AjaxButton("leavebutton") {
 
@@ -383,6 +383,7 @@ public class Lobby extends BasePage {
                     user.setJoinedGame(false);
                     tabs.remove(2);
                     tabs.add(tab3);
+                    setResponsePage(getApplication().getHomePage());
                     tabbedPanel.setSelectedTab(1);
                 }
 
@@ -426,6 +427,8 @@ public class Lobby extends BasePage {
                             listItem.getModelObject().setGame(null);
                             listItem.getModelObject().setJoinedGame(false);
                             game.removePlayer(listItem.getModelObject());
+                            setResponsePage(getApplication().getHomePage());
+//                            setButtonInactive();
                         }
 
                         @Override
@@ -434,6 +437,11 @@ public class Lobby extends BasePage {
                             return null;
                         }
                     });
+//
+//                    void setButtonInactive() {
+//                    	removePlayerButton.add(AttributeModifier.replace("class", "button-inactive"));
+//                    };
+//                    
                     listItem.add(removePlayerButton);
                     removePlayerButton.setVisible(false);
                     if (listItem.getModelObject() == null) {

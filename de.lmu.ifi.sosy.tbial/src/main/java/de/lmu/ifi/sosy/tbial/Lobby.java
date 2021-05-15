@@ -17,6 +17,7 @@ import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -156,39 +157,28 @@ public class Lobby extends BasePage {
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
                     listItem.add(new Label("protection", listItem.getModelObject().getPwProtected() == false ? "Public" : "Private"));
                     listItem.add(new Link<>("joinGame") {
+
+                        @Override
                         public void onClick() {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
                                 listItem.getModelObject().addPlayer(user);
                                 user.setGame(listItem.getModelObject());
                                 user.setJoinedGame(true);
+                                listItem.setOutputMarkupId(true);
                                 tabs.remove(2);
                                 tabs.add(tab4);
                                 tabbedPanel.setSelectedTab(2);
-                                listItem.add(new AttributeModifier("class", Model.of("currentGame")));
-//                                WebMarkupContainer template = new WebMarkupContainer("joinGame");
-//                                add(template);
-//
-//                                template.add(new AttributeModifier("class", new Model("currentGame")));
 
                             } else {
 
                             }
                         }
                     });
-                    //HighlitableDataItem<Game> hitem = (HighlitableDataItem<Game>)listItem;
-//                            hitem.toggleHighlite();
-//                listItem.add(new AjaxEventBehavior("onclick") {
-//
-//                    private static final long serialVersionUID = 1L;
-//
-//                    @Override
-//                    protected void onEvent(final AjaxRequestTarget target) {
-//                        HighlitableDataItem<Game> hitem = (HighlitableDataItem<Game>) listItem;
-//                        hitem.toggleHighlite();
-//                        target.add(hitem);
-//                    }
-//                });
+                    User user = ((TBIALSession) getSession()).getUser();
+                    if(user.getGame()!= null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
+                        listItem.add(new AttributeModifier("class", Model.of("currentGame")));
+                    }
                 }
             };
 
@@ -305,31 +295,7 @@ public class Lobby extends BasePage {
         }
     };
 
-    //    private static class HighlitableDataItem<T> extends ListItem<T>
-//    {
-//        private static final long serialVersionUID = 1L;
-//
-//        private boolean highlite = false;
-//
-//        public void toggleHighlite(){
-//            highlite = !highlite;
-//        }
-//
-//        public HighlitableDataItem(String id, int index, IModel<T> model)
-//        {
-//            super(id, index, model);
-//            add(new AttributeModifier("style", "background-color:#80b6ed;")
-//            {
-//                private static final long serialVersionUID = 1L;
-//
-//                @Override
-//                public boolean isEnabled(Component component)
-//                {
-//                    return HighlitableDataItem.this.highlite;
-//                }
-//            });
-//        }
-//    }
+
     private class TabPanel4 extends Panel {
         /** UID for serialization. */
         private static final long serialVersionUID = 1L;
@@ -367,11 +333,18 @@ public class Lobby extends BasePage {
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("leavebutton");
+                    game.removePlayer(user);
+                    user.setGame(null);
+                    user.setJoinedGame(false);
+                    tabs.remove(2);
+                    setResponsePage(getApplication().getHomePage());
                 }
 
                 @Override
                 protected void onError(AjaxRequestTarget target) {}
             };
+
+
 
             startButton = new AjaxButton("startbutton") {
 
@@ -381,7 +354,7 @@ public class Lobby extends BasePage {
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("startbutton");
-                    game.addPlayer(new User("new Player", "pw"));
+                    game.addPlayer(new User("new Player", "pw",null));
                     System.out.println(game.getGameState());
                     System.out.println(game.getPlayers().toString());
                 }

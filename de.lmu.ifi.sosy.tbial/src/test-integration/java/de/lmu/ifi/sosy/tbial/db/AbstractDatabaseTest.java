@@ -22,7 +22,7 @@ public abstract class AbstractDatabaseTest {
   public void initGeneral() {
     name = "name";
     password = "pass";
-    user = new User(name, password);
+    user = new User(name, password,null);
   }
 
   protected void addUser() {
@@ -73,7 +73,7 @@ public abstract class AbstractDatabaseTest {
 
   @Test
   public void getUserWhenUserDoesNotExistReturnsNull() {
-    addUser(new User("someoneelse", "withsomepassword"));
+    addUser(new User("someoneelse", "withsomepassword",null));
     User user = database.getUser(name);
 
     assertThat(user, is(nullValue()));
@@ -106,7 +106,7 @@ public abstract class AbstractDatabaseTest {
   @Test
   public void getUserWhenMultipleUsersExistsReturnsCorrectUser() {
     addUser();
-    addUser(new User("AnotherName", "AnotherPass"));
+    addUser(new User("AnotherName", "AnotherPass",null));
 
     User user = database.getUser(name);
 

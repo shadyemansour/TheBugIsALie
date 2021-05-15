@@ -21,17 +21,17 @@ public class UserTest {
     password = "pass";
     name = "name";
     id = 42;
-    user = new User("", "");
+    user = new User("", "",null);
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullNameGiven_throwsException() {
-    new User(null, password);
+    new User(null, password,null);
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullPasswordGiven_throwsException() {
-    new User(name, null);
+    new User(name, null,null);
   }
 
   @Test

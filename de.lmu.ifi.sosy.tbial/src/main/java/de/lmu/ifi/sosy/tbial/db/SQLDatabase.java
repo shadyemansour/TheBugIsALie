@@ -79,7 +79,7 @@ public class SQLDatabase implements Database {
 
       if (result != null && result.next()) {
         int id = result.getInt(1);
-        User user = new User(id, name, password);
+        User user = new User(id, name, password,null);
         connection.commit();
         return user;
       } else {
@@ -115,9 +115,9 @@ public class SQLDatabase implements Database {
     }
   }
 
-  public List<Game> getGame() {
+  public Game getGame(String name) {
     try (Connection connection = getConnection();
-         PreparedStatement query = getGameQuery(connection);
+         PreparedStatement query = gameByNameQuery(name,connection);
          ResultSet result = query.executeQuery()) {
 
       return getGameFromResult(result);
@@ -130,7 +130,7 @@ public class SQLDatabase implements Database {
          PreparedStatement query = getGameQuery(connection);
          ResultSet result = query.executeQuery()) {
 
-      return getGameFromResult(result);
+      return getGamesFromResult(result);
     } catch (SQLException e) {
       throw new DatabaseException("Error while querying for games in DB.", e);
     }
@@ -141,13 +141,27 @@ public class SQLDatabase implements Database {
       int id = result.getInt("ID");
       String name = result.getString("NAME");
       String password = result.getString("PASSWORD");
-      return new User(id, name, password);
+      Game game = getGame(result.getString("GAME"));
+      return new User(id, name, password,game);
     } else {
       return null;
     }
   }
   
-  private List<Game> getGameFromResult(ResultSet result) throws SQLException {
+  private Game getGameFromResult(ResultSet result) throws SQLException {
+    Game game = null;
+	  if (result.next()) {
+		  int id = result.getInt("ID");
+	      String name = result.getString("NAME");
+	      String host = result.getString("HOST");
+	      String password = result.getString("PASSWORD");
+	      String gamestate = result.getString("GAMESTATE");
+	      int numplayers = result.getInt("NUMPLAYERS");
+	      game = new Game(name, password, numplayers, getUser(host));
+	    }
+    return game;
+  }
+  private List<Game> getGamesFromResult(ResultSet result) throws SQLException {
     List<Game> games = new ArrayList<>();
 	  while (result.next()) {
 		  int id = result.getInt("ID");
@@ -201,7 +215,7 @@ public class SQLDatabase implements Database {
     PreparedStatement insertUser;
     insertUser =
             connection.prepareStatement(
-                    "INSERT INTO USERS (NAME, PASSWORD) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+                    "INSERT INTO USERS (NAME, PASSWORD, GAME) VALUES (?,?,NULL)", Statement.RETURN_GENERATED_KEYS);
     insertUser.setString(1, name);
     insertUser.setString(2, password);
     return insertUser;

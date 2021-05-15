@@ -25,15 +25,16 @@ public class User implements Serializable {
 
   private Game game;
 
-  public User(String name, String password) {
-    this(-1, name, password);
+  public User(String name, String password, Game game) {
+    this(-1, name, password, game);
   }
 
-  public User(int id, String name, String password) {
+  public User(int id, String name, String password,Game game) {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
     this.joinedGame = false;
+    this.game = game;
   }
 
   public String getName() {

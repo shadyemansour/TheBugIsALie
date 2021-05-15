@@ -227,35 +227,7 @@ form input.formbutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
-/* default tables */
-table {
-	width: 100%;
-	margin-bottom: 10px;
-}
 
-table tr th, table tr td {
-	padding: 5px 10px;
-}
-
-table tr th {
-	background: #F2701A none repeat-x scroll bottom left;
-	color: #ffffff;
-	border-top: 2px solid #DE5901;
-}
-
-table tr td {
-	border-bottom: 1px solid #dddddd;
-}
-table td.joinGame:hover {
-	text-decoration: underline;
-	cursor: pointer;
-}
-#gameList tr:hover {
-	background-color: white;
-}
-table tr.currentGame {
-	background: #ff912a;
-}
 
 
 
@@ -582,7 +554,45 @@ div.footer p a {
 	line-height: 33px;
 	font-size: 0.8em;
 }
+/* default tables */
+table {
+	width: 100%;
+	margin-bottom: 10px;
+}
 
+table tr th, table tr td {
+	padding: 5px 10px;
+}
+
+table tr th {
+	background: #F2701A none repeat-x scroll bottom left;
+	color: #ffffff;
+	border-top: 2px solid #DE5901;
+}
+
+table tr td {
+	border-bottom: 1px solid #dddddd;
+}
+table td.joinGame:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+.gameList tr:hover {
+	background: white;
+}
+.gameList tr.currentGame {
+	background: #ff912a;
+}
+.gameList input[type="button"] {
+	width: 55px;
+	height: 24px;
+	background: #666666;
+	text-align: center;
+	line-height: 16px;
+	color: #FFFFFF;
+	font-size: 0.8em;
+	font-weight: bold;
+}
 /* Boxed <pre> element. At the moment only used on error page.*/
 pre.boxed {
 	white-space: pre-wrap;

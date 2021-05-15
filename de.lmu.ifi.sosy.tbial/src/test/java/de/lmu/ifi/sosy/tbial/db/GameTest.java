@@ -33,9 +33,9 @@ public class GameTest {
     name = "name";
     id = 42;
     numPlayers = 5;
-    host = new User("hostName", "hostPw");
-    user1 = new User("user1Name", "user1Pw");
-    user2 = new User("user2Name", "user2Pw");
+    host = new User("hostName", "hostPw",null);
+    user1 = new User("user1Name", "user1Pw",null);
+    user2 = new User("user2Name", "user2Pw",null);
     game = new Game(name, password, numPlayers, host);
     game.addPlayer(user1);
   }

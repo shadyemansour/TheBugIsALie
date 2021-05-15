@@ -50,7 +50,7 @@ public class InMemoryDatabase implements Database {
         return null;
       }
 
-      User user = new User(name, password);
+      User user = new User(name, password,null);
       user.setId(users.size());
       users.add(user);
 

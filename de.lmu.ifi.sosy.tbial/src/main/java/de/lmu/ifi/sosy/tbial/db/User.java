@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A user with a user name and a plain-text password.
@@ -20,15 +22,32 @@ public class User implements Serializable {
   private String name;
 
   private String password;
+  
+  
+  
+  private int prestige;
+  private int health;
+  private List<Card> hand= new ArrayList<Card>();
 
-  public User(String name, String password) {
-    this(-1, name, password);
+
+  private Boolean joinedGame;
+
+  private Game game;
+
+  public User(String name, String password, Game game) {
+    this(-1, name, password, game);
   }
 
-  public User(int id, String name, String password) {
+  public User(int id, String name, String password,Game game) {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
+    this.joinedGame = false;
+    this.game = game;
+    this.prestige=-1;
+    this.health=-1;
+    this.hand=null;
+
   }
 
   public String getName() {
@@ -67,6 +86,32 @@ public class User implements Serializable {
   void setId(int id) {
     this.id = id;
   }
+  
+  public void setPrestige(int prestige) {
+      this.prestige=prestige;
+  }
+
+  public int getPrestige() {
+      return prestige;
+  }
+  
+  public void setHealth(int health) {
+      this.health = health;
+  }
+
+  public int getHealth() {
+      return health;
+  }
+  
+  public void setHand(List<Card> hand) {
+      this.hand=hand;
+  }
+  public List<Card> getHand(){
+
+      return hand;
+
+  }
+  
 
   @Override
   public String toString() {
@@ -85,5 +130,21 @@ public class User implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(name, password);
+  }
+
+  public void setJoinedGame(Boolean joinedGame) {
+    this.joinedGame = joinedGame;
+  }
+
+  public Boolean getJoinedGame() {
+    return joinedGame;
+  }
+
+  public Game getGame() {
+    return game;
+  }
+
+  public void setGame(Game game) {
+    this.game = game;
   }
 }

@@ -11,13 +11,13 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -108,6 +108,8 @@ public class Lobby extends BasePage {
 
 
     private class TabPanel1 extends Panel {
+    	 	/** UID for serialization. */
+      	private static final long serialVersionUID = 1L;
 
         public TabPanel1(String id) {
             super(id);
@@ -123,7 +125,7 @@ public class Lobby extends BasePage {
                         @Override
                         protected void populateItem(final ListItem<User> listItem) {
 
-                            listItem.add(new Label("name", new PropertyModel(listItem.getModel(), "name")));
+                            listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
                             listItem.add(new Label("status", "in game"));
                         }
                     };
@@ -139,6 +141,10 @@ public class Lobby extends BasePage {
 
 
     private class TabPanel2 extends Panel {
+    	 	/** UID for serialization. */
+    		private static final long serialVersionUID = 1L;
+
+
         public TabPanel2(String id) {
             super(id);
 
@@ -152,13 +158,15 @@ public class Lobby extends BasePage {
 
                 @Override
                 protected void populateItem(final ListItem<Game> listItem) {
-                    listItem.add(new Label("name", new PropertyModel(listItem.getModel(), "name")));
+                    listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
                     listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
-                    listItem.add(new Label("protection", listItem.getModelObject().getPwProtected() == false ? "Public" : "Private"));
+                    listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected()  ? "Public" : "Private"));
                     listItem.add(new Link<>("joinGame") {
+                    	 	/** UID for serialization. */
+                    		private static final long serialVersionUID = 1L;
 
-                        @Override
+
                         public void onClick() {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
@@ -310,8 +318,8 @@ public class Lobby extends BasePage {
 
             user = ((TBIALSession)getSession()).getUser();
             game = user.getGame();
-//            game.addPlayer(new User("Player 2", "pw"));
-//            game.addPlayer(new User("Player 3", "pw"));
+//            game.addPlayer(new User("Player 2", "pw",null));
+//            game.addPlayer(new User("Player 3", "pw",null));
 
 //    	game = getSession().getGame(gameId);
 
@@ -323,7 +331,8 @@ public class Lobby extends BasePage {
              */
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
 //    	add(gameState);
-            gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+            gameState.setOutputMarkupId(true);
+            gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
 
             leaveButton = new AjaxButton("leavebutton") {
 
@@ -337,14 +346,14 @@ public class Lobby extends BasePage {
                     user.setGame(null);
                     user.setJoinedGame(false);
                     tabs.remove(2);
+                    tabs.add(tab3);
                     setResponsePage(getApplication().getHomePage());
+                    tabbedPanel.setSelectedTab(1);
                 }
 
                 @Override
                 protected void onError(AjaxRequestTarget target) {}
             };
-
-
 
             startButton = new AjaxButton("startbutton") {
 
@@ -355,8 +364,6 @@ public class Lobby extends BasePage {
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("startbutton");
                     game.addPlayer(new User("new Player", "pw",null));
-                    System.out.println(game.getGameState());
-                    System.out.println(game.getPlayers().toString());
                 }
 
                 @Override
@@ -381,7 +388,11 @@ public class Lobby extends BasePage {
                         @Override
                         public void onClick(AjaxRequestTarget target) {
                             System.out.println("remove player button");
+                            listItem.getModelObject().setGame(null);
+                            listItem.getModelObject().setJoinedGame(false);
                             game.removePlayer(listItem.getModelObject());
+                            setResponsePage(getApplication().getHomePage());
+//                            setButtonInactive();
                         }
 
                         @Override
@@ -390,13 +401,18 @@ public class Lobby extends BasePage {
                             return null;
                         }
                     });
+//
+//                    void setButtonInactive() {
+//                    	removePlayerButton.add(AttributeModifier.replace("class", "button-inactive"));
+//                    };
+//
                     listItem.add(removePlayerButton);
                     removePlayerButton.setVisible(false);
                     if (listItem.getModelObject() == null) {
                         listItem.add(new Label("name", "free spot"));
                     } else {
                         listItem.add(new Label("name"));
-                        if (user == game.getHost() && user != listItem.getModelObject()) {
+                        if (user.equals(game.getHost()) && !user.equals(listItem.getModelObject())) {
                             removePlayerButton.setVisible(true);
                         }
                     }

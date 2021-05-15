@@ -78,6 +78,18 @@ div.nav ul li a, div.nav ul li a:visited, div.nav ul li span {
 div.nav ul li a:hover {
 	text-decoration: underline;
 }
+
+div.nav ul li.logged-in-as-username {
+	display: block;
+	float: right;
+	padding: 7px 0px;
+}
+
+div.nav ul li.logged-in-as-username a {
+	text-decoration: none;
+}
+	
+
 /* tabs */
 div.tabpanel div.tab-row li {
 	margin: 0;

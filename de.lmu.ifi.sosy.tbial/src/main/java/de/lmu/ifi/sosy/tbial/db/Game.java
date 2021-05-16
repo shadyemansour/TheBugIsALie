@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class Game implements Serializable {
 
@@ -22,6 +23,7 @@ public class Game implements Serializable {
 	private String password;
 	private Integer numPlayers; // 4 - 7
 	private List<User> players;
+	private String hostName;
 	private User host;
 	private int playersTurn; //1 - 7
 	
@@ -31,10 +33,11 @@ public class Game implements Serializable {
 //	private ArrayList<Card> stack;
 //	private ArrayList<Card> heap;
 	
-	public Game(int id, String name, String password, Integer numPlayers, User host) {
+	public Game(int id, String name, String password, Integer numPlayers, String gameState/*, String hostName*/) {
 		this.id = id;
 		this.name = requireNonNull(name);
 		this.password = password;
+		this.gameState = gameState;
 		if (password.length() == 0) {
 			this.pwProtected = false;
 		} else {
@@ -42,12 +45,12 @@ public class Game implements Serializable {
 		}
 		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>();
-		this.players.add(host);
+//		setHostName(requireNonNull(hostName));
 		for (int i=1; i<numPlayers; i++) {
 			this.players.add(null);
 		}
-		this.host = requireNonNull(host);
 		propertyChangeSupport = new PropertyChangeSupport(this);
+//		this.players.add(host);
 	}
 
 	public void addPlayer(User player) {
@@ -149,13 +152,22 @@ public class Game implements Serializable {
 		this.numPlayers = requireNonNull(numPlayers);
 	}
 	
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = requireNonNull(hostName);
+	}
+
 	public User getHost() {
 		return host;
 	}
+
 	public void setHost(User host) {
-		this.host = requireNonNull(host);
+		this.host = host;
 	}
-	
+
 	public int getPlayersTurn() {
 		return playersTurn;
 	}
@@ -184,6 +196,10 @@ public class Game implements Serializable {
 
 	public int getActivePlayers() {
 		int ap=0;
+		if (host == null){
+			propertyChangeSupport.firePropertyChange("GameHostProperty",this, hostName);
+			players.add(host);
+		}
 		for (User player:players){
 			if(player!=null){
 				ap++;

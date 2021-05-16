@@ -33,8 +33,8 @@ public class User implements Serializable {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
-    this.joinedGame = false;
     this.game = game;
+    this.joinedGame = game ==null? false:true;
   }
 
   public String getName() {

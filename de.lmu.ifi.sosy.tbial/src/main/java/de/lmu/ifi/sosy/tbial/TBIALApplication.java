@@ -5,11 +5,11 @@ import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.*;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.RuntimeConfigurationType;
@@ -148,6 +148,8 @@ public class TBIALApplication extends WebApplication {
       if(availableGames.isEmpty()){
           List<Game> games = ((SQLDatabase) database).getGames();
           for (Game g:games) {
+              GameListener listener = new GameListener();
+              g.addPropertyChangeListener(listener);
               availableGames.add(g);
           }
       }
@@ -164,4 +166,24 @@ public class TBIALApplication extends WebApplication {
   public void removeGame(final Game game) {
     availableGames.remove(game);
   }
+  public class GameListener implements PropertyChangeListener {
+        @Override
+        public void propertyChange(PropertyChangeEvent event) {
+            if (event.getPropertyName().equals("GameStateProperty")) {
+                ((SQLDatabase) database).setGameState(Integer.parseInt(event.getOldValue().toString()),event.getNewValue().toString());
+                System.out.println(event.getNewValue().toString());
+            }else if(event.getPropertyName().equals("GameHostProperty")){
+                for (User u:loggedInUsers) {
+                    if(u.getName().equals(event.getNewValue().toString())){
+                        Game g = ((Game)event.getOldValue());
+                                g.setHost(u);
+                        break;
+                        //TODO add user not found
+                    }
+                }
+
+
+            }
+        }
+    }
 }

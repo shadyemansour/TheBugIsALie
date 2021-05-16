@@ -27,6 +27,8 @@ public class User implements Serializable {
   
   private int prestige;
   private int health;
+  private String role;
+  private String character;
   private List<Card> hand= new ArrayList<Card>();
 
 
@@ -42,11 +44,13 @@ public class User implements Serializable {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
-    this.joinedGame = false;
     this.game = game;
     this.prestige=-1;
     this.health=-1;
+    this.role = null;
+    this.character = null;
     this.hand=null;
+    this.joinedGame = game ==null? false:true;
 
   }
 
@@ -103,7 +107,23 @@ public class User implements Serializable {
       return health;
   }
   
-  public void setHand(List<Card> hand) {
+  public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
+	public String getCharacter() {
+		return character;
+	}
+
+	public void setCharacter(String character) {
+		this.character = character;
+	}
+
+	public void setHand(List<Card> hand) {
       this.hand=hand;
   }
   public List<Card> getHand(){

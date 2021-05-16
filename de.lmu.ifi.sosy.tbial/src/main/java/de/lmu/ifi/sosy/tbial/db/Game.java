@@ -29,8 +29,8 @@ public class Game implements Serializable {
 
 	     //   private  ArrayList<Card> charakterCards = new  ArrayList<Card>(); TODO later (US37)
 
-        private List<Card> stack; // all action, ability, and stumbling blocks cards
-        private List<Card> playableStack; // only bugs, exuses, solutions playable
+  private List<Card> stack; // all action, ability, and stumbling blocks cards
+  private List<Card> playableStack; // only bugs, exuses, solutions playable
 
     //    private  List<Card> heap = new  ArrayList<Card>(); TODO later
 
@@ -132,6 +132,21 @@ public class Game implements Serializable {
 			}
 		}
 //		this.players.remove(player);
+		
+		// handle if host leaves the game
+		if (player.equals(host)) {
+			if (this.getActivePlayers() > 0) {
+				for (int i=0; i<this.players.size(); i++) {
+					if (this.players.get(i) != null) {
+						this.setHost(this.players.get(i));
+						break;
+					}
+				}
+			} else {
+				// TODO: delete game
+			}
+		}
+		
 		this.gameLobbyGameState();
 	}
 	

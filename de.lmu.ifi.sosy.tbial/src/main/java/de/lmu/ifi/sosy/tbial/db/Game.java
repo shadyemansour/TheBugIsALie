@@ -51,6 +51,55 @@ public class Game implements Serializable {
 			this.players.add(null);
 		}
 		this.host = requireNonNull(host);
+		this.generatePlayerAttributes();
+	}
+	
+	/**
+	 * method created for setup of us7
+	 * player attributes should be generated random for real game
+	 */
+	public void generatePlayerAttributes() {
+		String managerRole = "Manager"; // only 1 card exists
+		String consultantRole = "Consultant"; // only 1 card exists
+		String honestDeveloperRole = "Honest Developer"; // 2 cards exist
+		String evilCodeMonkeyRole = "Evil Code Monkey"; // 3 cards exist
+		
+		String markZuckerbergCharacter = "Mark Zuckerberg";
+		String tomAndersonCharacter = "Tom Anderson";
+		String jeffTaylorCharacter = "Jeff Taylor";
+		String larryPageCharacter = "Larry Page";
+		String larryEllisonCharacter = "Larry Ellison";
+		String kentBeckCharacter = "Kent Beck";
+		String steveJobsCharacter = "Steve Jobs";
+		
+		for (int i=0; i<this.players.size(); i++) {
+			if (this.players.get(i) != null) {
+				if (i==0) {
+					this.players.get(i).setRole(managerRole);
+					this.players.get(i).setCharacter(markZuckerbergCharacter);
+				} else if (i==1) {
+					this.players.get(i).setRole(consultantRole);
+					this.players.get(i).setCharacter(tomAndersonCharacter);
+				} else if (i==2) {
+					this.players.get(i).setRole(honestDeveloperRole);
+					this.players.get(i).setCharacter(jeffTaylorCharacter);
+				} else if (i==3) {
+					this.players.get(i).setRole(evilCodeMonkeyRole);
+					this.players.get(i).setCharacter(larryPageCharacter);
+				} else if (i==4) {
+					this.players.get(i).setRole(honestDeveloperRole);
+					this.players.get(i).setCharacter(larryEllisonCharacter);
+				} else if (i==5) {
+					this.players.get(i).setRole(evilCodeMonkeyRole);
+					this.players.get(i).setCharacter(kentBeckCharacter);
+				} else if (i==6) {
+					this.players.get(i).setRole(evilCodeMonkeyRole);
+					this.players.get(i).setCharacter(steveJobsCharacter);
+				}
+				this.players.get(i).setHealth(3);
+				this.players.get(i).setPrestige(1);
+			}
+		}
 	}
 
 	public void addPlayer(User player) {
@@ -64,6 +113,7 @@ public class Game implements Serializable {
 //			players.add(player);
 //		}
 		this.gameLobbyGameState();
+		this.generatePlayerAttributes(); // only necessary for debug
 	}
 
 	public void removePlayer(User player) {

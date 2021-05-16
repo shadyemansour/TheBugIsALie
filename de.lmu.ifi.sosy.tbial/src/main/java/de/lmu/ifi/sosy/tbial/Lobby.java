@@ -184,7 +184,7 @@ public class Lobby extends BasePage {
                         }
                     });
                     User user = ((TBIALSession) getSession()).getUser();
-                    if(user.getGame()!= null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
+                    if(user != null && user.getGame()!= null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
                     }
                 }
@@ -307,7 +307,7 @@ public class Lobby extends BasePage {
     private class TabPanel4 extends Panel {
         /** UID for serialization. */
         private static final long serialVersionUID = 1L;
-
+ 
         private final AjaxButton leaveButton;
         private final AjaxButton startButton;
         private Game game;
@@ -318,7 +318,7 @@ public class Lobby extends BasePage {
 
             user = ((TBIALSession)getSession()).getUser();
             game = user.getGame();
-//            game.addPlayer(new User("Player 2", "pw",null));
+            game.addPlayer(new User("Player 2", "pw",null));
 //            game.addPlayer(new User("Player 3", "pw",null));
 
 //    	game = getSession().getGame(gameId);
@@ -332,7 +332,7 @@ public class Lobby extends BasePage {
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
 //    	add(gameState);
             gameState.setOutputMarkupId(true);
-            gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
+            gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
 
             leaveButton = new AjaxButton("leavebutton") {
 
@@ -391,7 +391,7 @@ public class Lobby extends BasePage {
                             listItem.getModelObject().setGame(null);
                             listItem.getModelObject().setJoinedGame(false);
                             game.removePlayer(listItem.getModelObject());
-                            setResponsePage(getApplication().getHomePage());
+//                            setResponsePage(getApplication().getHomePage());
 //                            setButtonInactive();
                         }
 
@@ -410,18 +410,33 @@ public class Lobby extends BasePage {
                     removePlayerButton.setVisible(false);
                     if (listItem.getModelObject() == null) {
                         listItem.add(new Label("name", "free spot"));
+                        // just test for us7 - will be removed later
+                        listItem.add(new Label("role", ""));
+                        listItem.add(new Label("character", ""));
+                        listItem.add(new Label("health", ""));
+                        listItem.add(new Label("prestige", ""));
                     } else {
                         listItem.add(new Label("name"));
                         if (user.equals(game.getHost()) && !user.equals(listItem.getModelObject())) {
                             removePlayerButton.setVisible(true);
                         }
+                        // just test for us7 - will be removed later
+                        // show role if role is Manager or if is own role
+                        if (listItem.getModelObject().getRole().equals("Manager") || listItem.getModelObject().getName().equals(user.getName())) {
+                        	listItem.add(new Label("role", listItem.getModelObject().getRole()));
+                        } else {
+                        	listItem.add(new Label("role", ""));
+                        }
+                        listItem.add(new Label("character", listItem.getModelObject().getCharacter()));
+                        listItem.add(new Label("health", listItem.getModelObject().getHealth()));
+                        listItem.add(new Label("prestige", listItem.getModelObject().getPrestige()));
                     }
                 }
             };
 
             WebMarkupContainer joinedPlayerListContainer = new WebMarkupContainer("joinedPlayerListContainer");
             joinedPlayerListContainer.add(joinedPlayerList);
-            joinedPlayerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
+            joinedPlayerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
             joinedPlayerListContainer.setOutputMarkupId(true);
 
 //      add(joinedPlayerListContainer);

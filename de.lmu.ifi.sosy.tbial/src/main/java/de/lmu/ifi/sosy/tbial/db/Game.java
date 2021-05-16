@@ -31,7 +31,8 @@ public class Game implements Serializable {
 //	private ArrayList<Card> stack;
 //	private ArrayList<Card> heap;
 	
-	public Game(String name, String password, Integer numPlayers, User host) {
+	public Game(int id, String name, String password, Integer numPlayers, User host) {
+		this.id = id;
 		this.name = requireNonNull(name);
 		this.password = password;
 		if (password.length() == 0) {

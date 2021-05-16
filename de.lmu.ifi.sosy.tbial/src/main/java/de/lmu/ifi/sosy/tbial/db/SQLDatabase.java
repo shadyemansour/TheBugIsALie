@@ -93,15 +93,11 @@ public class SQLDatabase implements Database {
   }
 
   public void setGameState(int id, String gameState){
-    try (Connection connection = getConnection(false);
-         PreparedStatement insert = updateGameState(id, gameState, connection);
-         ResultSet result = executeUpdate(insert)) {
-      if (result != null && result.next()) {
-        connection.commit();
-      } else {
-        connection.rollback();
-      }
-
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateGameState(id, gameState, connection);
+      insert.executeUpdate();
+      connection.commit();
     } catch (SQLException ex) {
       throw new DatabaseException("Error while updating gameState " + id, ex);
     }
@@ -114,7 +110,7 @@ public class SQLDatabase implements Database {
 
       if (result != null && result.next()) {
         int id = result.getInt(1);
-        Game game = new Game(name, password, numplayers, getUser(host));
+        Game game = new Game(id,name, password, numplayers, getUser(host));
         connection.commit();
 
         return game;
@@ -170,7 +166,7 @@ public class SQLDatabase implements Database {
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");
-	      game = new Game(name, password, numplayers, getUser(host));
+	      game = new Game(id, name, password, numplayers, getUser(host));
 	    }
     return game;
   }
@@ -183,7 +179,7 @@ public class SQLDatabase implements Database {
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");
-	      games.add(new Game(name, password, numplayers, getUser(host)));
+	      games.add(new Game(id, name, password, numplayers, getUser(host)));
 	    }
     return games;
   }

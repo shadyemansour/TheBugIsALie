@@ -50,7 +50,6 @@ public class Game implements Serializable {
 		for (int i=1; i<numPlayers; i++) {
 			this.players.add(null);
 		}
-		this.host = requireNonNull(host);
 	}
 
 	public void addPlayer(User player) {

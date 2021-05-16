@@ -395,7 +395,6 @@ public class Lobby extends BasePage {
                             ((SQLDatabase)getDatabase()).setUserGame(user.getId(),"NULL");
                             game.removePlayer(listItem.getModelObject());
 //                            setResponsePage(getApplication().getHomePage());
-//                            setButtonInactive();
                         }
 
                         @Override
@@ -404,20 +403,16 @@ public class Lobby extends BasePage {
                             return null;
                         }
                     });
-//
-//                    void setButtonInactive() {
-//                    	removePlayerButton.add(AttributeModifier.replace("class", "button-inactive"));
-//                    };
-//
+                    
                     listItem.add(removePlayerButton);
                     removePlayerButton.setVisible(false);
                     if (listItem.getModelObject() == null) {
                         listItem.add(new Label("name", "free spot"));
                         // just test for us7 - will be removed later
-                        listItem.add(new Label("role", ""));
-                        listItem.add(new Label("character", ""));
-                        listItem.add(new Label("health", ""));
-                        listItem.add(new Label("prestige", ""));
+//                        listItem.add(new Label("role", ""));
+//                        listItem.add(new Label("character", ""));
+//                        listItem.add(new Label("health", ""));
+//                        listItem.add(new Label("prestige", ""));
                     } else {
                         listItem.add(new Label("name"));
                         if (user.equals(game.getHost()) && !user.equals(listItem.getModelObject())) {
@@ -425,14 +420,14 @@ public class Lobby extends BasePage {
                         }
                         // just test for us7 - will be removed later
                         // show role if role is Manager or if is own role
-                        if (listItem.getModelObject().getRole().equals("Manager") || listItem.getModelObject().getName().equals(user.getName())) {
-                        	listItem.add(new Label("role", listItem.getModelObject().getRole()));
-                        } else {
-                        	listItem.add(new Label("role", ""));
-                        }
-                        listItem.add(new Label("character", listItem.getModelObject().getCharacter()));
-                        listItem.add(new Label("health", listItem.getModelObject().getHealth()));
-                        listItem.add(new Label("prestige", listItem.getModelObject().getPrestige()));
+//                        if (listItem.getModelObject().getRole().equals("Manager") || listItem.getModelObject().getName().equals(user.getName())) {
+//                        	listItem.add(new Label("role", listItem.getModelObject().getRole()));
+//                        } else {
+//                        	listItem.add(new Label("role", ""));
+//                        }
+//                        listItem.add(new Label("character", listItem.getModelObject().getCharacter()));
+//                        listItem.add(new Label("health", listItem.getModelObject().getHealth()));
+//                        listItem.add(new Label("prestige", listItem.getModelObject().getPrestige()));
                     }
                 }
             };

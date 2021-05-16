@@ -315,7 +315,16 @@ public class Lobby extends BasePage {
             super(id);
 
             user = ((TBIALSession)getSession()).getUser();
-            game = user.getGame();
+            //mini implementation of singleton
+            List<Game> appGames = getTbialApplication().getAvailableGames();
+            Game uGame = user.getGame();
+            for (Game g : appGames) {
+                if(g.equals(uGame)) {
+                    game = g;
+                    user.setGame(game);
+                    break;
+                }
+            }
 //            game.addPlayer(new User("Player 2", "pw",null));
 //            game.addPlayer(new User("Player 3", "pw",null));
 

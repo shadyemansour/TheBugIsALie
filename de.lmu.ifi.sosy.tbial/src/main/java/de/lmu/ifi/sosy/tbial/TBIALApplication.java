@@ -161,7 +161,9 @@ public class TBIALApplication extends WebApplication {
   }
 
   public void addGame(final Game game) {
-    availableGames.add(game);
+      GameListener listener = new GameListener();
+      game.addPropertyChangeListener(listener);
+      availableGames.add(game);
   }
   public void removeGame(final Game game) {
     availableGames.remove(game);

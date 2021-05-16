@@ -139,6 +139,7 @@ public class SQLDatabase implements Database {
         int id = result.getInt(1);
         Game game = new Game(id,name, password, numplayers,gamestate,host);
         game.setHost(getUser(host));
+        game.addPlayer(getUser(host));
         connection.commit();
 
         return game;

@@ -129,7 +129,7 @@ public class Game implements Serializable {
 
 	public void removePlayer(User player) {
 		for (int i=0; i<this.players.size(); i++) {
-			if (this.players.get(i) == player) {
+			if (player.equals(players.get(i))) {
 				this.players.set(i, null);
 			}
 		}
@@ -147,7 +147,7 @@ public class Game implements Serializable {
 				}
 			} else {
 				// TODO: delete game
-				propertyChangeSupport.firePropertyChange("LastPlayerRemovedProperty", player, this);
+				propertyChangeSupport.firePropertyChange("LastPlayerRemovedProperty", null, this);
 			}
 		}
 	}
@@ -253,7 +253,7 @@ public class Game implements Serializable {
 	public List<User> getPlayers() {
 		if (host == null){
 			propertyChangeSupport.firePropertyChange("GameHostProperty",this, hostName);
-			players.add(host);
+			addPlayer(host);
 		}
 		return players;
 
@@ -278,7 +278,7 @@ public class Game implements Serializable {
 		int ap=0;
 		if (host == null){
 			propertyChangeSupport.firePropertyChange("GameHostProperty",this, hostName);
-			players.add(host);
+			addPlayer(host);
 		}
 		for (User player:players){
 			if(player!=null){

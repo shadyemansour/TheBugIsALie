@@ -2,6 +2,7 @@ package de.lmu.ifi.sosy.tbial.db;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,10 @@ public class GameTest {
   private User user1;
   
   private User user2;
+  
+  private User user3;
+  
+  private User user4;
 
   private Game game;
 
@@ -36,6 +41,8 @@ public class GameTest {
     host = new User("hostName", "hostPw",null);
     user1 = new User("user1Name", "user1Pw",null);
     user2 = new User("user2Name", "user2Pw",null);
+    user3 = new User("user3Name", "user3Pw",null);
+    user4 = new User("user4Name", "user4Pw",null);
     game = new Game(id, name, password, numPlayers,null, host.getName());
     game.setHost(host);
     game.addPlayer(host);
@@ -126,5 +133,53 @@ public class GameTest {
   	expected.add(null);
   	game.removePlayer(user1);
   	assertThat(game.getPlayers(), is(expected));
+  }
+  
+  @Test
+  public void getGameState_returnReady() {
+  	String expected = "ready";
+  	game.addPlayer(user2);
+  	game.addPlayer(user3);
+  	game.addPlayer(user4);
+  	assertThat(game.getGameState(), is(expected));
+  }
+  
+  @Test
+  public void getGameState_return1PlayerMissing() {
+  	String expected = "1 player missing";
+  	game.addPlayer(user2);
+  	game.addPlayer(user3);
+  	assertThat(game.getGameState(), is(expected));
+  }
+  
+  @Test
+  public void getGameState_return1PlayerMissingAfterRemoving() {
+  	String expected = "1 player missing";
+  	game.addPlayer(user2);
+  	game.addPlayer(user3);
+  	game.addPlayer(user4);
+  	game.removePlayer(user3);
+  	assertThat(game.getGameState(), is(expected));
+  }
+  
+  @Test
+  public void getGameState_return2PlayersMissing() {
+  	String expected = "2 players missing";
+  	game.addPlayer(user2);
+  	assertThat(game.getGameState(), is(expected));
+  }
+  
+  @Test
+  public void getActivePlayers_returns2() {
+  	int expected = 2;
+  	assertEquals(game.getActivePlayers(), expected);
+  }
+  
+  @Test
+  public void getActivePlayers_returns4() {
+  	int expected = 4;
+  	game.addPlayer(user2);
+  	game.addPlayer(user3);
+  	assertEquals(game.getActivePlayers(), expected);
   }
 }

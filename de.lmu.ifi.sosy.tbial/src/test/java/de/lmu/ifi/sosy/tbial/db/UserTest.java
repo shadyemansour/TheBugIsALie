@@ -16,12 +16,16 @@ public class UserTest {
 
   private int id;
 
+  private Game game;
+
   @Before
   public void init() {
     password = "pass";
     name = "name";
     id = 42;
     user = new User("", "",null);
+    game = new Game(-1,"","",5,"",name);
+
   }
 
   @Test(expected = NullPointerException.class)
@@ -60,5 +64,11 @@ public class UserTest {
   @Test(expected = NullPointerException.class)
   public void setName_whenNullNameGiven_throwsException() {
     user.setName(null);
+  }
+
+  @Test
+  public void getGame_returnsGame() {
+    user.setGame(game);
+    assertThat(user.getGame(), is(game));
   }
 }

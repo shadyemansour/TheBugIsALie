@@ -126,7 +126,7 @@ public class Lobby extends BasePage {
                         protected void populateItem(final ListItem<User> listItem) {
 
                             listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
-                            listItem.add(new Label("status", "in game"));
+                            listItem.add(new Label("status", listItem.getModelObject().getJoinedGame()?"inGame":"free"));
                         }
                     };
             Form<?> form = new Form<>("onlinePlayers");
@@ -171,10 +171,7 @@ public class Lobby extends BasePage {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
                                 Game game = listItem.getModelObject();
-                                game.addPlayer(user);
-                                user.setGame(game);
-                                user.setJoinedGame(true);
-                                ((SQLDatabase)getDatabase()).setUserGame(user.getId(),game.getName());
+                                joinGame(game,user);
                                 listItem.setOutputMarkupId(true);
                                 tabs.remove(2);
                                 tabs.add(tab4);
@@ -190,6 +187,7 @@ public class Lobby extends BasePage {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
                     }
                 }
+
             };
 
             gameList.setOutputMarkupId(true);
@@ -447,6 +445,14 @@ public class Lobby extends BasePage {
         }
 
     };
+
+    public void joinGame(Game game, User player) {
+        game.addPlayer(player);
+        player.setGame(game);
+        player.setJoinedGame(true);
+        ((SQLDatabase)getDatabase()).setUserGame(player.getId(),game.getName());
+    }
+
 
 
 }

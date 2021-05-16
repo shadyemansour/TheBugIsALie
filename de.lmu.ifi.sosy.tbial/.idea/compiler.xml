@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="de.lmu.ifi.sosy.tbial" target="1.11" />
+      <module name="de.lmu.ifi.sosy.tbial" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

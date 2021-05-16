@@ -23,8 +23,6 @@ public class User implements Serializable {
 
   private String password;
   
-  
-  
   private int prestige;
   private int health;
   private String role;
@@ -50,7 +48,7 @@ public class User implements Serializable {
     this.role = null;
     this.character = null;
     this.hand=null;
-    this.joinedGame = game ==null? false:true;
+    this.joinedGame = game !=null;
 
   }
 

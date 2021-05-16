@@ -263,13 +263,13 @@ public class Game implements Serializable {
 	public String getGameState() {
 		return gameState;
 	}
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
 	public synchronized void setGameState(String gameState) {
 		this.gameState = gameState;
 		propertyChangeSupport.firePropertyChange("GameStateProperty",id, gameState);
-	}
-
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 
 	public int getActivePlayers() {

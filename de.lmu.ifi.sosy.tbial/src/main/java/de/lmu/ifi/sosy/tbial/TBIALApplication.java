@@ -171,7 +171,6 @@ public class TBIALApplication extends WebApplication {
         public void propertyChange(PropertyChangeEvent event) {
             if (event.getPropertyName().equals("GameStateProperty")) {
                 ((SQLDatabase) database).setGameState(Integer.parseInt(event.getOldValue().toString()),event.getNewValue().toString());
-                System.out.println(event.getNewValue().toString());
             }else if(event.getPropertyName().equals("GameHostProperty")){
                 for (User u:loggedInUsers) {
                     if(u.getName().equals(event.getNewValue().toString())){

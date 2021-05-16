@@ -88,6 +88,25 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while registering user " + name, ex);
     }
   }
+
+  public void removeGame(int id){
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = removeGameStatement(id,connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while removing Game " + id, ex);
+    }
+  }
+
+  private PreparedStatement removeGameStatement(int id, Connection connection) throws SQLException {
+    PreparedStatement removeGame;
+    removeGame = connection.prepareStatement("DELETE FROM GAMES WHERE ID = ?");
+    removeGame.setInt(1, id);
+    return removeGame;
+  }
+
   public void setUserGame(int id, String game){
     try{
       Connection connection = getConnection(false);

@@ -64,6 +64,7 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
     }
   }
 
+
   @Before
   public void setUpFixture() throws NamingException, SQLException, IOException {
     System.getProperties().setProperty("java.naming.factory.initial", CtxFactory.class.getName());
@@ -133,6 +134,20 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       }
     }
   }
+  @Override
+  public void removeGame(int id){
+    try{
+      Connection connection = dataSource.getConnection();
+      PreparedStatement remove = connection.prepareStatement("DELETE FROM GAMES WHERE ID = ?");
+      remove.setInt(1, id);
+      remove.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameState " + id, ex);
+    }
+  }
+
+
   @Override
   public void setGameState(int id, String gameState){
     try{

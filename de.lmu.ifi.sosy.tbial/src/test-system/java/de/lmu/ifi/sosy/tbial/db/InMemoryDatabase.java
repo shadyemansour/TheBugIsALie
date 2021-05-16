@@ -83,4 +83,17 @@ public class InMemoryDatabase implements Database {
       return user;
     }
   }
+
+  @Override
+  public void removeGame(int id) {
+    requireNonNull(id);
+    synchronized (games) {
+      for (int i = 0; i < games.size(); i++) {
+        Game game = games.get(i);
+        if (id==game.getId()) {
+          games.set(i,null);
+        }
+      }
+    }
+  }
 }

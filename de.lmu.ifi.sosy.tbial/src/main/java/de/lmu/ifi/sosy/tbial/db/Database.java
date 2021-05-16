@@ -39,4 +39,6 @@ public interface Database {
   Game getGame(String name);
 
   void setGameState(int id, String gameState);
+
+  void removeGame(int id);
 }

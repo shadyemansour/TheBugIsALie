@@ -6,8 +6,11 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
+import de.lmu.ifi.sosy.tbial.DatabaseException;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.sql.SQLException;
 
 public abstract class AbstractDatabaseTest {
 
@@ -23,15 +26,16 @@ public abstract class AbstractDatabaseTest {
 
   protected int id;
 
+
   protected String gameState;
 
   @Before
   public void initGeneral() {
     name = "name";
     password = "pass";
-    id=-1;
+    id=1;
     gameState = "newState";
-    game = new Game(42,"name","",5,null,name);
+    game = new Game(id,"name","",5,null,name);
     user = new User(name, password,game);
 
   }
@@ -47,10 +51,15 @@ public abstract class AbstractDatabaseTest {
   protected void setGameState() {
     setGameState(id, gameState);
   }
+  protected void removeGame(){
+    removeGame(id);
+  }
 
   protected abstract void addUser(User user);
 
   protected abstract void addGame(Game game);
+
+  protected abstract void removeGame(int id);
 
   protected abstract void setGameState(int id, String gameState);
 
@@ -114,7 +123,7 @@ public abstract class AbstractDatabaseTest {
   @Test
   public void getGameStateAfterSet() {
     addUser();
-    addGame(new Game(-1,"name", "",4,"",name));
+    addGame(new Game(1,"name", "",4,"",name));
     Game game = database.getGame("name");
     game.setGameState("newState");
 
@@ -146,6 +155,17 @@ public abstract class AbstractDatabaseTest {
 
     assertThat(user, hasNameAndPassword(name, password));
   }
+  @Test
+  public void removeGameWhenGameIsRemovedThrows(){
+    addUser();
+    addGame();
+    removeGame(id);
+    Game game = database.getGame("name");
+    assertThat(game,is(nullValue()));
+
+  }
+
+
   @Test
   public void getUserGameAndUserExistsInGame() {
     addUser();

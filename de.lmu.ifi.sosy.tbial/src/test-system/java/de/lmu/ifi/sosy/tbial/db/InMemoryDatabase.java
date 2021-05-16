@@ -15,9 +15,11 @@ import java.util.List;
 public class InMemoryDatabase implements Database {
 
   private final List<User> users;
+  private final List<Game> games;
 
   public InMemoryDatabase() {
     users = synchronizedList(new ArrayList<User>());
+    games = synchronizedList(new ArrayList<Game>());
   }
 
   @VisibleForTesting
@@ -35,6 +37,30 @@ public class InMemoryDatabase implements Database {
         }
       }
       return null;
+    }
+  }
+
+  @Override
+  public Game getGame(String name) {
+    requireNonNull(name);
+    synchronized (games) {
+      for (Game game : games) {
+        if (name.equals(game.getName())) {
+          return game;
+        }
+      }
+      return null;
+    }
+  }
+
+  @Override
+  public void setGameState(int id, String gameState) {
+    synchronized (games) {
+      for (Game game : games) {
+        if (id==game.getId()) {
+          game.setGameState(gameState);
+        }
+      }
     }
   }
 

@@ -4,6 +4,7 @@ import static de.lmu.ifi.sosy.tbial.TestUtil.hasNameAndPassword;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,18 +19,40 @@ public abstract class AbstractDatabaseTest {
 
   protected User user;
 
+  protected Game game;
+
+  protected int id;
+
+  protected String gameState;
+
   @Before
   public void initGeneral() {
     name = "name";
     password = "pass";
-    user = new User(name, password,null);
+    id=-1;
+    gameState = "newState";
+    game = new Game(42,"name","",5,null,name);
+    user = new User(name, password,game);
+
   }
 
   protected void addUser() {
     addUser(user);
   }
 
+  protected void addGame() {
+    addGame(game);
+  }
+
+  protected void setGameState() {
+    setGameState(id, gameState);
+  }
+
   protected abstract void addUser(User user);
+
+  protected abstract void addGame(Game game);
+
+  protected abstract void setGameState(int id, String gameState);
 
   @Test(expected = NullPointerException.class)
   public void registerUserWhenNullNameGivenThrowsException() {
@@ -79,13 +102,24 @@ public abstract class AbstractDatabaseTest {
     assertThat(user, is(nullValue()));
   }
 
-//  @Test
-//  public void getGameWhenGameDoesNotExistReturnsNull() {
-//    addUser(new Game("someoneelse", "withsomepassword"));
-//    User user = database.getUser(name);
-//
-//    assertThat(user, is(nullValue()));
-//  }
+  @Test
+  public void getGameWhenGameDoesNotExistReturnsNull() {
+    addUser();
+    addGame(new Game(-1,"name", "",4,"",name));
+    Game game = database.getGame("hi");
+
+    assertThat(game, is(nullValue()));
+  }
+
+  @Test
+  public void getGameStateAfterSet() {
+    addUser();
+    addGame(new Game(-1,"name", "",4,"",name));
+    Game game = database.getGame("name");
+    game.setGameState("newState");
+
+    assertThat(game.getGameState(), is("newState"));
+  }
 
   @Test
   public void getUserWhenNoUserExistsReturnsNull() {
@@ -112,4 +146,15 @@ public abstract class AbstractDatabaseTest {
 
     assertThat(user, hasNameAndPassword(name, password));
   }
+  @Test
+  public void getUserGameAndUserExistsInGame() {
+    addUser();
+    addGame();
+    User user = database.getUser(name);
+    Game game = database.getGame(name);
+
+    assertEquals(user.getGame(),game);
+  }
+
+
 }

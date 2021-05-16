@@ -98,6 +98,7 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while updating gameState " + id, ex);
     }
   }
+  @Override
   public void setGameState(int id, String gameState){
     try{
       Connection connection = getConnection(false);
@@ -131,7 +132,7 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while creating game " + name, ex);
     }
   }
-
+  @Override
   public Game getGame(String name) {
     try (Connection connection = getConnection();
          PreparedStatement query = gameByNameQuery(name,connection);

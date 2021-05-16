@@ -50,7 +50,7 @@ public class User implements Serializable {
     this.role = null;
     this.character = null;
     this.hand=null;
-    this.joinedGame = game ==null? false:true;
+    this.joinedGame = game !=null;
 
   }
 

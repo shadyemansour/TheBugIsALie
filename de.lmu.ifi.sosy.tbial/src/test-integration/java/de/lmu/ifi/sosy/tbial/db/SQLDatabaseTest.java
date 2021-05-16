@@ -89,6 +89,7 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       }
     }
   }
+  @Override
   protected void addGame(Game game) {
     Connection con = null;
     PreparedStatement ps = null;
@@ -98,8 +99,11 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
 
       ps =
               con.prepareStatement(
-                      "INSERT INTO GAMES (NAME) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+                      "INSERT INTO GAMES (NAME,HOST,PASSWORD,NUMPLAYERS) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, game.getName());
+      ps.setString(2, game.getHostName());
+      ps.setString(3, game.getPassword());
+      ps.setInt(4, game.getNumPlayers());
 
       ps.executeUpdate();
 
@@ -130,6 +134,19 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
     }
   }
   @Override
+  public void setGameState(int id, String gameState){
+    try{
+      Connection connection = dataSource.getConnection();
+      PreparedStatement insert = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
+      insert.setString(1, gameState);
+      insert.setInt(2, id);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameState " + id, ex);
+    }
+  }
+  @Override
   protected void addUser(User user) {
     Connection con = null;
     PreparedStatement ps = null;
@@ -139,10 +156,10 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
 
       ps =
           con.prepareStatement(
-              "INSERT INTO USERS (NAME, PASSWORD) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+              "INSERT INTO USERS (NAME, PASSWORD, GAME) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, user.getName());
       ps.setString(2, user.getPassword());
-      //ps.setString(3,user.getGame() == null? "NULL": user.getGame().getName());
+      ps.setString(3, user.getGame() == null? "NULL": user.getGame().getName());
 
       ps.executeUpdate();
 

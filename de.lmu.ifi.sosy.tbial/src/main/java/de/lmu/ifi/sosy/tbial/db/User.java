@@ -23,8 +23,6 @@ public class User implements Serializable {
 
   private String password;
   
-  
-  
   private int prestige;
   private int health;
   private String role;

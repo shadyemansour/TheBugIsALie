@@ -126,7 +126,7 @@ public class Lobby extends BasePage {
                         protected void populateItem(final ListItem<User> listItem) {
 
                             listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
-                            listItem.add(new Label("status", "in game"));
+                            listItem.add(new Label("status", listItem.getModelObject().getJoinedGame()?"inGame":"free"));
                         }
                     };
             Form<?> form = new Form<>("onlinePlayers");

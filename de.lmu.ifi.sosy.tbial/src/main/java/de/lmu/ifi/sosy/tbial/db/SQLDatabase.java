@@ -2,14 +2,11 @@ package de.lmu.ifi.sosy.tbial.db;
 
 import de.lmu.ifi.sosy.tbial.ConfigurationException;
 import de.lmu.ifi.sosy.tbial.DatabaseException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -91,7 +88,26 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while registering user " + name, ex);
     }
   }
-
+  public void setUserGame(int id, String game){
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateUserGame(id, game, connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameState " + id, ex);
+    }
+  }
+  public void setGameState(int id, String gameState){
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateGameState(id, gameState, connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameState " + id, ex);
+    }
+  }
 
   public Game createGame(String name, String host, String password, String gamestate, int numplayers) {
     Objects.requireNonNull(name, "name is null");
@@ -101,7 +117,8 @@ public class SQLDatabase implements Database {
 
       if (result != null && result.next()) {
         int id = result.getInt(1);
-        Game game = new Game(name, password, numplayers, getUser(host));
+        Game game = new Game(id,name, password, numplayers,gamestate,host);
+        game.setHost(getUser(host));
         connection.commit();
 
         return game;
@@ -157,7 +174,7 @@ public class SQLDatabase implements Database {
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");
-	      game = new Game(name, password, numplayers, getUser(host));
+	      game = new Game(id, name, password, numplayers, gamestate, host);
 	    }
     return game;
   }
@@ -170,7 +187,8 @@ public class SQLDatabase implements Database {
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");
-	      games.add(new Game(name, password, numplayers, getUser(host)));
+	      Game game = new Game(id, name, password, numplayers, gamestate, host);
+	      games.add(game);
 	    }
     return games;
   }
@@ -220,6 +238,22 @@ public class SQLDatabase implements Database {
     insertUser.setString(2, password);
     return insertUser;
   }
+  private PreparedStatement updateGameState(int id, String gameState, Connection connection)
+          throws SQLException {
+    PreparedStatement updateGameState;
+    updateGameState = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
+    updateGameState.setString(1, gameState);
+    updateGameState.setInt(2, id);
+    return updateGameState;
+  }
+  private PreparedStatement updateUserGame(int id, String game, Connection connection)
+          throws SQLException {
+    PreparedStatement updateUserGame;
+    updateUserGame = connection.prepareStatement("UPDATE USERS SET GAME = ? WHERE ID = ?");
+    updateUserGame.setString(1, game);
+    updateUserGame.setInt(2, id);
+    return updateUserGame;
+  }
 
   private PreparedStatement insertGameStatement(String name, String host, String password, String gamestate, Integer numplayers, Connection connection)
           throws SQLException {
@@ -232,6 +266,8 @@ public class SQLDatabase implements Database {
     insertGame.setInt(5, numplayers);
     return insertGame;
   }
+
+
 
   private PreparedStatement getGameQuery(Connection connection) throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT * FROM GAMES");

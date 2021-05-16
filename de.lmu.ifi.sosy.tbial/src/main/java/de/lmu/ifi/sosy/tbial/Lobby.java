@@ -170,9 +170,11 @@ public class Lobby extends BasePage {
                         public void onClick() {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
-                                listItem.getModelObject().addPlayer(user);
-                                user.setGame(listItem.getModelObject());
+                                Game game = listItem.getModelObject();
+                                game.addPlayer(user);
+                                user.setGame(game);
                                 user.setJoinedGame(true);
+                                ((SQLDatabase)getDatabase()).setUserGame(user.getId(),game.getName());
                                 listItem.setOutputMarkupId(true);
                                 tabs.remove(2);
                                 tabs.add(tab4);
@@ -184,7 +186,7 @@ public class Lobby extends BasePage {
                         }
                     });
                     User user = ((TBIALSession) getSession()).getUser();
-                    if(user != null && user.getGame()!= null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
+                    if(user!=null && user.getGame()!= null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
                     }
                 }
@@ -224,8 +226,6 @@ public class Lobby extends BasePage {
         private TabPanel3(String id) {
 
             super(id);
-//        Form<?> form1 = new Form<>("creating");
-//        add(form1);
 
             add(new FeedbackPanel("feedback"));
 
@@ -285,13 +285,13 @@ public class Lobby extends BasePage {
         public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
             Game game = ((SQLDatabase) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
             if (game != null) {
-                setResponsePage(getApplication().getHomePage());
                 info("Registration successful! You are now logged in.");
                 LOGGER.info("New game '" + name + "' created");
                 getTbialApplication().addGame(game);
                 User user = ((TBIALSession) getSession()).getUser();
                 user.setJoinedGame(true);
                 user.setGame(game);
+                ((SQLDatabase)getDatabase()).setUserGame(user.getId(),game.getName());
                 tabs.remove(2);
                 tabs.add(tab4);
                 tabbedPanel.setSelectedTab(2);
@@ -345,6 +345,7 @@ public class Lobby extends BasePage {
                     game.removePlayer(user);
                     user.setGame(null);
                     user.setJoinedGame(false);
+                    ((SQLDatabase)getDatabase()).setUserGame(user.getId(),"NULL");
                     tabs.remove(2);
                     tabs.add(tab3);
                     setResponsePage(getApplication().getHomePage());
@@ -388,8 +389,10 @@ public class Lobby extends BasePage {
                         @Override
                         public void onClick(AjaxRequestTarget target) {
                             System.out.println("remove player button");
-                            listItem.getModelObject().setGame(null);
-                            listItem.getModelObject().setJoinedGame(false);
+                            User user = listItem.getModelObject();
+                            user.setGame(null);
+                            user.setJoinedGame(false);
+                            ((SQLDatabase)getDatabase()).setUserGame(user.getId(),"NULL");
                             game.removePlayer(listItem.getModelObject());
 //                            setResponsePage(getApplication().getHomePage());
 //                            setButtonInactive();
@@ -449,5 +452,7 @@ public class Lobby extends BasePage {
         }
 
     };
+
+
 }
 

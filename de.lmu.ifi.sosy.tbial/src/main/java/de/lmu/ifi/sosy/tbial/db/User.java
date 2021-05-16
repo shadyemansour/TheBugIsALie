@@ -44,13 +44,13 @@ public class User implements Serializable {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
-    this.joinedGame = false;
     this.game = game;
     this.prestige=-1;
     this.health=-1;
     this.role = null;
     this.character = null;
     this.hand=null;
+    this.joinedGame = game ==null? false:true;
 
   }
 

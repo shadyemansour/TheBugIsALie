@@ -13,3 +13,5 @@ bin
 .idea/artifacts/*
 .settings/
 .classpath
+.classpath
+.settings/

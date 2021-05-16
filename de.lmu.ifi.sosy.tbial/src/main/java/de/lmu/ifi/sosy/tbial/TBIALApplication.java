@@ -180,8 +180,10 @@ public class TBIALApplication extends WebApplication {
                         //TODO add user not found
                     }
                 }
-
-
+            } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {
+            	Game game = (Game) event.getNewValue();
+            	removeGame(game);
+            	((SQLDatabase) database).removeGame(game.getId());
             }
         }
     }

@@ -316,7 +316,7 @@ public class Lobby extends BasePage {
 
             user = ((TBIALSession)getSession()).getUser();
             game = user.getGame();
-            game.addPlayer(new User("Player 2", "pw",null));
+//            game.addPlayer(new User("Player 2", "pw",null));
 //            game.addPlayer(new User("Player 3", "pw",null));
 
 //    	game = getSession().getGame(gameId);

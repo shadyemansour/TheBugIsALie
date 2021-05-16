@@ -3,6 +3,8 @@ package de.lmu.ifi.sosy.tbial.db;
 import org.apache.wicket.model.IModel;
 import static java.util.Objects.requireNonNull;
 
+import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
@@ -132,6 +134,7 @@ public class Game implements Serializable {
 			}
 		}
 //		this.players.remove(player);
+		this.gameLobbyGameState();
 		
 		// handle if host leaves the game
 		if (player.equals(host)) {
@@ -144,10 +147,9 @@ public class Game implements Serializable {
 				}
 			} else {
 				// TODO: delete game
+				propertyChangeSupport.firePropertyChange("LastPlayerRemovedProperty", player, this);
 			}
 		}
-		
-		this.gameLobbyGameState();
 	}
 	
 	private Integer calcOpenSpots() {

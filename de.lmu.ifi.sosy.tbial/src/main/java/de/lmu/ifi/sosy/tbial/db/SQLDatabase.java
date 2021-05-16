@@ -117,7 +117,8 @@ public class SQLDatabase implements Database {
 
       if (result != null && result.next()) {
         int id = result.getInt(1);
-        Game game = new Game(id,name, password, numplayers,gamestate);
+        Game game = new Game(id,name, password, numplayers,gamestate,host);
+        game.setHost(getUser(host));
         connection.commit();
 
         return game;
@@ -173,8 +174,7 @@ public class SQLDatabase implements Database {
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");
-	      game = new Game(id, name, password, numplayers, gamestate);
-	      game.setHostName(host);
+	      game = new Game(id, name, password, numplayers, gamestate, host);
 	    }
     return game;
   }
@@ -187,8 +187,7 @@ public class SQLDatabase implements Database {
 	      String password = result.getString("PASSWORD");
 	      String gamestate = result.getString("GAMESTATE");
 	      int numplayers = result.getInt("NUMPLAYERS");
-	      Game game = new Game(id, name, password, numplayers, gamestate);
-	      game.setHostName(host);
+	      Game game = new Game(id, name, password, numplayers, gamestate, host);
 	      games.add(game);
 	    }
     return games;

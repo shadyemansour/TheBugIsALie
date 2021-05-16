@@ -285,7 +285,6 @@ public class Lobby extends BasePage {
         public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
             Game game = ((SQLDatabase) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
             if (game != null) {
-                setResponsePage(getApplication().getHomePage());
                 info("Registration successful! You are now logged in.");
                 LOGGER.info("New game '" + name + "' created");
                 getTbialApplication().addGame(game);

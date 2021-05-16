@@ -33,7 +33,7 @@ public class Game implements Serializable {
 //	private ArrayList<Card> stack;
 //	private ArrayList<Card> heap;
 	
-	public Game(int id, String name, String password, Integer numPlayers, String gameState/*, String hostName*/) {
+	public Game(int id, String name, String password, Integer numPlayers, String gameState, String hostName) {
 		this.id = id;
 		this.name = requireNonNull(name);
 		this.password = password;
@@ -45,8 +45,8 @@ public class Game implements Serializable {
 		}
 		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>();
-//		setHostName(requireNonNull(hostName));
-		for (int i=1; i<numPlayers; i++) {
+		this.hostName = requireNonNull(hostName);
+		for (int i=0; i<numPlayers; i++) {
 			this.players.add(null);
 		}
 		propertyChangeSupport = new PropertyChangeSupport(this);
@@ -176,7 +176,12 @@ public class Game implements Serializable {
 	}
 	
 	public List<User> getPlayers() {
+		if (host == null){
+			propertyChangeSupport.firePropertyChange("GameHostProperty",this, hostName);
+			players.add(host);
+		}
 		return players;
+
 	}
 	public void setPlayers(List<User> players) {
 		this.players = players;

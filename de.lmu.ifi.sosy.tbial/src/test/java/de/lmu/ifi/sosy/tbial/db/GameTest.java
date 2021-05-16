@@ -36,23 +36,25 @@ public class GameTest {
     host = new User("hostName", "hostPw",null);
     user1 = new User("user1Name", "user1Pw",null);
     user2 = new User("user2Name", "user2Pw",null);
-    game = new Game(id, name, password, numPlayers,null);
+    game = new Game(id, name, password, numPlayers,null, host.getName());
+    game.setHost(host);
+    game.addPlayer(host);
     game.addPlayer(user1);
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullNameGiven_throwsException() {
-    new Game(id,null, password, numPlayers,null);
+    new Game(id,null, password, numPlayers,null, host.getName());
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullPasswordGiven_throwsException() {
-    new Game(id, name, null, numPlayers,null);
+    new Game(id, name, null, numPlayers,null, host.getName());
   }
   
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullNumPlayersGiven_throwsException() {
-    new Game(id, name, password, null,null);
+    new Game(id, name, password, null,null, host.getName());
   }
   
 //  @Test(expected = NullPointerException.class)
@@ -89,9 +91,7 @@ public class GameTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void setHost_whenNullHostGiven_throwsException() {
-    game.setHost(null);
-  }
+  public void setHostName_whenNullHostNameGiven_throwsException() { game.setHostName(null); }
   
   @Test
   public void getPlayers_returnPlayers() {

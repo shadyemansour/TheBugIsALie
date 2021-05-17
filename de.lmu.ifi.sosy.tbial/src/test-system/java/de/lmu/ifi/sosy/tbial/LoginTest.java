@@ -97,7 +97,7 @@ public class LoginTest extends PageTestBase {
     assertNotNull(session);
     assertTrue(session.isSignedIn());
     // check that the first user is logged in
-    assertThat(session.getUser(), equalTo(new User("testuser", "testpassword")));
+    assertThat(session.getUser(), equalTo(new User("testuser", "testpassword",null)));
 
     attemptLogin("testuser2", "testpassword2");
 
@@ -105,7 +105,7 @@ public class LoginTest extends PageTestBase {
     assertNotNull(session);
     assertTrue(session.isSignedIn());
     // check that the second user is logged in // TODO why not keep first user?
-    assertThat(session.getUser(), equalTo(new User("testuser2", "testpassword2")));
+    assertThat(session.getUser(), equalTo(new User("testuser2", "testpassword2",null)));
 
     assertThat(usersLoggedIn(), is(2));
 

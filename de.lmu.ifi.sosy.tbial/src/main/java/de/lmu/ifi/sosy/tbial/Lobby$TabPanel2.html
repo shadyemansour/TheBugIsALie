@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>
+    <br/>
+    <div wicket:id="feedback"></div>
+    <h3>Available Games</h3>
+
+    <form wicket:id="gamelist" class="boxedform">
+        <table class="gameList">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Players</th>
+                <th>Status</th>
+                <th>Protection</th>
+                <th>Join</th>
+            </tr>
+        </thead>
+            <tbody>
+            <tr wicket:id="availableGames">
+            <td wicket:id="name">Name</td>
+            <td wicket:id="players">Players</td>
+            <td wicket:id="status">Status</td>
+            <td wicket:id="protection">Protection</td>
+            <td wicket:id="joinGame" class="joinGame">Join</td>
+        </tr>
+            </tbody>
+        </table>
+        <span wicket:id = "navigator"/>
+
+    </form>
+
+</wicket:panel>
+</html>

@@ -16,22 +16,26 @@ public class UserTest {
 
   private int id;
 
+  private Game game;
+
   @Before
   public void init() {
     password = "pass";
     name = "name";
     id = 42;
-    user = new User("", "");
+    user = new User("", "",null);
+    game = new Game(-1,"","",5,"",name);
+
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullNameGiven_throwsException() {
-    new User(null, password);
+    new User(null, password,null);
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullPasswordGiven_throwsException() {
-    new User(name, null);
+    new User(name, null,null);
   }
 
   @Test
@@ -60,5 +64,11 @@ public class UserTest {
   @Test(expected = NullPointerException.class)
   public void setName_whenNullNameGiven_throwsException() {
     user.setName(null);
+  }
+
+  @Test
+  public void getGame_returnsGame() {
+    user.setGame(game);
+    assertThat(user.getGame(), is(game));
   }
 }

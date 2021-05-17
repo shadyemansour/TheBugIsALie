@@ -138,7 +138,49 @@ div.nav a li label username {
 	border-left: 1px solid #FB8F46;
 }
 
-
+div.gameboard {
+	position: relative;
+	width: 800px;
+	height: 500px;
+}
+div.player1 {
+	position: absolute;
+	left: 300px;
+  	width: 200px;
+  	height: 100px;
+  	border: 1px solid black;
+}
+div.player2 {
+	position: absolute;
+  	top: 200px;
+  	width: 200px;
+  	height: 100px;
+  	border: 1px solid black;
+}
+div.player3 {
+	position: absolute;
+  	top: 200px;
+  	right: 0;
+  	width: 200px;
+ 	height: 100px;
+	border: 1px solid black;
+}
+div.player4 {
+	position: absolute;
+  	bottom: 0px;
+  	left: 300px;
+  	width: 200px;
+  	height: 100px;
+  	border: 1px solid black;
+}
+div.cards{
+  	position: absolute;
+  	top: 200px;
+  	left: 300px;
+  	width: 200px;
+  	height: 100px;
+  	border: 3px solid black;
+}
 
 /* headers */
 h1 {

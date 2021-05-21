@@ -231,7 +231,7 @@ public class Lobby extends BasePage {
             gameName.setRequired(true);
             choice = new DropDownChoice("ddc", new PropertyModel(this, "selected"), players);
 
-            password = new TextField<String>("password", Model.of("")) {
+            password = new PasswordTextField("password", Model.of("")) {
                 @Override
                 public boolean isEnabled() {
                     return !checkboxState.getObject();

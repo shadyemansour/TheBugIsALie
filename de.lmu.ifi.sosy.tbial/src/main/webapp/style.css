@@ -610,3 +610,45 @@ pre.boxed {
 	white-space: pre-wrap;
 	border: solid 2px #ff6600;
 }
+
+.card-frame {
+	height: 300px;
+	width: 200px;
+	border: 1px solid;
+	border-radius: 10px;
+	text-align: center;
+}
+
+.card-border {
+	display: flex;
+	flex-direction: column;
+	height: 270px;
+	width: 170px;
+	border: 10px solid;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+.card-title {
+	flex-grow: 1;
+	font-weight: normal;
+	font-size: 24px;
+	background: lightgray;
+}
+
+.card-sub-title {
+	background: aquamarine;
+}
+
+.card-middle-desc {
+	flex-grow: 20;
+	background: beige;
+	display: flex;
+  	justify-content: center;
+  	align-items: center;
+}
+
+.card-bottom-desc {
+	flex-grow: 1;
+	background: gray;
+}

@@ -15,5 +15,5 @@ bin
 .classpath
 ../derby.log
 ../tbial_development/*
-tbial_development/
+tbial_development/*
 

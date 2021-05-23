@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial;
 
+import de.lmu.ifi.sosy.tbial.db.Card;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
@@ -135,6 +136,28 @@ public class Lobby extends BasePage {
             form.setOutputMarkupId(true);
             form.add(new PagingNavigator("navigator", playerList));
             add(form);
+            
+//            PropertyModel<Card> cardModel = new PropertyModel<Card>(children, id);
+//            CardPanel card = new CardPanel("card-panel", cardModel);
+            Card card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true);
+            CardPanel cardPanel1 = new CardPanel("card-panel1", new Model<Card>(card1));
+            add(cardPanel1);
+            
+            Card card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true);
+            CardPanel cardPanel2 = new CardPanel("card-panel2", Model.of(card2));
+            add(cardPanel2);
+            
+            Card card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true);
+            CardPanel cardPanel3 = new CardPanel("card-panel3", Model.of(card3));
+            add(cardPanel3);
+            
+            Card card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true);
+            CardPanel cardPanel4 = new CardPanel("card-panel4", Model.of(card4));
+            add(cardPanel4);
+            
+            Card card5 = new Card("StumblingBlock", "Off-The-Job-Training", null, "Stumbling Block", "Not for manager.\nCannot play this turn.\n0.25 chance to deflect", true, true);
+            CardPanel cardPanel5 = new CardPanel("card-panel5", Model.of(card5));
+            add(cardPanel5);
 
         }
     };

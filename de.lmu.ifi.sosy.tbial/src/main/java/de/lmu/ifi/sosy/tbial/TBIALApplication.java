@@ -141,6 +141,8 @@ public class TBIALApplication extends WebApplication {
   }
 
   public void userLoggedIn(final User pUser) {
+    UserListener listener = new UserListener();
+    pUser.addPropertyChangeListener(listener);
     loggedInUsers.add(pUser);
   }
 
@@ -196,6 +198,27 @@ public class TBIALApplication extends WebApplication {
         Game game = (Game) event.getNewValue();
         removeGame(game);
         ((SQLDatabase) database).removeGame(game.getId());
+      }
+    }
+  }
+
+  public class UserListener implements PropertyChangeListener {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      int id = Integer.parseInt(event.getOldValue().toString());
+
+      if (event.getPropertyName().equals("PrestigeProperty")) {
+        int prestige = Integer.parseInt(event.getNewValue().toString());
+        ((SQLDatabase) database).setUserPrestige(id, prestige);
+      } else if (event.getPropertyName().equals("HealthProperty")) {
+        int health = Integer.parseInt(event.getNewValue().toString());
+        ((SQLDatabase) database).setUserHealth(id, health);
+      } else if (event.getPropertyName().equals("RoleProperty")) {
+        String role = event.getNewValue().toString();
+        ((SQLDatabase) database).setUserRole(id, role);
+      } else if (event.getPropertyName().equals("CharactertProperty")) {
+        String character = event.getNewValue().toString();
+        ((SQLDatabase) database).setUserCharacter(id, character);
       }
     }
   }

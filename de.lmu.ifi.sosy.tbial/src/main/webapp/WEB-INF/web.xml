@@ -3,13 +3,15 @@
   <display-name>tbial</display-name>
   <filter>
     <filter-name>wicket.tbial</filter-name>
-    <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
-    <init-param>
+      <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+      <init-param>
       <param-name>applicationClassName</param-name>
       <param-value>de.lmu.ifi.sosy.tbial.TBIALApplication</param-value>
       <!-- <param-value>de.lmu.ifi.sosy.WicketApplication</param-value> -->
     </init-param>
   </filter>
+
+
   <filter-mapping>
     <filter-name>wicket.tbial</filter-name>
     <url-pattern>/*</url-pattern>

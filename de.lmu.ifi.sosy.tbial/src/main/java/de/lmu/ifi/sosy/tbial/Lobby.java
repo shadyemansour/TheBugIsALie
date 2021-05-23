@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.lmu.ifi.sosy.tbial.networking.BugWebSocketResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
@@ -35,6 +36,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.protocol.ws.api.BaseWebSocketBehavior;
 import org.apache.wicket.util.time.Duration;
 
 /**
@@ -442,7 +444,9 @@ public class Lobby extends BasePage {
             WebMarkupContainer joinedPlayerListContainer = new WebMarkupContainer("joinedPlayerListContainer");
             joinedPlayerListContainer.add(joinedPlayerList);
             joinedPlayerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+            joinedPlayerListContainer.add(new BaseWebSocketBehavior(BugWebSocketResource.NAME));
             joinedPlayerListContainer.setOutputMarkupId(true);
+
 
 //      add(joinedPlayerListContainer);
 

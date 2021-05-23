@@ -3,9 +3,11 @@ package de.lmu.ifi.sosy.tbial.db;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
+import java.net.http.WebSocket;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.wicket.protocol.ws.api.AbstractWebSocketConnection;
 
 /**
  * A user with a user name and a plain-text password.
@@ -22,6 +24,7 @@ public class User implements Serializable {
   private String name;
 
   private String password;
+
   
   private int prestige;
   private int health;
@@ -124,8 +127,7 @@ public class User implements Serializable {
 	public void setHand(List<Card> hand) {
       this.hand=hand;
   }
-  public List<Card> getHand(){
-
+    public List<Card> getHand(){
       return hand;
 
   }

@@ -117,6 +117,7 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while updating gameState " + id, ex);
     }
   }
+
   @Override
   public void setGameState(int id, String gameState){
     try{
@@ -288,10 +289,201 @@ public class SQLDatabase implements Database {
     return insertGame;
   }
 
-
-
   private PreparedStatement getGameQuery(Connection connection) throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT * FROM GAMES");
     return statement;
   }
+
+  public void setUserPrestige(int id, int prestige){
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateUserPrestige(id, prestige, connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating userPrestige " + id, ex);
+    }
+  }
+
+  private PreparedStatement updateUserPrestige(int id, int prestige, Connection connection)
+      throws SQLException {
+    PreparedStatement updateUserPrestige;
+    updateUserPrestige = connection.prepareStatement("UPDATE USERS SET PRESTIGE = ? WHERE ID = ?");
+    updateUserPrestige.setInt(1, prestige);
+    updateUserPrestige.setInt(2, id);
+    return updateUserPrestige;
+  }
+
+  public int getPrestige(int id) {
+    Objects.requireNonNull(id, "id is null");
+
+    try (Connection connection = getConnection();
+         PreparedStatement query = getPrestigeQuery(id, connection);
+         ResultSet result = query.executeQuery()) {
+
+      return getPrestigeFromResult(result);
+    } catch (SQLException e) {
+      throw new DatabaseException("Error while querying for user in DB.", e);
+    }
+  }
+  private PreparedStatement getPrestigeQuery(int id, Connection connection)
+      throws SQLException {
+    PreparedStatement statement = connection.prepareStatement("SELECT PRESTIGE FROM USERS WHERE ID=?");
+    statement.setInt(1, id);
+    return statement;
+  }
+  private int getPrestigeFromResult(ResultSet result) throws SQLException {
+    if (result.next()) {
+      int prestige = result.getInt("PRESTIGE");
+
+      return prestige;
+    } else {
+      return -1;
+    }
+  }
+
+  public void setUserHealth(int id, int health){
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateUserPrestige(id, health, connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating userPrestige " + id, ex);
+    }
+  }
+
+  private PreparedStatement updateUserHealth(int id, int health, Connection connection)
+      throws SQLException {
+    PreparedStatement updateUserHealth;
+    updateUserHealth = connection.prepareStatement("UPDATE USERS SET HEALTH = ? WHERE ID = ?");
+    updateUserHealth.setInt(1, health);
+    updateUserHealth.setInt(2, id);
+    return updateUserHealth;
+  }
+
+  public int getHealth(int id) {
+    Objects.requireNonNull(id, "id is null");
+
+    try (Connection connection = getConnection();
+         PreparedStatement query = getHealthQuery(id, connection);
+         ResultSet result = query.executeQuery()) {
+
+      return getHealthFromResult(result);
+    } catch (SQLException e) {
+      throw new DatabaseException("Error while querying for user in DB.", e);
+    }
+  }
+  private PreparedStatement getHealthQuery(int id, Connection connection)
+      throws SQLException {
+    PreparedStatement statement = connection.prepareStatement("SELECT HEALTH FROM USERS WHERE ID=?");
+    statement.setInt(1, id);
+    return statement;
+  }
+  private int getHealthFromResult(ResultSet result) throws SQLException {
+    if (result.next()) {
+      int health = result.getInt("HEALTH");
+
+      return health;
+    } else {
+      return -1;
+    }
+  }
+
+  public void setUserRole(int id, String role){
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateUserRole(id, role, connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating userPrestige " + id, ex);
+    }
+  }
+
+  private PreparedStatement updateUserRole(int id, String role, Connection connection)
+      throws SQLException {
+    PreparedStatement updateUserRole;
+    updateUserRole = connection.prepareStatement("UPDATE USERS SET ROLE = ? WHERE ID = ?");
+    updateUserRole.setString(1, role);
+    updateUserRole.setInt(2, id);
+    return updateUserRole;
+  }
+
+  public String getRole(int id) {
+    Objects.requireNonNull(id, "id is null");
+
+    try (Connection connection = getConnection();
+         PreparedStatement query = getRoleQuery(id, connection);
+         ResultSet result = query.executeQuery()) {
+
+      return getRoleFromResult(result);
+    } catch (SQLException e) {
+      throw new DatabaseException("Error while querying for user in DB.", e);
+    }
+  }
+  private PreparedStatement getRoleQuery(int id, Connection connection)
+      throws SQLException {
+    PreparedStatement statement = connection.prepareStatement("SELECT ROLE FROM USERS WHERE ID=?");
+    statement.setInt(1, id);
+    return statement;
+  }
+  private String getRoleFromResult(ResultSet result) throws SQLException {
+    if (result.next()) {
+      String role = result.getString("ROLE");
+
+      return role;
+    } else {
+      return null;
+    }
+  }
+
+  public void setUserCharacter(int id, String charachter){
+    try{
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateUserCharacter(id, charachter, connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating userPrestige " + id, ex);
+    }
+  }
+
+  private PreparedStatement updateUserCharacter(int id, String charachter, Connection connection)
+      throws SQLException {
+    PreparedStatement updateUserCharacter;
+    updateUserCharacter = connection.prepareStatement("UPDATE USERS SET CHARACT = ? WHERE ID = ?");
+    updateUserCharacter.setString(1, charachter);
+    updateUserCharacter.setInt(2, id);
+    return updateUserCharacter;
+  }
+
+  public String getCharacter(int id) {
+    Objects.requireNonNull(id, "id is null");
+
+    try (Connection connection = getConnection();
+         PreparedStatement query = getPrestigeQuery(id, connection);
+         ResultSet result = query.executeQuery()) {
+
+      return getCharacterFromResult(result);
+    } catch (SQLException e) {
+      throw new DatabaseException("Error while querying for user in DB.", e);
+    }
+  }
+  private PreparedStatement getCharacterQuery(int id, Connection connection)
+      throws SQLException {
+    PreparedStatement statement = connection.prepareStatement("SELECT CHARACT FROM USERS WHERE ID=?");
+    statement.setInt(1, id);
+    return statement;
+  }
+  private String getCharacterFromResult(ResultSet result) throws SQLException {
+    if (result.next()) {
+      String charachter = result.getString("CHARACT");
+
+      return charachter;
+    } else {
+      return "";
+    }
+  }
+
 }

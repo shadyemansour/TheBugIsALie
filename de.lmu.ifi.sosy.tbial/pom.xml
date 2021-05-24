@@ -10,7 +10,7 @@
 	OF ANY KIND, either express or implied. See the License for the specific 
 	language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.lmu.ifi.sosy</groupId>
@@ -75,9 +75,8 @@
 
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-native-websocket-jetty9</artifactId>
-			<version>7.18.0</version>
-
+			<artifactId>wicket-native-websocket-tomcat</artifactId>
+			<version>8.0.0-M3</version>
 		</dependency>
 
 
@@ -307,7 +306,7 @@
 				<version>${maven-exec-plugin.version}</version>
 				<executions>
 					<execution>
-					    <id>start-derby-console</id>
+						<id>start-derby-console</id>
 						<goals>
 							<goal>exec</goal>
 						</goals>
@@ -315,22 +314,22 @@
 							<executable>java</executable>
 							<arguments>
 								<argument>-classpath</argument>
-								<classpath />
+								<classpath/>
 								<argument>org.apache.derby.tools.ij</argument>
 							</arguments>
 						</configuration>
 					</execution>
 					<execution>
-					    <id>create-development-db</id>
+						<id>create-development-db</id>
 						<goals>
 							<goal>exec</goal>
 						</goals>
 						<configuration>
 							<executable>java</executable>
 							<arguments>
-							    <argument>-Dij.database=${development-db-url}</argument>
+								<argument>-Dij.database=${development-db-url}</argument>
 								<argument>-classpath</argument>
-								<classpath />
+								<classpath/>
 								<argument>org.apache.derby.tools.ij</argument>
 								<argument>etc/database/sql/create_tables_derby.sql</argument>
 							</arguments>
@@ -339,17 +338,17 @@
 				</executions>
 			</plugin>
 
-      <!-- Spotbugs plugin to check for bugs -->
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>4.1.4</version>
-        <configuration>
-          <xmlOutput>true</xmlOutput>
-          <!-- Optional directory to put spotbugs xdoc xml report -->
-          <xmlOutputDirectory>target/site</xmlOutputDirectory>
-        </configuration>
-      </plugin>
+			<!-- Spotbugs plugin to check for bugs -->
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.1.4</version>
+				<configuration>
+					<xmlOutput>true</xmlOutput>
+					<!-- Optional directory to put spotbugs xdoc xml report -->
+					<xmlOutputDirectory>target/site</xmlOutputDirectory>
+				</configuration>
+			</plugin>
 
 		</plugins>
 

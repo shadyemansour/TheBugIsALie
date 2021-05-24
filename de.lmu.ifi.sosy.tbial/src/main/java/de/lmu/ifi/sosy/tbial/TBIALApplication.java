@@ -16,8 +16,6 @@ import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.ws.WebSocketSettings;
-import org.apache.wicket.protocol.ws.api.IWebSocketConnection;
-import org.apache.wicket.protocol.ws.api.registry.IWebSocketConnectionRegistry;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
@@ -73,9 +71,6 @@ public class TBIALApplication extends WebApplication {
     initAuthorization();
     // initExceptionHandling();
     getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
-    final WebSocketSettings webSocketSettings = WebSocketSettings.Holder.get(this);
-    webSocketSettings.setPort(8000);
-    webSocketSettings.setSecurePort(8443);
   }
 
   private void initMarkupSettings() {

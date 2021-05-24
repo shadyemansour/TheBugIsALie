@@ -74,8 +74,8 @@ public class TBIALApplication extends WebApplication {
     // initExceptionHandling();
     getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
     final WebSocketSettings webSocketSettings = WebSocketSettings.Holder.get(this);
-    webSocketSettings.setPort(8000);
-    webSocketSettings.setSecurePort(8443);
+ //   webSocketSettings.setPort(8000);
+ //   webSocketSettings.setSecurePort(8443);
   }
 
   private void initMarkupSettings() {

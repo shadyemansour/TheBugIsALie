@@ -122,12 +122,42 @@ public class SQLDatabase implements Database {
   public void setGameState(int id, String gameState) {
     try {
       Connection connection = getConnection(false);
-      PreparedStatement insert = updateGameState(id, gameState, connection);
+      PreparedStatement insert = updateGameStateStatement(id, gameState, connection);
       insert.executeUpdate();
       connection.commit();
     } catch (SQLException ex) {
       throw new DatabaseException("Error while updating gameState " + id, ex);
     }
+  }
+
+  private PreparedStatement updateGameStateStatement(int id, String gameState, Connection connection)
+      throws SQLException {
+    PreparedStatement updateGameStatement;
+    updateGameStatement = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
+    updateGameStatement.setString(1, gameState);
+    updateGameStatement.setInt(2, id);
+    return updateGameStatement;
+  }
+
+  @Override
+  public void setGameHost(int id, String host) {
+    try {
+      Connection connection = getConnection(false);
+      PreparedStatement insert = updateGameHostStatement(id, host, connection);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameHost " + id, ex);
+    }
+  }
+
+  private PreparedStatement updateGameHostStatement(int id, String host, Connection connection)
+      throws SQLException {
+    PreparedStatement updateGameStatement;
+    updateGameStatement = connection.prepareStatement("UPDATE GAMES SET HOST = ? WHERE ID = ?");
+    updateGameStatement.setString(1, host);
+    updateGameStatement.setInt(2, id);
+    return updateGameStatement;
   }
 
   public Game createGame(String name, String host, String password, String gamestate, int numplayers) {
@@ -263,14 +293,6 @@ public class SQLDatabase implements Database {
     return insertUser;
   }
 
-  private PreparedStatement updateGameState(int id, String gameState, Connection connection)
-      throws SQLException {
-    PreparedStatement updateGameState;
-    updateGameState = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
-    updateGameState.setString(1, gameState);
-    updateGameState.setInt(2, id);
-    return updateGameState;
-  }
 
   private PreparedStatement updateUserGame(int id, String game, Connection connection)
       throws SQLException {

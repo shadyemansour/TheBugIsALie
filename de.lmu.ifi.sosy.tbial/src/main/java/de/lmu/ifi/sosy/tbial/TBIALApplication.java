@@ -184,7 +184,9 @@ public class TBIALApplication extends WebApplication {
         for (User u : loggedInUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
+            ((SQLDatabase) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
             g.setHost(u);
+            g.setHostName(u.getName());
             break;
             //TODO add user not found
           }
@@ -211,7 +213,7 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("RoleProperty")) {
         String role = event.getNewValue().toString();
         ((SQLDatabase) database).setUserRole(id, role);
-      } else if (event.getPropertyName().equals("CharactertProperty")) {
+      } else if (event.getPropertyName().equals("CharacterProperty")) {
         String character = event.getNewValue().toString();
         ((SQLDatabase) database).setUserCharacter(id, character);
       }

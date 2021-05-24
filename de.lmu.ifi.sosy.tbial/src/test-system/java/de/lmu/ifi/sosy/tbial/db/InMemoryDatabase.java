@@ -86,8 +86,26 @@ public class InMemoryDatabase implements Database {
   }
 
   @Override
+  public void setGameHost(int id, String host) {
+    synchronized (games) {
+      for (Game game : games) {
+        if (id == game.getId()) {
+          User user = null;
+          for (User user1 : users) {
+            if (host.equals(user1.getName())) {
+              user = user1;
+            }
+          }
+          game.setHostName(host);
+          game.setHost(user);
+
+        }
+      }
+    }
+  }
+
+  @Override
   public void removeGame(int id) {
-    requireNonNull(id);
     synchronized (games) {
       for (int i = 0; i < games.size(); i++) {
         Game game = games.get(i);

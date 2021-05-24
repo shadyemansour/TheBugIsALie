@@ -140,45 +140,107 @@ div.nav a li label username {
 
 div.gameboard {
 	position: relative;
-	width: 800px;
-	height: 500px;
+	width: 1200px;
+	height: 850px;
 }
-div.player1 {
+div.playerTop {
 	position: absolute;
-	left: 300px;
-  	width: 200px;
-  	height: 100px;
+  	left: 400px;
+  	width: 400px;
+  	height: 200px;
   	border: 1px solid black;
 }
-div.player2 {
+div.playerTopLeft {
 	position: absolute;
-  	top: 200px;
-  	width: 200px;
-  	height: 100px;
+	left: 150px;
+  	width: 400px;
+  	height: 200px;
   	border: 1px solid black;
 }
-div.player3 {
+div.playerTopRight {
 	position: absolute;
-  	top: 200px;
-  	right: 0;
-  	width: 200px;
- 	height: 100px;
+	left: 650px;
+  	width: 400px;
+  	height: 200px;
+  	border: 1px solid black;
+}
+div.playerTopLeftThree {
+	position: absolute;
+	left: 0px;
+  	width: 400px;
+  	height: 200px;
+  	border: 1px solid black;
+}
+div.playerTopMiddleThree {
+	position: absolute;
+	left: 400px;
+  	width: 400px;
+  	height: 200px;
+  	border: 1px solid black;
+}
+div.playerTopRightThree {
+	position: absolute;
+	left: 800px;
+  	width: 400px;
+  	height: 200px;
+  	border: 1px solid black;
+}
+div.playerLeft {
+	position: absolute;
+  	top: 325px;
+    left: -100px;
+  	width: 400px;
+  	height: 200px;
+  	border: 1px solid black;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerRight {
+	position: absolute;
+  	top: 325px;
+  	right: -100px;
+  	width: 400px;
+ 	height: 200px;
 	border: 1px solid black;
+    transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
 }
-div.player4 {
+div.playerBottom {
 	position: absolute;
   	bottom: 0px;
-  	left: 300px;
-  	width: 200px;
-  	height: 100px;
+  	left: 400px;
+  	width: 400px;
+  	height: 200px;
+  	border: 1px solid black;
+}
+div.playerBottomLeft {
+	position: absolute;
+  	bottom: 0px;
+  	left: 150px;
+  	width: 400px;
+  	height: 200px;
+  	border: 1px solid black;
+}
+div.playerBottomRight {
+	position: absolute;
+  	bottom: 0px;
+  	left: 650px;
+  	width: 400px;
+  	height: 200px;
   	border: 1px solid black;
 }
 div.cards{
   	position: absolute;
-  	top: 200px;
-  	left: 300px;
-  	width: 200px;
-  	height: 100px;
+  	top: 325px;
+  	left: 450px;
+  	width: 300px;
+  	height: 200px;
   	border: 3px solid black;
 }
 

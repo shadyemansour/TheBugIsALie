@@ -76,7 +76,7 @@ public class SQLDatabase implements Database {
 
       if (result != null && result.next()) {
         int id = result.getInt(1);
-        User user = new User(id, name, password,null);
+        User user = new User(id, name, password, null);
         connection.commit();
         return user;
       } else {
@@ -89,10 +89,10 @@ public class SQLDatabase implements Database {
     }
   }
 
-  public void removeGame(int id){
-    try{
+  public void removeGame(int id) {
+    try {
       Connection connection = getConnection(false);
-      PreparedStatement insert = removeGameStatement(id,connection);
+      PreparedStatement insert = removeGameStatement(id, connection);
       insert.executeUpdate();
       connection.commit();
     } catch (SQLException ex) {
@@ -107,8 +107,8 @@ public class SQLDatabase implements Database {
     return removeGame;
   }
 
-  public void setUserGame(int id, String game){
-    try{
+  public void setUserGame(int id, String game) {
+    try {
       Connection connection = getConnection(false);
       PreparedStatement insert = updateUserGame(id, game, connection);
       insert.executeUpdate();
@@ -119,8 +119,8 @@ public class SQLDatabase implements Database {
   }
 
   @Override
-  public void setGameState(int id, String gameState){
-    try{
+  public void setGameState(int id, String gameState) {
+    try {
       Connection connection = getConnection(false);
       PreparedStatement insert = updateGameState(id, gameState, connection);
       insert.executeUpdate();
@@ -138,7 +138,7 @@ public class SQLDatabase implements Database {
 
       if (result != null && result.next()) {
         int id = result.getInt(1);
-        Game game = new Game(id,name, password, numplayers,gamestate,host);
+        Game game = new Game(id, name, password, numplayers, gamestate, host);
         game.setHost(getUser(host));
         game.addPlayer(getUser(host));
         connection.commit();
@@ -153,10 +153,11 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while creating game " + name, ex);
     }
   }
+
   @Override
   public Game getGame(String name) {
     try (Connection connection = getConnection();
-         PreparedStatement query = gameByNameQuery(name,connection);
+         PreparedStatement query = gameByNameQuery(name, connection);
          ResultSet result = query.executeQuery()) {
 
       return getGameFromResult(result);
@@ -164,6 +165,7 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while querying for games in DB.", e);
     }
   }
+
   public List<Game> getGames() {
     try (Connection connection = getConnection();
          PreparedStatement query = getGameQuery(connection);
@@ -181,40 +183,40 @@ public class SQLDatabase implements Database {
       String name = result.getString("NAME");
       String password = result.getString("PASSWORD");
       Game game = getGame(result.getString("GAME"));
-      return new User(id, name, password,game);
+      return new User(id, name, password, game);
     } else {
       return null;
     }
   }
-  
+
   private Game getGameFromResult(ResultSet result) throws SQLException {
     Game game = null;
-	  if (result.next()) {
-		  int id = result.getInt("ID");
-	      String name = result.getString("NAME");
-	      String host = result.getString("HOST");
-	      String password = result.getString("PASSWORD");
-	      String gamestate = result.getString("GAMESTATE");
-	      int numplayers = result.getInt("NUMPLAYERS");
-	      game = new Game(id, name, password, numplayers, gamestate, host);
-	    }
+    if (result.next()) {
+      int id = result.getInt("ID");
+      String name = result.getString("NAME");
+      String host = result.getString("HOST");
+      String password = result.getString("PASSWORD");
+      String gamestate = result.getString("GAMESTATE");
+      int numplayers = result.getInt("NUMPLAYERS");
+      game = new Game(id, name, password, numplayers, gamestate, host);
+    }
     return game;
   }
+
   private List<Game> getGamesFromResult(ResultSet result) throws SQLException {
     List<Game> games = new ArrayList<>();
-	  while (result.next()) {
-		  int id = result.getInt("ID");
-	      String name = result.getString("NAME");
-	      String host = result.getString("HOST");
-	      String password = result.getString("PASSWORD");
-	      String gamestate = result.getString("GAMESTATE");
-	      int numplayers = result.getInt("NUMPLAYERS");
-	      Game game = new Game(id, name, password, numplayers, gamestate, host);
-	      games.add(game);
-	    }
+    while (result.next()) {
+      int id = result.getInt("ID");
+      String name = result.getString("NAME");
+      String host = result.getString("HOST");
+      String password = result.getString("PASSWORD");
+      String gamestate = result.getString("GAMESTATE");
+      int numplayers = result.getInt("NUMPLAYERS");
+      Game game = new Game(id, name, password, numplayers, gamestate, host);
+      games.add(game);
+    }
     return games;
   }
-
 
 
   private Connection getConnection() throws SQLException {
@@ -228,14 +230,14 @@ public class SQLDatabase implements Database {
   }
 
   private PreparedStatement userByNameQuery(String name, Connection connection)
-          throws SQLException {
+      throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT * FROM USERS WHERE NAME=?");
     statement.setString(1, name);
     return statement;
   }
 
   private PreparedStatement gameByNameQuery(String name, Connection connection)
-          throws SQLException {
+      throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT * FROM GAMES WHERE NAME=?");
     statement.setString(1, name);
     return statement;
@@ -251,25 +253,27 @@ public class SQLDatabase implements Database {
   }
 
   private PreparedStatement insertUserStatement(String name, String password, Connection connection)
-          throws SQLException {
+      throws SQLException {
     PreparedStatement insertUser;
     insertUser =
-            connection.prepareStatement(
-                    "INSERT INTO USERS (NAME, PASSWORD, GAME) VALUES (?,?,NULL)", Statement.RETURN_GENERATED_KEYS);
+        connection.prepareStatement(
+            "INSERT INTO USERS (NAME, PASSWORD, GAME) VALUES (?,?,NULL)", Statement.RETURN_GENERATED_KEYS);
     insertUser.setString(1, name);
     insertUser.setString(2, password);
     return insertUser;
   }
+
   private PreparedStatement updateGameState(int id, String gameState, Connection connection)
-          throws SQLException {
+      throws SQLException {
     PreparedStatement updateGameState;
     updateGameState = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
     updateGameState.setString(1, gameState);
     updateGameState.setInt(2, id);
     return updateGameState;
   }
+
   private PreparedStatement updateUserGame(int id, String game, Connection connection)
-          throws SQLException {
+      throws SQLException {
     PreparedStatement updateUserGame;
     updateUserGame = connection.prepareStatement("UPDATE USERS SET GAME = ? WHERE ID = ?");
     updateUserGame.setString(1, game);
@@ -278,7 +282,7 @@ public class SQLDatabase implements Database {
   }
 
   private PreparedStatement insertGameStatement(String name, String host, String password, String gamestate, Integer numplayers, Connection connection)
-          throws SQLException {
+      throws SQLException {
     PreparedStatement insertGame;
     insertGame = connection.prepareStatement("INSERT INTO GAMES (NAME, HOST, PASSWORD, GAMESTATE, NUMPLAYERS) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
     insertGame.setString(1, name);
@@ -294,8 +298,9 @@ public class SQLDatabase implements Database {
     return statement;
   }
 
-  public void setUserPrestige(int id, int prestige){
-    try{
+  @Override
+  public void setUserPrestige(int id, int prestige) {
+    try {
       Connection connection = getConnection(false);
       PreparedStatement insert = updateUserPrestige(id, prestige, connection);
       insert.executeUpdate();
@@ -314,7 +319,8 @@ public class SQLDatabase implements Database {
     return updateUserPrestige;
   }
 
-  public int getPrestige(int id) {
+  @Override
+  public int getUserPrestige(int id) {
     Objects.requireNonNull(id, "id is null");
 
     try (Connection connection = getConnection();
@@ -326,12 +332,14 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while querying for user in DB.", e);
     }
   }
+
   private PreparedStatement getPrestigeQuery(int id, Connection connection)
       throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT PRESTIGE FROM USERS WHERE ID=?");
     statement.setInt(1, id);
     return statement;
   }
+
   private int getPrestigeFromResult(ResultSet result) throws SQLException {
     if (result.next()) {
       int prestige = result.getInt("PRESTIGE");
@@ -342,10 +350,11 @@ public class SQLDatabase implements Database {
     }
   }
 
-  public void setUserHealth(int id, int health){
-    try{
+  @Override
+  public void setUserHealth(int id, int health) {
+    try {
       Connection connection = getConnection(false);
-      PreparedStatement insert = updateUserPrestige(id, health, connection);
+      PreparedStatement insert = updateUserHealth(id, health, connection);
       insert.executeUpdate();
       connection.commit();
     } catch (SQLException ex) {
@@ -362,7 +371,8 @@ public class SQLDatabase implements Database {
     return updateUserHealth;
   }
 
-  public int getHealth(int id) {
+  @Override
+  public int getUserHealth(int id) {
     Objects.requireNonNull(id, "id is null");
 
     try (Connection connection = getConnection();
@@ -374,12 +384,14 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while querying for user in DB.", e);
     }
   }
+
   private PreparedStatement getHealthQuery(int id, Connection connection)
       throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT HEALTH FROM USERS WHERE ID=?");
     statement.setInt(1, id);
     return statement;
   }
+
   private int getHealthFromResult(ResultSet result) throws SQLException {
     if (result.next()) {
       int health = result.getInt("HEALTH");
@@ -390,8 +402,9 @@ public class SQLDatabase implements Database {
     }
   }
 
-  public void setUserRole(int id, String role){
-    try{
+  @Override
+  public void setUserRole(int id, String role) {
+    try {
       Connection connection = getConnection(false);
       PreparedStatement insert = updateUserRole(id, role, connection);
       insert.executeUpdate();
@@ -410,7 +423,8 @@ public class SQLDatabase implements Database {
     return updateUserRole;
   }
 
-  public String getRole(int id) {
+  @Override
+  public String getUserRole(int id) {
     Objects.requireNonNull(id, "id is null");
 
     try (Connection connection = getConnection();
@@ -422,12 +436,14 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while querying for user in DB.", e);
     }
   }
+
   private PreparedStatement getRoleQuery(int id, Connection connection)
       throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT ROLE FROM USERS WHERE ID=?");
     statement.setInt(1, id);
     return statement;
   }
+
   private String getRoleFromResult(ResultSet result) throws SQLException {
     if (result.next()) {
       String role = result.getString("ROLE");
@@ -438,8 +454,9 @@ public class SQLDatabase implements Database {
     }
   }
 
-  public void setUserCharacter(int id, String charachter){
-    try{
+  @Override
+  public void setUserCharacter(int id, String charachter) {
+    try {
       Connection connection = getConnection(false);
       PreparedStatement insert = updateUserCharacter(id, charachter, connection);
       insert.executeUpdate();
@@ -458,11 +475,12 @@ public class SQLDatabase implements Database {
     return updateUserCharacter;
   }
 
-  public String getCharacter(int id) {
+  @Override
+  public String getUserCharacter(int id) {
     Objects.requireNonNull(id, "id is null");
 
     try (Connection connection = getConnection();
-         PreparedStatement query = getPrestigeQuery(id, connection);
+         PreparedStatement query = getCharacterQuery(id, connection);
          ResultSet result = query.executeQuery()) {
 
       return getCharacterFromResult(result);
@@ -470,12 +488,14 @@ public class SQLDatabase implements Database {
       throw new DatabaseException("Error while querying for user in DB.", e);
     }
   }
+
   private PreparedStatement getCharacterQuery(int id, Connection connection)
       throws SQLException {
     PreparedStatement statement = connection.prepareStatement("SELECT CHARACT FROM USERS WHERE ID=?");
     statement.setInt(1, id);
     return statement;
   }
+
   private String getCharacterFromResult(ResultSet result) throws SQLException {
     if (result.next()) {
       String charachter = result.getString("CHARACT");

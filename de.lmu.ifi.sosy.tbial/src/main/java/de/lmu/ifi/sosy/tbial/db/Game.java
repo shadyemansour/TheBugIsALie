@@ -250,7 +250,9 @@ public class Game implements Serializable {
 	}
 
 	public void setHost(User host) {
+
 		this.host = host;
+		setHostName(host.getName());
 	}
 
 	public int getPlayersTurn() {

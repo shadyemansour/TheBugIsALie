@@ -155,9 +155,13 @@ public class Lobby extends BasePage {
             CardPanel cardPanel4 = new CardPanel("card-panel4", Model.of(card4));
             add(cardPanel4);
             
-            Card card5 = new Card("StumblingBlock", "Off-The-Job-Training", null, "Stumbling Block", "Not for manager.\nCannot play this turn.\n0.25 chance to deflect", true, true);
+            Card card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true);
             CardPanel cardPanel5 = new CardPanel("card-panel5", Model.of(card5));
             add(cardPanel5);
+            
+            Card card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, false);
+            CardPanel cardPanel6 = new CardPanel("card-panel6", Model.of(card6));
+            add(cardPanel6);
 
         }
     };

@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -17,15 +18,17 @@ public class CardPanel extends Panel {
 	Card card;
 
 	public CardPanel(String id, IModel<Card> cardModel) {
-//		super(id, cardModel);
-//		IModel<Card> compound = new CompoundPropertyModel<Card>(cardModel);
-//		card = cardModel.getObject();
-//		add(new Label("bottomDesc", card.getBottomDesc()));
-		
 		super(id, new CompoundPropertyModel<Card>(cardModel));
 		
+		WebMarkupContainer frame = new WebMarkupContainer("frame");
+		add(frame);
 		WebMarkupContainer border = new WebMarkupContainer("border");
-		add(border);
+		frame.add(border);
+		
+		if (!cardModel.getObject().isVisible()) {
+			frame.add(new AttributeModifier("id", "card-back"));
+		}
+		
 		String color;
 		Boolean makeMiddleBold = false;
 		switch (cardModel.getObject().getType()) {
@@ -63,9 +66,3 @@ public class CardPanel extends Panel {
 	}
 
 }
-
-//, 
-//String type, // defines color
-//String title, // bold printed title of the card
-//String middleDesc,
-//String bottomDesc

@@ -72,6 +72,8 @@ public abstract class BasePage extends WebPage {
       usernameMDL.setObject("Logged in as " + ((TBIALSession)getSession()).getUser().getName());
       username.setVisible(true);
     }
+    
+    
 
   }
 

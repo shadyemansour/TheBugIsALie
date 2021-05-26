@@ -69,8 +69,19 @@ public class TBIALApplication extends WebApplication {
     initMarkupSettings();
     initPageMounts();
     initAuthorization();
-    // initExceptionHandling();
-    getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
+    //initExceptionHandling();
+//    getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
+//    ServerContainer serverContainer;
+//    try {
+//      serverContainer = WebSocketServerContainerInitializer.configureContext(bb);
+//      serverContainer.addEndpoint(new WicketServerEndpointConfig());
+//    } catch (ServletException e1) {
+//      // TODO Auto-generated catch block
+//      e1.printStackTrace();
+//    } catch (DeploymentException e2) {
+//      // TODO Auto-generated catch block
+//      e2.printStackTrace();
+//    }
   }
 
   private void initMarkupSettings() {

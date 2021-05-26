@@ -13,15 +13,16 @@ public class BugWebSocketResource extends WebSocketResource {
     public static final String NAME = BugWebSocketResource.class.getName();
 
     @Override
-    protected void onConnect(ConnectedMessage message)
-    {
+    protected void onConnect(ConnectedMessage message) {
         super.onConnect(message);
 
-        Updater.start(message);
+        Updater.start();
     }
+
     @Override
     protected void onMessage(WebSocketRequestHandler handler, TextMessage message) {
         String msg = message.getText();
+
 
     }
 }

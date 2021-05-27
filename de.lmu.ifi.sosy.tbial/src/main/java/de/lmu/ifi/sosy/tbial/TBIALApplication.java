@@ -16,8 +16,6 @@ import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.ws.WebSocketSettings;
-import org.apache.wicket.protocol.ws.api.IWebSocketConnection;
-import org.apache.wicket.protocol.ws.api.registry.IWebSocketConnectionRegistry;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
@@ -71,11 +69,19 @@ public class TBIALApplication extends WebApplication {
     initMarkupSettings();
     initPageMounts();
     initAuthorization();
-    // initExceptionHandling();
-    getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
-    final WebSocketSettings webSocketSettings = WebSocketSettings.Holder.get(this);
- //   webSocketSettings.setPort(8000);
- //   webSocketSettings.setSecurePort(8443);
+    //initExceptionHandling();
+//    getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
+//    ServerContainer serverContainer;
+//    try {
+//      serverContainer = WebSocketServerContainerInitializer.configureContext(bb);
+//      serverContainer.addEndpoint(new WicketServerEndpointConfig());
+//    } catch (ServletException e1) {
+//      // TODO Auto-generated catch block
+//      e1.printStackTrace();
+//    } catch (DeploymentException e2) {
+//      // TODO Auto-generated catch block
+//      e2.printStackTrace();
+//    }
   }
 
   private void initMarkupSettings() {
@@ -141,6 +147,8 @@ public class TBIALApplication extends WebApplication {
   }
 
   public void userLoggedIn(final User pUser) {
+    UserListener listener = new UserListener();
+    pUser.addPropertyChangeListener(listener);
     loggedInUsers.add(pUser);
   }
 
@@ -187,7 +195,9 @@ public class TBIALApplication extends WebApplication {
         for (User u : loggedInUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
+            ((SQLDatabase) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
             g.setHost(u);
+            g.setHostName(u.getName());
             break;
             //TODO add user not found
           }
@@ -196,6 +206,27 @@ public class TBIALApplication extends WebApplication {
         Game game = (Game) event.getNewValue();
         removeGame(game);
         ((SQLDatabase) database).removeGame(game.getId());
+      }
+    }
+  }
+
+  public class UserListener implements PropertyChangeListener {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      int id = Integer.parseInt(event.getOldValue().toString());
+
+      if (event.getPropertyName().equals("PrestigeProperty")) {
+        int prestige = Integer.parseInt(event.getNewValue().toString());
+        ((SQLDatabase) database).setUserPrestige(id, prestige);
+      } else if (event.getPropertyName().equals("HealthProperty")) {
+        int health = Integer.parseInt(event.getNewValue().toString());
+        ((SQLDatabase) database).setUserHealth(id, health);
+      } else if (event.getPropertyName().equals("RoleProperty")) {
+        String role = event.getNewValue().toString();
+        ((SQLDatabase) database).setUserRole(id, role);
+      } else if (event.getPropertyName().equals("CharacterProperty")) {
+        String character = event.getNewValue().toString();
+        ((SQLDatabase) database).setUserCharacter(id, character);
       }
     }
   }

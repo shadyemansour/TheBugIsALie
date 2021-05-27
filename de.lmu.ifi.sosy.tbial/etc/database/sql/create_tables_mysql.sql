@@ -6,7 +6,11 @@ CREATE TABLE USERS (
                        NAME VARCHAR(255) NOT NULL,
                        PASSWORD VARCHAR(255) NOT NULL,
                        GAME VARCHAR(255),
-                       /*FOREIGN KEY (GAME) REFERENCES GAMES(NAME),*/
+                       PRESTIGE INT,
+                       HEALTH INT,
+                       ROLE VARCHAR(255),
+                       CHARACT VARCHAR(255),
+                           /*FOREIGN KEY (GAME) REFERENCES GAMES(NAME),*/
                        CONSTRAINT NAME_IS_UNIQUE UNIQUE KEY NAME);
 
 

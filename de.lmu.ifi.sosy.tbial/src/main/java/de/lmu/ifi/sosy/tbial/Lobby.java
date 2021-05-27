@@ -7,6 +7,7 @@ import de.lmu.ifi.sosy.tbial.db.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,11 +15,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -33,6 +36,11 @@ import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -139,7 +147,10 @@ public class Lobby extends BasePage {
             
 //            PropertyModel<Card> cardModel = new PropertyModel<Card>(children, id);
 //            CardPanel card = new CardPanel("card-panel", cardModel);
-            Card card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true);
+//            WebMarkupContainer cardtest = new WebMarkupContainer("cardtestcontainer");
+//            add(cardtest);
+            
+            Card card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, false);
             CardPanel cardPanel1 = new CardPanel("card-panel1", new Model<Card>(card1));
             add(cardPanel1);
             
@@ -148,20 +159,146 @@ public class Lobby extends BasePage {
             add(cardPanel2);
             
             Card card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true);
+            card3.setVisible(!card3.isVisible());
             CardPanel cardPanel3 = new CardPanel("card-panel3", Model.of(card3));
             add(cardPanel3);
             
             Card card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true);
-            CardPanel cardPanel4 = new CardPanel("card-panel4", Model.of(card4));
+            CardPanel cardPanel4 = new CardPanel("card-panel4", new CompoundPropertyModel<Card>(card4));
             add(cardPanel4);
             
             Card card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true);
             CardPanel cardPanel5 = new CardPanel("card-panel5", Model.of(card5));
             add(cardPanel5);
             
-            Card card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, false);
+            Card card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true);
             CardPanel cardPanel6 = new CardPanel("card-panel6", Model.of(card6));
             add(cardPanel6);
+            
+            cardPanel4.add(new AjaxEventBehavior("click") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected void onEvent(AjaxRequestTarget target) {
+//								card4.setVisible(!card4.isVisible());
+//								card4.setTitle("Title");
+								cardPanel4.setDefaultModel(Model.of(card3));
+								target.add(cardPanel4);
+							}
+							
+						});
+            
+//            add(new Link("visibilitybutton") {
+//              public void onClick() {
+//                  // do nothing.
+//								System.out.println("pressed");
+//              }
+//
+//							@Override
+//							public MarkupContainer setDefaultModel(IModel model) {
+//								// TODO Auto-generated method stub
+//								return null;
+//							}
+//            });
+            
+            AjaxLink<?> visibilityButton = new AjaxLink<>("visibilitybutton") {
+
+							/**
+							 * 
+							 */
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							public void onClick(AjaxRequestTarget target) {
+								// TODO Auto-generated method stub
+//								card4.setVisible(!isVisible());
+								System.out.println(card4.isVisible());
+								card4.setVisible(!card4.isVisible());
+								card4.setTitle("Title");
+								
+							}
+            	
+            };
+            add(visibilityButton);
+            
+            List<IModel<Card>> cardModels = new ArrayList<IModel<Card>>();
+            cardModels.add(Model.of(card1));
+            cardModels.add(Model.of(card2));
+            cardModels.add(Model.of(card3));
+            cardModels.add(Model.of(card4));
+            cardModels.add(Model.of(card5));
+            cardModels.add(Model.of(card6));
+            
+            List<Card> cards = new ArrayList<Card>();
+            cards.add(card1);
+            cards.add(card2);
+            cards.add(card3);
+            cards.add(card4);
+            cards.add(card5);
+            cards.add(card6);
+            
+            RefreshingView<Card> cardsView = new RefreshingView<Card>("cardpanels") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected Iterator<IModel<Card>> getItemModels() {
+								return cardModels.iterator();
+							}
+
+							@Override
+							protected void populateItem(Item<Card> item) {
+								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+								item.add(new AjaxEventBehavior("click") {
+									private static final long serialVersionUID = 1L;
+
+									@Override
+									protected void onEvent(AjaxRequestTarget target) {
+										item.getModelObject().setVisible(false);
+										item.getModelObject().setTitle("new title");
+										target.add(item);
+									}
+								});
+							}
+            	
+            };
+            cardsView.setOutputMarkupId(true);
+            add(cardsView);
+            
+            RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected Iterator<IModel<Card>> getItemModels() {
+								return cardModels.iterator();
+							}
+
+							@Override
+							protected void populateItem(Item<Card> item) {
+								double rotation = Math.random() * 30 + 1;
+								item.add(new AttributeAppender("style", "transform: rotate(" + rotation + "deg);"));
+								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+							}
+            	
+            };
+            heap.setOutputMarkupId(true);
+            add(heap);
+            
+//            RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
+//							private static final long serialVersionUID = 1L;
+//
+//							@Override
+//							protected Iterator<IModel<Card>> getItemModels() {
+//								return cardModels.iterator();
+//							}
+//
+//							@Override
+//							protected void populateItem(Item<Card> item) {
+//								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+//							}
+//            	
+//            };
+//            stack.setOutputMarkupId(true);
+//            add(stack);
 
         }
     };

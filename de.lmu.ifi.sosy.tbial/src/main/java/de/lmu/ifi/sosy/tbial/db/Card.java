@@ -32,6 +32,10 @@ public class Card implements Serializable {
     public String getType() {
         return type;
     }
+    
+    public void setTitle(String title ) {
+    	this.title = title;
+    }
 
     public String getTitle(){
         return title;

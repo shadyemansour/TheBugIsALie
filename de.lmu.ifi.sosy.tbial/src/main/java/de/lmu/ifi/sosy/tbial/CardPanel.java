@@ -15,10 +15,13 @@ public class CardPanel extends Panel {
  	/** UID for serialization. */
 	private static final long serialVersionUID = 1L;
 	
-	Card card;
+	IModel<Card> cardModel;
 
 	public CardPanel(String id, IModel<Card> cardModel) {
 		super(id, new CompoundPropertyModel<Card>(cardModel));
+		setOutputMarkupId(true);
+//		setDefaultModelObject(cardModel);
+		this.cardModel = cardModel;
 		
 		WebMarkupContainer frame = new WebMarkupContainer("frame");
 		add(frame);
@@ -63,6 +66,16 @@ public class CardPanel extends Panel {
 		}
 		border.add(middleDesc);
 		border.add(new Label("bottomDesc"));
+	}
+	
+	protected void onModelChanged() {
+		System.out.println("onModelChanged");
+		WebMarkupContainer frame = new WebMarkupContainer("frame");
+		add(frame);
+		
+		if (!cardModel.getObject().isVisible()) {
+			frame.add(new AttributeModifier("id", "card-back"));
+		}
 	}
 
 }

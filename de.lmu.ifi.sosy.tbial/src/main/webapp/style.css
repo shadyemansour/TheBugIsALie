@@ -611,12 +611,24 @@ pre.boxed {
 	border: solid 2px #ff6600;
 }
 
+.heap {
+	position: relative;
+	height: 200px;
+	width: 200px;
+	background: lightgray;
+}
+
+.heap .card-heap {
+	position: absolute;
+}
+
 #card {
 	height: 70px;
 	width: 50px;
 	border: 1px solid;
 	border-radius: 5px;
 	text-align: center;
+	background: white;
 }
 
 #card:hover {

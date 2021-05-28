@@ -613,44 +613,79 @@ pre.boxed {
 
 .heap {
 	position: relative;
-	height: 200px;
-	width: 200px;
+	height: 160px;
+	width: 120px;
 	background: lightgray;
 }
 
-.heap .card-heap {
+.card-heap {
 	position: absolute;
+    left: 35px; 
+    top: 45px;
+}
+
+.stack {
+	position: relative;
+	height: 160px;
+	width: 120px;
+	background: gray;
+}
+
+.card-stack {
+	position: absolute;
+    left: 35px; 
+    top: 45px;
+}
+
+#relPos {
+	position: relative;
+	width: 50px;
+	height: 70px;
 }
 
 #card {
+	position: absolute;
+	left: 0px;
+	top: 0px;
 	height: 70px;
 	width: 50px;
 	border: 1px solid;
 	border-radius: 5px;
 	text-align: center;
 	background: white;
+  	transition: 0.3s;
 }
 
 #card:hover {
-	height: 210px;
-	width: 150px;
+	z-index: 1;
+	left: -25px;
+	top: -35px;
+	height: 140px;
+	width: 100px;
 	border: 1px solid;
 	border-radius: 10px;
 	text-align: center;
 }
 
 #card-back {
+	position: absolute;
+	left: 0px;
+	top: 0px;
 	height: 70px;
 	width: 50px;
 	border: 1px solid;
 	border-radius: 5px;
 	text-align: center;
 	background: radial-gradient(lightgreen, green);
+  	transition: 0.3s;
 }
 
 #card-back:hover {
-	height: 210px;
-	width: 150px;
+	z-index: 1;
+	left: -25px;
+	top: -35px;
+	height: 140px;
+	width: 100px;
 	border: 1px solid;
 	border-radius: 10px;
 	text-align: center;
@@ -664,19 +699,20 @@ pre.boxed {
 	border: 5px solid;
 	border-radius: 5px;
 	padding: 0px;
-	font-size: 12px;
+	font-size: 4px;
 	overflow: hidden;
+  	transition: all 0.3s ease;
 }
 
 #card:hover .card-border {
 	display: flex;
 	flex-direction: column;
-	height: 180px;
-	width: 120px;
-	border: 10px solid;
+	height: 126px;
+	width: 86px;
+	border: 5px solid;
 	border-radius: 10px;
-	padding: 5px;
-	font-size: 12px;
+	padding: 2px;
+	font-size: 8px;
 }
 
 #card-back .card-border {
@@ -693,13 +729,13 @@ pre.boxed {
 #card:hover .card-title {
 	flex-grow: 1;
 	font-weight: normal;
-	font-size: 20px;
+	font-size: 10px;
 	/*background: lightgray; */
 }
 
-#card-back .card-title {
+/* #card-back .card-title {
 	display: none;
-}
+} */
 
 #card .card-sub-title {
 	/*background: aquamarine;*/
@@ -711,9 +747,9 @@ pre.boxed {
 	visibility: visible;
 }
 
-#card-back .card-sub-title {
+/* #card-back .card-sub-title {
 	display: none;
-}
+} */
 
 #card .card-middle-desc {
 	flex-grow: 20;
@@ -733,9 +769,9 @@ pre.boxed {
   	visibility: visible;
 }
 
-#card-back .card-middle-desc {
+/* #card-back .card-middle-desc {
 	display: none;
-}
+} */
 
 #card .card-bottom-desc {
 	flex-grow: 1;
@@ -749,6 +785,6 @@ pre.boxed {
 	visibility: visible;
 }
 
-#card-back .card-bottom-desc {
+/* #card-back .card-bottom-desc {
 	display: none;
-}
+} */

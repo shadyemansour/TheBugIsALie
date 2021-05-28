@@ -264,6 +264,9 @@ public class Lobby extends BasePage {
             cardsView.setOutputMarkupId(true);
             add(cardsView);
             
+            /*
+             * heap
+             */
             RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
 							private static final long serialVersionUID = 1L;
 
@@ -275,7 +278,8 @@ public class Lobby extends BasePage {
 							@Override
 							protected void populateItem(Item<Card> item) {
 								double rotation = Math.random() * 30 + 1;
-								item.add(new AttributeAppender("style", "transform: rotate(" + rotation + "deg);"));
+								double direction = Math.random() > 0.5 ? 1 : -1;
+								item.add(new AttributeAppender("style", "transform: rotate(" + (direction * rotation) + "deg);"));
 								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
 							}
             	
@@ -283,22 +287,31 @@ public class Lobby extends BasePage {
             heap.setOutputMarkupId(true);
             add(heap);
             
-//            RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
-//							private static final long serialVersionUID = 1L;
-//
-//							@Override
-//							protected Iterator<IModel<Card>> getItemModels() {
-//								return cardModels.iterator();
-//							}
-//
-//							@Override
-//							protected void populateItem(Item<Card> item) {
-//								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-//							}
-//            	
-//            };
-//            stack.setOutputMarkupId(true);
-//            add(stack);
+            /*
+             * stack
+             */
+            RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected Iterator<IModel<Card>> getItemModels() {
+								return cardModels.iterator();
+							}
+							
+							int posLeft = 35 - cardModels.size();
+							int posTop = 45 - cardModels.size();
+
+							@Override
+							protected void populateItem(Item<Card> item) {
+								item.add(new AttributeAppender("style", "left: " + posLeft + "px; top: " + posTop + "px;"));
+								posLeft += 2;
+								posTop += 2;
+								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+							}
+            	
+            };
+            stack.setOutputMarkupId(true);
+            add(stack);
 
         }
     };

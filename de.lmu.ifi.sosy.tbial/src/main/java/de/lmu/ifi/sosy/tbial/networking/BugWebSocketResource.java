@@ -23,6 +23,5 @@ public class BugWebSocketResource extends WebSocketResource {
     protected void onMessage(WebSocketRequestHandler handler, TextMessage message) {
         String msg = message.getText();
 
-
     }
 }

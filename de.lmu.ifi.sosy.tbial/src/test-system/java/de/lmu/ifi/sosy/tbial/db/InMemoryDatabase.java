@@ -59,7 +59,7 @@ public class InMemoryDatabase implements Database {
     synchronized (games) {
       for (Game game : games) {
         if (id == game.getId()) {
-          game.setGameState(gameState);
+          game.setGameStateInMemoryDatabase(gameState);
         }
       }
     }
@@ -103,7 +103,7 @@ public class InMemoryDatabase implements Database {
     synchronized (users) {
       for (User user : users) {
         if (id == user.getId()) {
-          user.setPrestige(pre);
+          user.setPrestigeInMemoryDatabase(pre);
         }
       }
     }
@@ -127,7 +127,7 @@ public class InMemoryDatabase implements Database {
     synchronized (users) {
       for (User user : users) {
         if (id == user.getId()) {
-          user.setHealth(health);
+          user.setHealthInMemoryDatabase(health);
         }
       }
     }
@@ -150,7 +150,7 @@ public class InMemoryDatabase implements Database {
     synchronized (users) {
       for (User user : users) {
         if (id == user.getId()) {
-          user.setRole(role);
+          user.setRoleInMemoryDatabase(role);
         }
       }
     }
@@ -174,7 +174,7 @@ public class InMemoryDatabase implements Database {
     synchronized (users) {
       for (User user : users) {
         if (id == user.getId()) {
-          user.setCharacter(character);
+          user.setCharacterInMemoryDatabase(character);
         }
       }
     }
@@ -189,6 +189,41 @@ public class InMemoryDatabase implements Database {
         }
       }
       return null;
+    }
+  }
+
+  @Override
+  public Game createGame(String name, String host, String password, String gamestate, int numplayers) {
+    Game game = new Game(games.size(), name, password, numplayers, gamestate, host);
+    synchronized (games) {
+      games.add(game);
+    }
+    return game;
+  }
+
+  @Override
+  public List<Game> getGames() {
+    return games;
+  }
+
+  @Override
+  public void setUserGame(int id, String name) {
+    Game game1 = null;
+    if (!name.equals("NULL")) {
+      synchronized (games) {
+        for (Game game : games) {
+          if (name == game.getName()) {
+            game1 = game;
+          }
+        }
+      }
+    }
+    synchronized (users) {
+      for (User user : users) {
+        if (id == user.getId()) {
+          user.setGame(game1);
+        }
+      }
     }
   }
 }

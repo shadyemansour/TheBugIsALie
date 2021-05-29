@@ -107,6 +107,10 @@ public class User implements Serializable {
 
   }
 
+  public void setPrestigeInMemoryDatabase(int prestige) {
+    this.prestige = prestige;
+  }
+
   public int getPrestige() {
     return prestige;
   }
@@ -114,6 +118,10 @@ public class User implements Serializable {
   public void setHealth(int health) {
     this.health = health;
     propertyChangeSupport.firePropertyChange("HealthProperty", id, health);
+  }
+
+  public void setHealthInMemoryDatabase(int health) {
+    this.health = health;
   }
 
   public int getHealth() {
@@ -130,6 +138,11 @@ public class User implements Serializable {
 
   }
 
+  public void setRoleInMemoryDatabase(String role) {
+    this.role = role;
+
+  }
+
   public String getCharacter() {
     return character;
   }
@@ -138,6 +151,10 @@ public class User implements Serializable {
     this.character = character;
     propertyChangeSupport.firePropertyChange("CharacterProperty", id, character);
 
+  }
+
+  public void setCharacterInMemoryDatabase(String character) {
+    this.character = character;
   }
 
   public void setHand(List<Card> hand) {

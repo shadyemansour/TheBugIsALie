@@ -44,6 +44,56 @@ public class LobbyTest extends PageTestBase {
   }
 
   @Test
+  public void getUserAttsAfterSet() {
+    int id = getSession().getUser().getId();
+    int prestige = 10;
+    int health = 100;
+    String charachter = "John Doe";
+    String role = "testRole";
+    database.setUserPrestige(id, prestige);
+    database.setUserHealth(id, health);
+    database.setUserRole(id, role);
+    database.setUserCharacter(id, charachter);
+    int newPrestige = database.getUserPrestige(id);
+    int newHealth = database.getUserHealth(id);
+    String newRole = database.getUserRole(id);
+    String newCharacter = database.getUserCharacter(id);
+
+    assertEquals(prestige, newPrestige);
+    assertEquals(health, newHealth);
+    assertEquals(role, newRole);
+    assertEquals(charachter, newCharacter);
+  }
+
+  @Test
+  public void getUserAttsReturnNullsUserFound() {
+    int id = getSession().getUser().getId();
+    int newPrestige = database.getUserPrestige(id);
+    int newHealth = database.getUserHealth(id);
+    String newRole = database.getUserRole(id);
+    String newCharacter = database.getUserCharacter(id);
+
+    assertEquals(-1, newPrestige);
+    assertEquals(-1, newHealth);
+    assertEquals(null, newRole);
+    assertEquals(null, newCharacter);
+  }
+
+  @Test
+  public void getUserAttsReturnNullsUsernotFound() {
+    int id = -1;
+    int newPrestige = database.getUserPrestige(id);
+    int newHealth = database.getUserHealth(id);
+    String newRole = database.getUserRole(id);
+    String newCharacter = database.getUserCharacter(id);
+
+    assertEquals(-1, newPrestige);
+    assertEquals(-1, newHealth);
+    assertEquals(null, newRole);
+    assertEquals(null, newCharacter);
+  }
+
+  @Test
   public void testGameCreation() {
     tester.assertRenderedPage(Lobby.class);
     WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("2");

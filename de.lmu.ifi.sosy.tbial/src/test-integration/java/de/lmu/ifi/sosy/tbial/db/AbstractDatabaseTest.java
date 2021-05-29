@@ -211,5 +211,24 @@ public abstract class AbstractDatabaseTest {
     assertEquals(charachter, newCharacter);
   }
 
+  @Test(expected = DatabaseException.class)
+  public void getUserCharachterUsernotFound() {
+    database.getUserCharacter(-1);
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void getUserRoleUsernotFound() {
+    database.getUserRole(-1);
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void getUserHealthUsernotFound() {
+    database.getUserCharacter(-1);
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void getUserPrestigeUsernotFound() {
+    database.getUserCharacter(-1);
+  }
 
 }

@@ -211,7 +211,7 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("RoleProperty")) {
         String role = event.getNewValue().toString();
         ((Database) database).setUserRole(id, role);
-      } else if (event.getPropertyName().equals("CharactertProperty")) {
+      } else if (event.getPropertyName().equals("CharacterProperty")) {
         String character = event.getNewValue().toString();
         ((Database) database).setUserCharacter(id, character);
       }

@@ -346,7 +346,7 @@ public class SQLDatabase implements Database {
 
       return prestige;
     } else {
-      return -1;
+      throw new SQLException();
     }
   }
 
@@ -378,7 +378,6 @@ public class SQLDatabase implements Database {
     try (Connection connection = getConnection();
          PreparedStatement query = getHealthQuery(id, connection);
          ResultSet result = query.executeQuery()) {
-
       return getHealthFromResult(result);
     } catch (SQLException e) {
       throw new DatabaseException("Error while querying for user in DB.", e);
@@ -398,7 +397,7 @@ public class SQLDatabase implements Database {
 
       return health;
     } else {
-      return -1;
+      throw new SQLException();
     }
   }
 
@@ -430,7 +429,6 @@ public class SQLDatabase implements Database {
     try (Connection connection = getConnection();
          PreparedStatement query = getRoleQuery(id, connection);
          ResultSet result = query.executeQuery()) {
-
       return getRoleFromResult(result);
     } catch (SQLException e) {
       throw new DatabaseException("Error while querying for user in DB.", e);
@@ -450,7 +448,7 @@ public class SQLDatabase implements Database {
 
       return role;
     } else {
-      return null;
+      throw new SQLException();
     }
   }
 
@@ -502,7 +500,7 @@ public class SQLDatabase implements Database {
 
       return charachter;
     } else {
-      return "";
+      throw new SQLException();
     }
   }
 

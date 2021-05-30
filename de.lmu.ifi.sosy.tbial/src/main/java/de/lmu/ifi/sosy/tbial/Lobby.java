@@ -49,8 +49,6 @@ public class Lobby extends BasePage {
     protected final AbstractTab tab2;
     protected final AbstractTab tab3;
     protected final AbstractTab tab4;
-    
-   
     protected final List<ITab> tabs;
     protected final AjaxTabbedPanel<ITab> tabbedPanel;
     /**
@@ -93,8 +91,6 @@ public class Lobby extends BasePage {
                 return new TabPanel4(panelId);
             }
         };
-        
-        
         tabs.add(tab1);
         tabs.add(tab2);
         if (!((TBIALSession) getSession()).getUser().getJoinedGame()) {
@@ -108,7 +104,9 @@ public class Lobby extends BasePage {
         tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
         add(tabbedPanel);
     }
-    
+
+
+
     private class TabPanel1 extends Panel {
     	 	/** UID for serialization. */
       	private static final long serialVersionUID = 1L;
@@ -149,7 +147,7 @@ public class Lobby extends BasePage {
 
         public TabPanel2(String id) {
             super(id);
-           
+
             add(new FeedbackPanel("feedback"));
 
             IModel<List<Game>> gameModel =
@@ -164,7 +162,6 @@ public class Lobby extends BasePage {
                     listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
                     listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected()  ? "Public" : "Private"));
-                    
                     listItem.add(new Link<>("joinGame") {
                     	 	/** UID for serialization. */
                     		private static final long serialVersionUID = 1L;
@@ -181,49 +178,10 @@ public class Lobby extends BasePage {
                                 tabbedPanel.setSelectedTab(2);
 
                             } else {
-                            	
-                            	
-                            		TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
-                            			"Do you want to leave the current game and join a new game?"){
-                            		
-                            			private static final long serialVersionUID = 1L;
-                            		
-                            			@Override
-                            			protected void onCancel() {
-                                    this.replaceWith(TabPanel2.this);
-                            			}
-                     
-                            			@Override
-                            			protected void onConfirm() {
-                                	
-                            				Game currentGame = user.getGame();
-                            				Game newGame = listItem.getModelObject();
-                                  
-                           
-                                  
-                            				if(currentGame.equals(newGame)==false) {
-                            					currentGame.removePlayer(user);
-                            					user.setGame(newGame);
-                            					newGame.addPlayer(user);
-                            					user.setJoinedGame(true);
-                            					listItem.setOutputMarkupId(true);
-                            				}
-                               
-                               	
-                                    this.replaceWith(TabPanel2.this);
-                            			}
-                            		
-                            		
-                            			}
-                  		
-                            			);
-                           
 
-                            	}
+                            }
                         }
                     });
-                    
-                    
                     User user = ((TBIALSession) getSession()).getUser();
                     if(user!=null && user.getGame()!= null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
@@ -370,7 +328,7 @@ public class Lobby extends BasePage {
 //            game.addPlayer(new User("Player 2", "pw",null));
 //            game.addPlayer(new User("Player 3", "pw",null));
 
-//    				game = getSession().getGame(gameId);
+//    	game = getSession().getGame(gameId);
 
             final Label label = new Label("gamename", game.getName());
             add(label);
@@ -379,7 +337,7 @@ public class Lobby extends BasePage {
              * self updating game status
              */
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
-//    				add(gameState);
+//    	add(gameState);
             gameState.setOutputMarkupId(true);
             gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
 
@@ -480,36 +438,6 @@ public class Lobby extends BasePage {
                     }
                 }
             };
-            
-            
-            
-            
-            
-            
-            
-            
-            
-         
-            
-            
-            
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
 
             WebMarkupContainer joinedPlayerListContainer = new WebMarkupContainer("joinedPlayerListContainer");
             joinedPlayerListContainer.add(joinedPlayerList);

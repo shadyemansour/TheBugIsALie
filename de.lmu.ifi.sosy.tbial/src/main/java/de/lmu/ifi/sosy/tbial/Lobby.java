@@ -182,23 +182,45 @@ public class Lobby extends BasePage {
                                 tabbedPanel.setSelectedTab(2);
 
                             } else {
-                        		
+                            	
+                            	
+                            		TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
+                            			"Do you want to leave the current game and join a new game?"){
+                            		
+                            			private static final long serialVersionUID = 1L;
+                            		
+                            			@Override
+                            			protected void onCancel() {
+                                    this.replaceWith(TabPanel2.this);
+                            			}
+                     
+                            			@Override
+                            			protected void onConfirm() {
+                                	
+                            				Game currentGame = user.getGame();
+                            				Game newGame = listItem.getModelObject();
+                                  
                            
-                            	Game currentGame = user.getGame();
-                              currentGame.removePlayer(user);
-                              
-                              Game newGame = listItem.getModelObject();
-                              user.setGame(newGame);
-                              newGame.addPlayer(user);
-                              user.setJoinedGame(true);
-                              listItem.setOutputMarkupId(true);
-                              tabs.remove(2);
-                              tabs.add(tab4);
-                              tabbedPanel.setSelectedTab(2);
+                                  
+                            				if(currentGame.equals(newGame)==false) {
+                            					currentGame.removePlayer(user);
+                            					user.setGame(newGame);
+                            					newGame.addPlayer(user);
+                            					user.setJoinedGame(true);
+                            					listItem.setOutputMarkupId(true);
+                            				}
+                               
+                               	
+                                    this.replaceWith(TabPanel2.this);
+                            			}
+                            		
+                            		
+                            			}
+                  		
+                            			);
+                           
 
-                 
-
-                            }
+                            	}
                         }
                     });
                     

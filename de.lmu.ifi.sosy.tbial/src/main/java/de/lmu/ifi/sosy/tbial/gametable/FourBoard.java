@@ -1,15 +1,17 @@
-package de.lmu.ifi.sosy.tbial;
+package de.lmu.ifi.sosy.tbial.gametable;
 
-import de.lmu.ifi.sosy.tbial.db.User;
+//import de.lmu.ifi.sosy.tbial.db.User;
+import de.lmu.ifi.sosy.tbial.*;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 
 @AuthenticationRequired
-public class Gametable extends BasePage {
+public class FourBoard extends GameView {
     /** UID for serialization. */
   private static final long serialVersionUID = 1L;
-  public int numplay = 4;
+  private int numPlayer = 4;
   
-  public Gametable() {
+  public FourBoard() {
   	
   	Label player1 = new Label("p1", "player1-name");
   	add(player1);

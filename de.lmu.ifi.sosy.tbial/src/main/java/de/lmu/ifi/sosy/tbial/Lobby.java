@@ -3,6 +3,7 @@ package de.lmu.ifi.sosy.tbial;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
+import de.lmu.ifi.sosy.tbial.gametable.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
 /**
  * Basic lobby page. It <b>should</b> show the list of currently available games. Needs to be
@@ -103,6 +105,11 @@ public class Lobby extends BasePage {
         tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
         tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
         add(tabbedPanel);
+
+        add(new BookmarkablePageLink("four", FourBoard.class));
+        add(new BookmarkablePageLink("five", FiveBoard.class));
+        add(new BookmarkablePageLink("six", SixBoard.class));
+        add(new BookmarkablePageLink("seven", SevenBoard.class));
     }
 
 
@@ -461,7 +468,6 @@ public class Lobby extends BasePage {
         player.setJoinedGame(true);
         ((SQLDatabase)getDatabase()).setUserGame(player.getId(),game.getName());
     }
-
 
 
 }

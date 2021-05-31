@@ -4,25 +4,23 @@ import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
+import de.lmu.ifi.sosy.tbial.networking.BugWebSocketResource;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.RestartResponseAtInterceptPageException;
-import org.apache.wicket.RuntimeConfigurationType;
-import org.apache.wicket.Session;
+import org.apache.wicket.*;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.ws.WebSocketSettings;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
-
 
 
 /**
@@ -72,6 +70,7 @@ public class TBIALApplication extends WebApplication {
     initPageMounts();
     initAuthorization();
     // initExceptionHandling();
+    getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
   }
 
   private void initMarkupSettings() {
@@ -135,58 +134,87 @@ public class TBIALApplication extends WebApplication {
   public List<User> getLoggedInUsers() {
     return new ArrayList<>(loggedInUsers);
   }
+
   public void userLoggedIn(final User pUser) {
+    UserListener listener = new UserListener();
+    pUser.addPropertyChangeListener(listener);
     loggedInUsers.add(pUser);
   }
+
   public void userLoggedOut(final User pUser) {
     loggedInUsers.remove(pUser);
   }
- /* public List<Game> getAvailableGames(){
-    return new ArrayList<>(availableGames);
-  }  */
-  public List<Game> getAvailableGames(){
-      if(availableGames.isEmpty()){
-          List<Game> games = ((SQLDatabase) database).getGames();
-          for (Game g:games) {
-              GameListener listener = new GameListener();
-              g.addPropertyChangeListener(listener);
-              availableGames.add(g);
-          }
+
+  /* public List<Game> getAvailableGames(){
+     return new ArrayList<>(availableGames);
+   }  */
+  public List<Game> getAvailableGames() {
+    if (availableGames.isEmpty()) {
+      List<Game> games = ((Database) database).getGames();
+      for (Game g : games) {
+        GameListener listener = new GameListener();
+        g.addPropertyChangeListener(listener);
+        availableGames.add(g);
       }
-      return new ArrayList<>(availableGames);
+    }
+    return new ArrayList<>(availableGames);
 
   }
+
   public int getAvailableGamesCount() {
     return availableGames.size();
   }
 
   public void addGame(final Game game) {
-      GameListener listener = new GameListener();
-      game.addPropertyChangeListener(listener);
-      availableGames.add(game);
+    GameListener listener = new GameListener();
+    game.addPropertyChangeListener(listener);
+    availableGames.add(game);
   }
+
   public void removeGame(final Game game) {
     availableGames.remove(game);
   }
+
   public class GameListener implements PropertyChangeListener {
-        @Override
-        public void propertyChange(PropertyChangeEvent event) {
-            if (event.getPropertyName().equals("GameStateProperty")) {
-                ((SQLDatabase) database).setGameState(Integer.parseInt(event.getOldValue().toString()),event.getNewValue().toString());
-            }else if(event.getPropertyName().equals("GameHostProperty")){
-                for (User u:loggedInUsers) {
-                    if(u.getName().equals(event.getNewValue().toString())){
-                        Game g = ((Game)event.getOldValue());
-                                g.setHost(u);
-                        break;
-                        //TODO add user not found
-                    }
-                }
-            } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {
-            	Game game = (Game) event.getNewValue();
-            	removeGame(game);
-            	((SQLDatabase) database).removeGame(game.getId());
-            }
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      if (event.getPropertyName().equals("GameStateProperty")) {
+        ((Database) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("GameHostProperty")) {
+        for (User u : loggedInUsers) {
+          if (u.getName().equals(event.getNewValue().toString())) {
+            Game g = ((Game) event.getOldValue());
+            g.setHost(u);
+            break;
+            //TODO add user not found
+          }
         }
+      } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {
+        Game game = (Game) event.getNewValue();
+        removeGame(game);
+        ((Database) database).removeGame(game.getId());
+      }
     }
+  }
+
+  public class UserListener implements PropertyChangeListener {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      int id = Integer.parseInt(event.getOldValue().toString());
+
+      if (event.getPropertyName().equals("PrestigeProperty")) {
+        int prestige = Integer.parseInt(event.getNewValue().toString());
+        ((Database) database).setUserPrestige(id, prestige);
+      } else if (event.getPropertyName().equals("HealthProperty")) {
+        int health = Integer.parseInt(event.getNewValue().toString());
+        ((Database) database).setUserHealth(id, health);
+      } else if (event.getPropertyName().equals("RoleProperty")) {
+        String role = event.getNewValue().toString();
+        ((Database) database).setUserRole(id, role);
+      } else if (event.getPropertyName().equals("CharacterProperty")) {
+        String character = event.getNewValue().toString();
+        ((Database) database).setUserCharacter(id, character);
+      }
+    }
+  }
 }

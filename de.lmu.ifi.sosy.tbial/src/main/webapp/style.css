@@ -637,6 +637,44 @@ pre.boxed {
     top: 45px;
 }
 
+.player-card-container {
+	width: 300px;
+	height: 210px;
+	padding: 10px;
+	background: slategray;
+	border-radius: 20px;
+}
+
+.card-drop-area-frame {
+	position: relative;
+	height: 100px;
+	width: full;
+	background: lightsteelblue;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	border: solid 1px;
+}
+
+.card-drop-area {
+	position: absolute;
+	left: 125px;
+	top: 15px;
+}
+
+.card-hand-frame {
+	position: relative;
+	height: 100px;
+	width: full;
+	background: lightsteelblue;
+	border-radius: 10px;
+}
+
+.card-hand {
+	position: absolute;
+	left: 125px;
+	top: 15px;
+}
+
 #relPos {
 	position: relative;
 	width: 50px;

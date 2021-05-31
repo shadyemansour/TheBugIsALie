@@ -175,52 +175,6 @@ public class Lobby extends BasePage {
             CardPanel cardPanel6 = new CardPanel("card-panel6", Model.of(card6));
             add(cardPanel6);
             
-            cardPanel4.add(new AjaxEventBehavior("click") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected void onEvent(AjaxRequestTarget target) {
-//								card4.setVisible(!card4.isVisible());
-//								card4.setTitle("Title");
-								cardPanel4.setDefaultModel(Model.of(card3));
-								target.add(cardPanel4);
-							}
-							
-						});
-            
-//            add(new Link("visibilitybutton") {
-//              public void onClick() {
-//                  // do nothing.
-//								System.out.println("pressed");
-//              }
-//
-//							@Override
-//							public MarkupContainer setDefaultModel(IModel model) {
-//								// TODO Auto-generated method stub
-//								return null;
-//							}
-//            });
-            
-            AjaxLink<?> visibilityButton = new AjaxLink<>("visibilitybutton") {
-
-							/**
-							 * 
-							 */
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							public void onClick(AjaxRequestTarget target) {
-								// TODO Auto-generated method stub
-//								card4.setVisible(!isVisible());
-								System.out.println(card4.isVisible());
-								card4.setVisible(!card4.isVisible());
-								card4.setTitle("Title");
-								
-							}
-            	
-            };
-            add(visibilityButton);
-            
             List<IModel<Card>> cardModels = new ArrayList<IModel<Card>>();
             cardModels.add(Model.of(card1));
             cardModels.add(Model.of(card2));
@@ -228,41 +182,6 @@ public class Lobby extends BasePage {
             cardModels.add(Model.of(card4));
             cardModels.add(Model.of(card5));
             cardModels.add(Model.of(card6));
-            
-            List<Card> cards = new ArrayList<Card>();
-            cards.add(card1);
-            cards.add(card2);
-            cards.add(card3);
-            cards.add(card4);
-            cards.add(card5);
-            cards.add(card6);
-            
-            RefreshingView<Card> cardsView = new RefreshingView<Card>("cardpanels") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected Iterator<IModel<Card>> getItemModels() {
-								return cardModels.iterator();
-							}
-
-							@Override
-							protected void populateItem(Item<Card> item) {
-								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-								item.add(new AjaxEventBehavior("click") {
-									private static final long serialVersionUID = 1L;
-
-									@Override
-									protected void onEvent(AjaxRequestTarget target) {
-										item.getModelObject().setVisible(false);
-										item.getModelObject().setTitle("new title");
-										target.add(item);
-									}
-								});
-							}
-            	
-            };
-            cardsView.setOutputMarkupId(true);
-            add(cardsView);
             
             /*
              * heap
@@ -312,6 +231,67 @@ public class Lobby extends BasePage {
             };
             stack.setOutputMarkupId(true);
             add(stack);
+      
+            /*
+             * card hand
+             */
+            List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
+            cardHandModels.add(Model.of(card1));
+            cardHandModels.add(Model.of(card2));
+            cardHandModels.add(Model.of(card3));
+            cardHandModels.add(Model.of(card4));
+            cardHandModels.add(Model.of(card5));
+//            cardHandModels.add(Model.of(card6));
+            
+            WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container");
+            add(playerCardContainer);
+            RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected Iterator<IModel<Card>> getItemModels() {
+								return cardHandModels.iterator();
+							}
+							int width = 300;
+							
+							int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
+							int stepSize = posLeft + 50;
+
+							@Override
+							protected void populateItem(Item<Card> item) {
+								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+								posLeft += stepSize;
+//								posTop += 2;
+								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+							}
+            	
+            };
+            cardDropArea.setOutputMarkupId(true);
+            playerCardContainer.add(cardDropArea);
+            
+            RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected Iterator<IModel<Card>> getItemModels() {
+								return cardHandModels.iterator();
+							}
+							int width = 300;
+							
+							int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
+							int stepSize = posLeft + 50;
+
+							@Override
+							protected void populateItem(Item<Card> item) {
+								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+								posLeft += stepSize;
+//								posTop += 2;
+								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+							}
+            	
+            };
+            cardHand.setOutputMarkupId(true);
+            playerCardContainer.add(cardHand);
 
         }
     };

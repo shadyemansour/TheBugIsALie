@@ -1,10 +1,6 @@
 package de.lmu.ifi.sosy.tbial;
 
 import de.lmu.ifi.sosy.tbial.db.Database;
-import de.lmu.ifi.sosy.tbial.networking.BugWebSocketResource;
-import de.lmu.ifi.sosy.tbial.networking.WebSocketService;
-import de.lmu.ifi.sosy.tbial.networking.Updater.Message;
-import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
@@ -13,16 +9,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.protocol.ws.WebSocketSettings;
-import org.apache.wicket.protocol.ws.api.BaseWebSocketBehavior;
-import org.apache.wicket.protocol.ws.api.IWebSocketConnection;
-import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
-import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
-import org.apache.wicket.protocol.ws.api.message.IWebSocketPushMessage;
-import org.apache.wicket.protocol.ws.api.message.TextMessage;
-import org.apache.wicket.protocol.ws.api.registry.IWebSocketConnectionRegistry;
 import org.apache.wicket.util.time.Duration;
-import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 
 /**
  * Basic page with style template as well as access to {@link TBIALSession} and {@link Database}.
@@ -54,7 +41,6 @@ public abstract class BasePage extends WebPage {
   }
 
   public BasePage() {
-    //add(new BaseWebSocketBehavior(BugWebSocketResource.NAME));
 
 
     link =
@@ -97,33 +83,6 @@ public abstract class BasePage extends WebPage {
 
   }
 
-
-  private void addWebSocketUpdating() {
-    add(new WebSocketBehavior() {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onConnect(ConnectedMessage message) {
-        super.onConnect(message);
-
-        WebSocketService.getInstance().addClient(message);
-      }
-
-      @Override
-      protected void onPush(WebSocketRequestHandler handler, IWebSocketPushMessage message) {
-        super.onPush(handler, message);
-        System.out.println("onPush called");
-        if (message instanceof Message) {
-          Message msg = (Message) message;
-          //   updateModel.setObject(msg.getNumber());
-        }
-        //   handler.add (numberLabel);
-      }
-    });
-  }
-
-  private void getPayload(String msg) {
-  }
 
   public String getUsersString() {
     int users = getTbialApplication().getUsersLoggedInCount();

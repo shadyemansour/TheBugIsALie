@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.lmu.ifi.sosy.tbial.networking.BugWebSocketResource;
+import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
+import de.lmu.ifi.sosy.tbial.networking.WebSocketManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.wicket.Application;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.*;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -37,11 +35,12 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.protocol.ws.WebSocketSettings;
-import org.apache.wicket.protocol.ws.api.BaseWebSocketBehavior;
+import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
-import org.apache.wicket.protocol.ws.api.registry.IWebSocketConnectionRegistry;
+import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
+import org.apache.wicket.protocol.ws.api.message.IWebSocketPushMessage;
 import org.apache.wicket.util.time.Duration;
+import org.json.JSONObject;
 
 /**
  * Basic lobby page. It <b>should</b> show the list of currently available games. Needs to be
@@ -57,13 +56,13 @@ public class Lobby extends BasePage {
   protected final AbstractTab tab4;
   protected final List<ITab> tabs;
   protected final AjaxTabbedPanel<ITab> tabbedPanel;
+  private Game game;
   /**
    * UID for serialization.
    */
   private static final long serialVersionUID = 1L;
 
   public Lobby() {
-
     tabs = new ArrayList<>();
     tab1 = new AbstractTab(new Model<>("Online Players")) {
       private static final long serialVersionUID = 1L;
@@ -109,6 +108,8 @@ public class Lobby extends BasePage {
     tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
     tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
     add(tabbedPanel);
+
+
   }
 
   @Override
@@ -191,14 +192,6 @@ public class Lobby extends BasePage {
                 tabs.remove(2);
                 tabs.add(tab4);
                 tabbedPanel.setSelectedTab(2);
-//
-//                                //WebSocketRequestHandler handler = new WebSocketRequestHandler(this, getTbialApplication())
-//                                Application application = Application.get(getTbialApplication().getName());
-//                                WebSocketSettings webSocketSettings = WebSocketSettings.Holder.get(application);
-//                                IWebSocketConnectionRegistry webSocketConnectionRegistry = webSocketSettings.getConnectionRegistry();
-//                                System.out.println("hi");
-                // IWebSocketConnection connection = webSocketConnectionRegistry.getConnection(application, sessionId, key);
-
               } else {
 
               }
@@ -336,7 +329,6 @@ public class Lobby extends BasePage {
 
     private final AjaxButton leaveButton;
     private final AjaxButton startButton;
-    private Game game;
     private User user;
 
     public TabPanel4(String id) {
@@ -431,7 +423,7 @@ public class Lobby extends BasePage {
               user.setJoinedGame(false);
               ((SQLDatabase) getDatabase()).setUserGame(user.getId(), "NULL");
               game.removePlayer(listItem.getModelObject());
-//                            setResponsePage(getApplication().getHomePage());
+              WebSocketManager.getInstance().sendMessage(removePlayerJSONMessage(((TBIALSession) getSession()).getUser().getId(), user.getId()));
             }
 
             @Override
@@ -469,10 +461,30 @@ public class Lobby extends BasePage {
         }
       };
 
+      add(new WebSocketBehavior() {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onConnect(ConnectedMessage message) {
+          super.onConnect(message);
+
+          WebSocketManager.getInstance().addClient(message, ((TBIALSession) getSession()).getUser().getId());
+        }
+
+        @Override
+        protected void onPush(WebSocketRequestHandler handler, IWebSocketPushMessage message) {
+          super.onPush(handler, message);
+
+          if (message instanceof JSONMessage) {
+            handleMessage((JSONMessage) message);
+          }
+        }
+      });
+
+
       WebMarkupContainer joinedPlayerListContainer = new WebMarkupContainer("joinedPlayerListContainer");
       joinedPlayerListContainer.add(joinedPlayerList);
       joinedPlayerListContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
-      joinedPlayerListContainer.add(new BaseWebSocketBehavior(BugWebSocketResource.NAME));
       joinedPlayerListContainer.setOutputMarkupId(true);
 
 
@@ -496,6 +508,39 @@ public class Lobby extends BasePage {
     ((SQLDatabase) getDatabase()).setUserGame(player.getId(), game.getName());
   }
 
+  private JSONMessage removePlayerJSONMessage(int userId, int targetId) {
+    JSONObject msgBody = new JSONObject();
+    msgBody.put("id", targetId);
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "Player Removed");
+    msg.put("msgBody", msgBody);
+
+    JSONMessage message = new JSONMessage(msg);
+    return message;
+  }
+
+  public void handleMessage(JSONMessage message) {
+    JSONObject jsonMsg = message.getMessage();
+    String msgType = (String) jsonMsg.get("msgType");
+    switch (msgType) {
+      case "Player Removed":
+        JSONObject body = jsonMsg.getJSONObject("msgBody");
+        int id = (int) body.get("id");
+        if (id == ((TBIALSession) getSession()).getUser().getId()) {
+          User user = ((TBIALSession) getSession()).getUser();
+          user.setGame(null);
+          user.setJoinedGame(false);
+          ((SQLDatabase) getDatabase()).setUserGame(user.getId(), "NULL");
+          game.removePlayer(user);
+          tabs.remove(2);
+          tabs.add(tab3);
+          setResponsePage(getApplication().getHomePage());
+          tabbedPanel.setSelectedTab(1);
+
+        }
+
+    }
+  }
 
 }
 

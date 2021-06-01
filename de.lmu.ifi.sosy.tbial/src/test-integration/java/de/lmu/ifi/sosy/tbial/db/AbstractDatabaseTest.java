@@ -189,7 +189,7 @@ public abstract class AbstractDatabaseTest {
     addUser();
     addGame();
     Game game = database.getGame("name");
-    assertEquals(game.getHostName(), game.getHostName());
+    assertEquals(name, game.getHostName());
 
     addUser(new User("AnotherName", "AnotherPass", null));
     setGameHost(id, "AnotherName");

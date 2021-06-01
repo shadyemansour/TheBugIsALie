@@ -4,7 +4,6 @@ import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
-import de.lmu.ifi.sosy.tbial.networking.BugWebSocketResource;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.beans.PropertyChangeEvent;
@@ -66,22 +65,10 @@ public class TBIALApplication extends WebApplication {
 
   @Override
   protected void init() {
+    super.init();
     initMarkupSettings();
     initPageMounts();
     initAuthorization();
-    //initExceptionHandling();
-//    getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
-//    ServerContainer serverContainer;
-//    try {
-//      serverContainer = WebSocketServerContainerInitializer.configureContext(bb);
-//      serverContainer.addEndpoint(new WicketServerEndpointConfig());
-//    } catch (ServletException e1) {
-//      // TODO Auto-generated catch block
-//      e1.printStackTrace();
-//    } catch (DeploymentException e2) {
-//      // TODO Auto-generated catch block
-//      e2.printStackTrace();
-//    }
   }
 
   private void initMarkupSettings() {

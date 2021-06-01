@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import de.lmu.ifi.sosy.tbial.ConfigurationException;
 import de.lmu.ifi.sosy.tbial.DatabaseException;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,6 +23,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 import javax.sql.DataSource;
+
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.derby.tools.ij;
 import org.junit.Before;
@@ -90,6 +92,7 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       }
     }
   }
+
   @Override
   protected void addGame(Game game) {
     Connection con = null;
@@ -99,8 +102,8 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       con.setAutoCommit(true);
 
       ps =
-              con.prepareStatement(
-                      "INSERT INTO GAMES (NAME,HOST,PASSWORD,NUMPLAYERS) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+          con.prepareStatement(
+              "INSERT INTO GAMES (NAME,HOST,PASSWORD,NUMPLAYERS) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, game.getName());
       ps.setString(2, game.getHostName());
       ps.setString(3, game.getPassword());
@@ -134,9 +137,10 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       }
     }
   }
+
   @Override
-  public void removeGame(int id){
-    try{
+  public void removeGame(int id) {
+    try {
       Connection connection = dataSource.getConnection();
       PreparedStatement remove = connection.prepareStatement("DELETE FROM GAMES WHERE ID = ?");
       remove.setInt(1, id);
@@ -149,8 +153,8 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
 
 
   @Override
-  public void setGameState(int id, String gameState){
-    try{
+  public void setGameState(int id, String gameState) {
+    try {
       Connection connection = dataSource.getConnection();
       PreparedStatement insert = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
       insert.setString(1, gameState);
@@ -161,6 +165,21 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       throw new DatabaseException("Error while updating gameState " + id, ex);
     }
   }
+
+  @Override
+  public void setGameHost(int id, String host) {
+    try {
+      Connection connection = dataSource.getConnection();
+      PreparedStatement insert = connection.prepareStatement("UPDATE GAMES SET HOST = ? WHERE ID = ?");
+      insert.setString(1, host);
+      insert.setInt(2, id);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameState " + id, ex);
+    }
+  }
+
   @Override
   protected void addUser(User user) {
     Connection con = null;
@@ -174,7 +193,7 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
               "INSERT INTO USERS (NAME, PASSWORD, GAME) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, user.getName());
       ps.setString(2, user.getPassword());
-      ps.setString(3, user.getGame() == null? "NULL": user.getGame().getName());
+      ps.setString(3, user.getGame() == null ? "NULL" : user.getGame().getName());
 
       ps.executeUpdate();
 
@@ -202,6 +221,62 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
       } catch (Exception ex) {
         ex.printStackTrace(System.err);
       }
+    }
+  }
+
+  @Override
+  public void setUserPrestige(int id, int pre) {
+    try {
+      Connection connection = dataSource.getConnection();
+      PreparedStatement insert = connection.prepareStatement("UPDATE USERS SET PRESTIGE = ? WHERE ID = ?");
+      insert.setInt(1, pre);
+      insert.setInt(2, id);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating Prestige " + id, ex);
+    }
+  }
+
+  @Override
+  public void setUserHealth(int id, int health) {
+    try {
+      Connection connection = dataSource.getConnection();
+      PreparedStatement insert = connection.prepareStatement("UPDATE USERS SET HEALTH = ? WHERE ID = ?");
+      insert.setInt(1, health);
+      insert.setInt(2, id);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating Health " + id, ex);
+    }
+  }
+
+  @Override
+  public void setUserRole(int id, String role) {
+    try {
+      Connection connection = dataSource.getConnection();
+      PreparedStatement insert = connection.prepareStatement("UPDATE USERS SET ROLE = ? WHERE ID = ?");
+      insert.setString(1, role);
+      insert.setInt(2, id);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating Role " + id, ex);
+    }
+  }
+
+  @Override
+  public void setUserCharacter(int id, String character) {
+    try {
+      Connection connection = dataSource.getConnection();
+      PreparedStatement insert = connection.prepareStatement("UPDATE USERS SET CHARACT = ? WHERE ID = ?");
+      insert.setString(1, character);
+      insert.setInt(2, id);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating Role " + id, ex);
     }
   }
 

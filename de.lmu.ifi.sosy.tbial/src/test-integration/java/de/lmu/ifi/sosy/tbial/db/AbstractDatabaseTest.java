@@ -25,7 +25,10 @@ public abstract class AbstractDatabaseTest {
   protected Game game;
 
   protected int id;
-
+  protected int prestige;
+  protected int health;
+  protected String charachter;
+  protected String role;
 
   protected String gameState;
 
@@ -33,10 +36,14 @@ public abstract class AbstractDatabaseTest {
   public void initGeneral() {
     name = "name";
     password = "pass";
-    id=1;
+    id = 1;
     gameState = "newState";
-    game = new Game(id,"name","",5,null,name);
-    user = new User(name, password,game);
+    game = new Game(id, "name", "", 5, null, name);
+    user = new User(name, password, game);
+    prestige = 10;
+    health = 100;
+    role = "testRole";
+    charachter = "John Doe";
 
   }
 
@@ -51,9 +58,12 @@ public abstract class AbstractDatabaseTest {
   protected void setGameState() {
     setGameState(id, gameState);
   }
-  protected void removeGame(){
+
+  protected void removeGame() {
     removeGame(id);
   }
+
+  public abstract void setGameHost(int id, String host);
 
   protected abstract void addUser(User user);
 
@@ -62,6 +72,14 @@ public abstract class AbstractDatabaseTest {
   protected abstract void removeGame(int id);
 
   protected abstract void setGameState(int id, String gameState);
+
+  protected abstract void setUserPrestige(int id, int pre);
+
+  protected abstract void setUserHealth(int id, int health);
+
+  protected abstract void setUserRole(int id, String role);
+
+  protected abstract void setUserCharacter(int id, String character);
 
   @Test(expected = NullPointerException.class)
   public void registerUserWhenNullNameGivenThrowsException() {
@@ -75,13 +93,13 @@ public abstract class AbstractDatabaseTest {
 
   @Test
   public void hasUserWithNameWhenUserNotRegisteredReturnsFalse() {
-    assertThat(database.nameTaken(name,"user"), is(false));
+    assertThat(database.nameTaken(name, "user"), is(false));
   }
 
   @Test
   public void hasUserWithNameWhenUserRegisteredReturnsTrue() {
     addUser();
-    assertThat(database.nameTaken(name,"user"), is(true));
+    assertThat(database.nameTaken(name, "user"), is(true));
   }
 
   @Test
@@ -105,7 +123,7 @@ public abstract class AbstractDatabaseTest {
 
   @Test
   public void getUserWhenUserDoesNotExistReturnsNull() {
-    addUser(new User("someoneelse", "withsomepassword",null));
+    addUser(new User("someoneelse", "withsomepassword", null));
     User user = database.getUser(name);
 
     assertThat(user, is(nullValue()));
@@ -114,7 +132,7 @@ public abstract class AbstractDatabaseTest {
   @Test
   public void getGameWhenGameDoesNotExistReturnsNull() {
     addUser();
-    addGame(new Game(-1,"name", "",4,"",name));
+    addGame(new Game(-1, "name", "", 4, "", name));
     Game game = database.getGame("hi");
 
     assertThat(game, is(nullValue()));
@@ -123,7 +141,7 @@ public abstract class AbstractDatabaseTest {
   @Test
   public void getGameStateAfterSet() {
     addUser();
-    addGame(new Game(1,"name", "",4,"",name));
+    addGame(new Game(1, "name", "", 4, "", name));
     Game game = database.getGame("name");
     game.setGameState("newState");
 
@@ -149,19 +167,35 @@ public abstract class AbstractDatabaseTest {
   @Test
   public void getUserWhenMultipleUsersExistsReturnsCorrectUser() {
     addUser();
-    addUser(new User("AnotherName", "AnotherPass",null));
+    addUser(new User("AnotherName", "AnotherPass", null));
 
     User user = database.getUser(name);
 
     assertThat(user, hasNameAndPassword(name, password));
   }
+
   @Test
-  public void removeGameWhenGameIsRemovedThrows(){
+  public void removeGameWhenGameIsRemoved() {
     addUser();
     addGame();
     removeGame(id);
     Game game = database.getGame("name");
-    assertThat(game,is(nullValue()));
+    assertThat(game, is(nullValue()));
+
+  }
+
+  @Test
+  public void getGameHostAfterChange() {
+    addUser();
+    addGame();
+    Game game = database.getGame("name");
+    assertEquals(name, game.getHostName());
+
+    addUser(new User("AnotherName", "AnotherPass", null));
+    setGameHost(id, "AnotherName");
+
+    game = database.getGame("name");
+    assertEquals("AnotherName", game.getHostName());
 
   }
 
@@ -173,7 +207,25 @@ public abstract class AbstractDatabaseTest {
     User user = database.getUser(name);
     Game game = database.getGame(name);
 
-    assertEquals(user.getGame(),game);
+    assertEquals(user.getGame(), game);
+  }
+
+  @Test
+  public void getUserAttsAfterSet() {
+    addUser();
+    database.setUserPrestige(id, prestige);
+    database.setUserHealth(id, health);
+    database.setUserRole(id, role);
+    database.setUserCharacter(id, charachter);
+    int newPrestige = database.getUserPrestige(id);
+    int newHealth = database.getUserHealth(id);
+    String newRole = database.getUserRole(id);
+    String newCharacter = database.getUserCharacter(id);
+
+    assertEquals(prestige, newPrestige);
+    assertEquals(health, newHealth);
+    assertEquals(role, newRole);
+    assertEquals(charachter, newCharacter);
   }
 
 

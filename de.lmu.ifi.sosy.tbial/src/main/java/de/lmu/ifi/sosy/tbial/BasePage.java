@@ -18,7 +18,9 @@ import org.apache.wicket.util.time.Duration;
  */
 public abstract class BasePage extends WebPage {
 
-  /** UID for serialization. */
+  /**
+   * UID for serialization.
+   */
   private static final long serialVersionUID = 1L;
 
   private Link<Void> link;
@@ -39,7 +41,10 @@ public abstract class BasePage extends WebPage {
   }
 
   public BasePage() {
+
+
     link =
+
         new Link<Void>("signout") {
 
           /** UID for serialization. */
@@ -51,6 +56,7 @@ public abstract class BasePage extends WebPage {
             if (session instanceof AuthenticatedWebSession) {
               ((AuthenticatedWebSession) session).signOut();
             }
+
             session.invalidate();
           }
         };
@@ -67,16 +73,21 @@ public abstract class BasePage extends WebPage {
       link.setVisible(false);
       link.setEnabled(false);
       username.setVisible(false);
-    }else{
+    } else {
 
-      usernameMDL.setObject("Logged in as " + ((TBIALSession)getSession()).getUser().getName());
+      usernameMDL.setObject("Logged in as " + ((TBIALSession) getSession()).getUser().getName());
       username.setVisible(true);
+
     }
 
+
   }
+
 
   public String getUsersString() {
     int users = getTbialApplication().getUsersLoggedInCount();
     return users == 1 ? "1 player online." : users + " players online.";
   }
 }
+
+

@@ -12,14 +12,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class LobbyTest {
-    Lobby lobby;
-    User host;
-    Game game;
+  Lobby lobby;
+  User host;
+  Game game;
+
   @Before
   public void init() {
-   lobby = new Lobby();
-   host = new User("hostName", "hostPw",null);
-   game = new Game(-1, "name", "password", 4,null, host.getName());
+    //lobby = new Lobby();
+    host = new User("hostName", "hostPw", null);
+    game = new Game(-1, "name", "password", 4, null, host.getName());
   }
 
 

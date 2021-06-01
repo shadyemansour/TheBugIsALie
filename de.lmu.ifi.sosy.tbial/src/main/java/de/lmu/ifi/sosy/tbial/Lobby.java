@@ -108,50 +108,50 @@ public class Lobby extends BasePage {
     }
 
 
-        tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
-        tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
-        add(tabbedPanel);
+    tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
+    tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
+    add(tabbedPanel);
 
-        new StartGameChecker().start();
-    }
+//        new StartGameChecker().start();
+  }
 
-    private class StartGameChecker implements Runnable {
-  		boolean running = false;
-  		User user = ((TBIALSession) getSession()).getUser();
-  		List<Game> games = getTbialApplication().getAvailableGames();
-  		public void start() {
-  			running = true;
-  			new Thread(this).start();
-  		}
-  		public void run() {
-  			while(running) {
-  				if(user.getGame()!=null) {
-  					for(Game g : games) {
-  						if(g.getName().equals(user.getGame().getName())) {
-  							user.setGame(g);
-  						}
-  					}
-  				}
-
-  				if(user!=null && user.getJoinedGame()) {
-  					System.out.println("joined game");
-  					if(user.getGame()!=null && user.getGame().getGameState() == "running") {
-  						System.out.println("running gamestate");
-  						PageParameters pageParameters = new PageParameters();
-              pageParameters.add("name", "your own game");
-              setResponsePage(GameView.class, pageParameters);
-              running = false;
-  					}
-  				}
-  				try {
-  					Thread.sleep(6000);
-  				} catch (InterruptedException e) {
-  					e.printStackTrace();
-  				}
-  				System.out.println("testing thread");
-  			}
-  		}
-  	}
+//    private class StartGameChecker implements Runnable {
+//  		boolean running = false;
+//  		User user = ((TBIALSession) getSession()).getUser();
+//  		List<Game> games = getTbialApplication().getAvailableGames();
+//  		public void start() {
+//  			running = true;
+//  			new Thread(this).start();
+//  		}
+//  		public void run() {
+//  			while(running) {
+//  				if(user.getGame()!=null) {
+//  					for(Game g : games) {
+//  						if(g.getName().equals(user.getGame().getName())) {
+//  							user.setGame(g);
+//  						}
+//  					}
+//  				}
+//
+//  				if(user!=null && user.getJoinedGame()) {
+//  					System.out.println("joined game");
+//  					if(user.getGame()!=null && user.getGame().getGameState() == "running") {
+//  						System.out.println("running gamestate");
+//  						PageParameters pageParameters = new PageParameters();
+//              pageParameters.add("name", "your own game");
+//              setResponsePage(GameView.class, pageParameters);
+//              running = false;
+//  					}
+//  				}
+//  				try {
+//  					Thread.sleep(6000);
+//  				} catch (InterruptedException e) {
+//  					e.printStackTrace();
+//  				}
+//  				System.out.println("testing thread");
+//  			}
+//  		}
+//  	}
 
   @Override
   protected void onInitialize() {
@@ -195,31 +195,33 @@ public class Lobby extends BasePage {
   ;
 
 
-    private class TabPanel2 extends Panel {
-    	 	/** UID for serialization. */
-    		private static final long serialVersionUID = 1L;
+  private class TabPanel2 extends Panel {
+    /**
+     * UID for serialization.
+     */
+    private static final long serialVersionUID = 1L;
 
 
-        public TabPanel2(String id) {
-            super(id);
+    public TabPanel2(String id) {
+      super(id);
 
-            add(new FeedbackPanel("feedback"));
+      add(new FeedbackPanel("feedback"));
 
-            IModel<List<Game>> gameModel =
-                    (IModel<List<Game>>) () -> getTbialApplication().getAvailableGames();
+      IModel<List<Game>> gameModel =
+          (IModel<List<Game>>) () -> getTbialApplication().getAvailableGames();
 
-            PageableListView<Game> gameList = new PageableListView<>("availableGames", gameModel, 4) {
-                private static final long serialVersionUID = 1L;
+      PageableListView<Game> gameList = new PageableListView<>("availableGames", gameModel, 4) {
+        private static final long serialVersionUID = 1L;
 
-                @Override
-                protected void populateItem(final ListItem<Game> listItem) {
-                    listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
-                    listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
-                    listItem.add(new Label("status", listItem.getModelObject().getGameState()));
-                    listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected()  ? "Public" : "Private"));
-                    listItem.add(new Link<>("joinGame") {
-                    	 	/** UID for serialization. */
-                    		private static final long serialVersionUID = 1L;
+        @Override
+        protected void populateItem(final ListItem<Game> listItem) {
+          listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
+          listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
+          listItem.add(new Label("status", listItem.getModelObject().getGameState()));
+          listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected() ? "Public" : "Private"));
+          listItem.add(new Link<>("joinGame") {
+            /** UID for serialization. */
+            private static final long serialVersionUID = 1L;
 
 
             public void onClick() {
@@ -277,15 +279,15 @@ public class Lobby extends BasePage {
     private final TextField<String> password;
     private final DropDownChoice choice;
 
-        private TabPanel3(String id) {
+    private TabPanel3(String id) {
 
-            super(id);
+      super(id);
 
-            add(new FeedbackPanel("feedback"));
+      add(new FeedbackPanel("feedback"));
 
-            gameName = new TextField<>("name", new Model<>(""));
-            gameName.setRequired(true);
-            choice = new DropDownChoice("ddc", new PropertyModel(this, "selected"), players);
+      gameName = new TextField<>("name", new Model<>(""));
+      gameName.setRequired(true);
+      choice = new DropDownChoice("ddc", new PropertyModel(this, "selected"), players);
 
       password = new PasswordTextField("password", Model.of("")) {
         @Override
@@ -428,57 +430,59 @@ public class Lobby extends BasePage {
         /** UID for serialization. */
         private static final long serialVersionUID = 1;
 
-                @Override
-                public void onSubmit(AjaxRequestTarget target) {
-                    //if(user.equals(game.getHost())) {
-                    //    int currentplayers = game.getActivePlayers();
-                    //    int numplayers = game.getNumPlayers();
-                    //    if(currentplayers < numplayers) {
-                    //        info("the game has not enough players");
-                    //    } else {
-                    //        game.setGameState("running");
-                    //        user.setGame(game);
-                    //        PageParameters pageParameters = new PageParameters();
-                    //        pageParameters.add("gameID", game.getID());
-                    //        setResponsePage(GameView.class, pageParameters);
-                    //    }
-                    //} else {
-                    //    info("only the host can start the game");
-                    //}
-                    System.out.println("startbutton");
+        @Override
+        public void onSubmit(AjaxRequestTarget target) {
+          //if(user.equals(game.getHost())) {
+          //    int currentplayers = game.getActivePlayers();
+          //    int numplayers = game.getNumPlayers();
+          //    if(currentplayers < numplayers) {
+          //        info("the game has not enough players");
+          //    } else {
+          //        game.setGameState("running");
+          //        user.setGame(game);
+          //        PageParameters pageParameters = new PageParameters();
+          //        pageParameters.add("gameID", game.getID());
+          //        setResponsePage(GameView.class, pageParameters);
+          //    }
+          //} else {
+          //    info("only the host can start the game");
+          //}
+          System.out.println("startbutton");
 
-                    // for testing purpose
-                    int currentplayers = 4;
-                    int numplayers = 4;
-                    if(currentplayers < numplayers) {
-                    	game.addPlayer(new User("new Player", "pw",null));
-                    } else {
-                        game.setGameState("running");
-                        //user.setGame(game);
-                        //PageParameters pageParameters = new PageParameters();
-                        //pageParameters.add("name", "your own game");
-                        //setResponsePage(GameView.class, pageParameters);
-                    }
-                }
+          // for testing purpose
+          int currentplayers = game.getActivePlayers();
+          int numplayers = game.getNumPlayers();
+          if (currentplayers < numplayers) {
+            game.addPlayer(new User("new Player", "pw", null));
+          } else {
+            game.setGameState("running");
+            //PageParameters pageParameters = new PageParameters();
+            //pageParameters.add("name", "your own game");
+            setResponsePage(GameView.class);
+            WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
 
-                @Override
-                protected void onError(AjaxRequestTarget target) {}
-            };
+          }
+        }
 
-            Form<?> form = new Form<>("form");
-            form.add(leaveButton).add(startButton);
-            add(form);
+        @Override
+        protected void onError(AjaxRequestTarget target) {
+        }
+      };
 
-            ListView<User> joinedPlayerList = new PropertyListView<>("joinedPlayers", game.getPlayers()) {
+      Form<?> form = new Form<>("form");
+      form.add(leaveButton).add(startButton);
+      add(form);
 
-                private static final long serialVersionUID = 1L;
+      ListView<User> joinedPlayerList = new PropertyListView<>("joinedPlayers", game.getPlayers()) {
 
-                @Override
-                protected void populateItem(final ListItem<User> listItem) {
-                    AjaxLink<Object> removePlayerButton = (new AjaxLink<Object>("removeplayerbutton") {
+        private static final long serialVersionUID = 1L;
 
-                        /** UID for serialization. */
-                        private static final long serialVersionUID = 1;
+        @Override
+        protected void populateItem(final ListItem<User> listItem) {
+          AjaxLink<Object> removePlayerButton = (new AjaxLink<Object>("removeplayerbutton") {
+
+            /** UID for serialization. */
+            private static final long serialVersionUID = 1;
 
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -584,13 +588,26 @@ public class Lobby extends BasePage {
     return message;
   }
 
+  private JSONMessage gameStartedJSONMessage(int userId, int gameId) {
+    JSONObject msgBody = new JSONObject();
+    msgBody.put("gameID", gameId);
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "GameStarted");
+    msg.put("msgBody", msgBody);
+
+    JSONMessage message = new JSONMessage(msg);
+    return message;
+  }
+
   public void handleMessage(JSONMessage message) {
     JSONObject jsonMsg = message.getMessage();
     String msgType = (String) jsonMsg.get("msgType");
+    JSONObject body;
+    int id;
     switch (msgType) {
-      case "Player Removed":
-        JSONObject body = jsonMsg.getJSONObject("msgBody");
-        int id = (int) body.get("id");
+      case "PlayerRemoved":
+        body = jsonMsg.getJSONObject("msgBody");
+        id = (int) body.get("id");
         if (id == ((TBIALSession) getSession()).getUser().getId()) {
           User user = ((TBIALSession) getSession()).getUser();
           user.setGame(null);
@@ -602,6 +619,12 @@ public class Lobby extends BasePage {
           setResponsePage(getApplication().getHomePage());
           tabbedPanel.setSelectedTab(1);
 
+        }
+      case "GameStarted":
+        body = jsonMsg.getJSONObject("msgBody");
+        id = (int) body.get("gameID");
+        if (id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
+          setResponsePage(GameView.class);
         }
 
     }

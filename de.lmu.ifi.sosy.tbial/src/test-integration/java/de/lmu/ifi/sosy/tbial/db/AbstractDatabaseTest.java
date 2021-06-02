@@ -63,6 +63,8 @@ public abstract class AbstractDatabaseTest {
     removeGame(id);
   }
 
+  public abstract void setGameHost(int id, String host);
+
   protected abstract void addUser(User user);
 
   protected abstract void createGame(String name, String host, String password, String gamestate, int numplayers);
@@ -176,6 +178,21 @@ public abstract class AbstractDatabaseTest {
     createGame();
     removeGame(id);
     database.getGame("name");
+
+  }
+
+  @Test
+  public void getGameHostAfterChange() {
+    addUser();
+    createGame();
+    Game game = database.getGame("name");
+    assertEquals(game.getHostName(), game.getHostName());
+
+    addUser(new User("AnotherName", "AnotherPass", null));
+    database.setGameHost(id, "AnotherName");
+
+    game = database.getGame("name");
+    assertEquals("AnotherName", game.getHostName());
 
   }
 

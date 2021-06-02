@@ -111,6 +111,20 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
   }
 
   @Override
+  public void setGameHost(int id, String host) {
+    try {
+      Connection connection = dataSource.getConnection();
+      PreparedStatement insert = connection.prepareStatement("UPDATE GAMES SET HOST = ? WHERE ID = ?");
+      insert.setString(1, host);
+      insert.setInt(2, id);
+      insert.executeUpdate();
+      connection.commit();
+    } catch (SQLException ex) {
+      throw new DatabaseException("Error while updating gameState " + id, ex);
+    }
+  }
+
+  @Override
   protected void addUser(User user) {
     Connection con = null;
     PreparedStatement ps = null;

@@ -127,13 +127,14 @@ public class Game implements Serializable {
 //			players.add(player);
 //		}
 		this.gameLobbyGameState();
-		this.generatePlayerAttributes(); // only necessary for debug
+		//	this.generatePlayerAttributes(); // only necessary for debug
 	}
 
 	public void removePlayer(User player) {
 		for (int i = 0; i < this.players.size(); i++) {
 			if (player.equals(players.get(i))) {
 				this.players.set(i, null);
+				break;
 			}
 		}
 //		this.players.remove(player);
@@ -144,7 +145,7 @@ public class Game implements Serializable {
 			if (this.getActivePlayers() > 0) {
 				for (int i = 0; i < this.players.size(); i++) {
 					if (this.players.get(i) != null) {
-						this.setHost(this.players.get(i));
+						propertyChangeSupport.firePropertyChange("GameHostProperty", this, this.players.get(i).getName());
 						break;
 					}
 				}
@@ -249,7 +250,9 @@ public class Game implements Serializable {
 	}
 
 	public void setHost(User host) {
+
 		this.host = host;
+		setHostName(host.getName());
 	}
 
 	public int getPlayersTurn() {

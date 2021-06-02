@@ -36,6 +36,8 @@ public interface Database {
    */
   User register(String name, String password);
 
+  void setGameHost(int id, String host);
+
   //  Game createGame(String name, String host, String password, String gamestate, int numplayers);
 //
   Game getGame(String name);

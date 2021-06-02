@@ -169,8 +169,11 @@ public class SQLDatabase implements Database {
       if (result != null && result.next()) {
         int id = result.getInt(1);
         Game game = new Game(id, name, password, numplayers, gamestate, host);
-        game.setHost(getUser(host));
-        game.addPlayer(getUser(host));
+        User user = getUser(host);
+        game.setHost(user);
+        game.addPlayer(user);
+        user.setGame(game);
+        setUserGame(user.getId(), name);
         connection.commit();
 
         return game;
@@ -212,7 +215,11 @@ public class SQLDatabase implements Database {
       int id = result.getInt("ID");
       String name = result.getString("NAME");
       String password = result.getString("PASSWORD");
-      Game game = getGame(result.getString("GAME"));
+      String gamename = result.getString("GAME");
+      Game game = null;
+      if (!gamename.equals("NULL")) {
+        game = getGame(gamename);
+      }
       return new User(id, name, password, game);
     } else {
       return null;
@@ -229,8 +236,10 @@ public class SQLDatabase implements Database {
       String gamestate = result.getString("GAMESTATE");
       int numplayers = result.getInt("NUMPLAYERS");
       game = new Game(id, name, password, numplayers, gamestate, host);
+      return game;
+    } else {
+      throw new SQLException();
     }
-    return game;
   }
 
   private List<Game> getGamesFromResult(ResultSet result) throws SQLException {
@@ -368,7 +377,7 @@ public class SQLDatabase implements Database {
 
       return prestige;
     } else {
-      return -1;
+      throw new SQLException();
     }
   }
 
@@ -400,7 +409,6 @@ public class SQLDatabase implements Database {
     try (Connection connection = getConnection();
          PreparedStatement query = getHealthQuery(id, connection);
          ResultSet result = query.executeQuery()) {
-
       return getHealthFromResult(result);
     } catch (SQLException e) {
       throw new DatabaseException("Error while querying for user in DB.", e);
@@ -420,7 +428,7 @@ public class SQLDatabase implements Database {
 
       return health;
     } else {
-      return -1;
+      throw new SQLException();
     }
   }
 
@@ -452,7 +460,6 @@ public class SQLDatabase implements Database {
     try (Connection connection = getConnection();
          PreparedStatement query = getRoleQuery(id, connection);
          ResultSet result = query.executeQuery()) {
-
       return getRoleFromResult(result);
     } catch (SQLException e) {
       throw new DatabaseException("Error while querying for user in DB.", e);
@@ -472,7 +479,7 @@ public class SQLDatabase implements Database {
 
       return role;
     } else {
-      return null;
+      throw new SQLException();
     }
   }
 
@@ -524,7 +531,7 @@ public class SQLDatabase implements Database {
 
       return charachter;
     } else {
-      return "";
+      throw new SQLException();
     }
   }
 

@@ -1,7 +1,7 @@
 package de.lmu.ifi.sosy.tbial;
 
+import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
-import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
 
 import java.util.ArrayList;
@@ -108,29 +108,30 @@ public class Lobby extends BasePage {
     }
 
 
-
     private class TabPanel1 extends Panel {
-    	 	/** UID for serialization. */
-      	private static final long serialVersionUID = 1L;
+        /**
+         * UID for serialization.
+         */
+        private static final long serialVersionUID = 1L;
 
         public TabPanel1(String id) {
             super(id);
 
             add(new FeedbackPanel("feedback"));
             IModel<List<User>> playerModel =
-                    (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
+                (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
             PageableListView<User> playerList =
-                    new PageableListView<User>("loggedInUsers", playerModel, 4) {
+                new PageableListView<User>("loggedInUsers", playerModel, 4) {
 
-                        private static final long serialVersionUID = 1L;
+                    private static final long serialVersionUID = 1L;
 
-                        @Override
-                        protected void populateItem(final ListItem<User> listItem) {
+                    @Override
+                    protected void populateItem(final ListItem<User> listItem) {
 
-                            listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
-                            listItem.add(new Label("status", listItem.getModelObject().getJoinedGame()?"inGame":"free"));
-                        }
-                    };
+                        listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
+                        listItem.add(new Label("status", listItem.getModelObject().getJoinedGame() ? "inGame" : "free"));
+                    }
+                };
             Form<?> form = new Form<>("onlinePlayers");
             form.add(playerList);
             form.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
@@ -139,12 +140,16 @@ public class Lobby extends BasePage {
             add(form);
 
         }
-    };
+    }
+
+    ;
 
 
     private class TabPanel2 extends Panel {
-    	 	/** UID for serialization. */
-    		private static final long serialVersionUID = 1L;
+        /**
+         * UID for serialization.
+         */
+        private static final long serialVersionUID = 1L;
 
 
         public TabPanel2(String id) {
@@ -153,7 +158,7 @@ public class Lobby extends BasePage {
             add(new FeedbackPanel("feedback"));
 
             IModel<List<Game>> gameModel =
-                    (IModel<List<Game>>) () -> getTbialApplication().getAvailableGames();
+                (IModel<List<Game>>) () -> getTbialApplication().getAvailableGames();
 
             PageableListView<Game> gameList = new PageableListView<>("availableGames", gameModel, 4) {
                 private static final long serialVersionUID = 1L;
@@ -163,17 +168,17 @@ public class Lobby extends BasePage {
                     listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
                     listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
-                    listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected()  ? "Public" : "Private"));
+                    listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected() ? "Public" : "Private"));
                     listItem.add(new Link<>("joinGame") {
-                    	 	/** UID for serialization. */
-                    		private static final long serialVersionUID = 1L;
+                        /** UID for serialization. */
+                        private static final long serialVersionUID = 1L;
 
 
                         public void onClick() {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
                                 Game game = listItem.getModelObject();
-                                joinGame(game,user);
+                                joinGame(game, user);
                                 listItem.setOutputMarkupId(true);
                                 tabs.remove(2);
                                 tabs.add(tab4);
@@ -185,7 +190,7 @@ public class Lobby extends BasePage {
                         }
                     });
                     User user = ((TBIALSession) getSession()).getUser();
-                    if(user!=null && user.getGame()!= null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
+                    if (user != null && user.getGame() != null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
                     }
                 }
@@ -202,7 +207,9 @@ public class Lobby extends BasePage {
 
 
         }
-    };
+    }
+
+    ;
 
 
     private class TabPanel3 extends Panel {
@@ -283,15 +290,13 @@ public class Lobby extends BasePage {
         }
 
         public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
-            Game game = ((SQLDatabase) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
+            Game game = ((Database) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
             if (game != null) {
                 info("Registration successful! You are now logged in.");
                 LOGGER.info("New game '" + name + "' created");
                 getTbialApplication().addGame(game);
                 User user = ((TBIALSession) getSession()).getUser();
-                user.setJoinedGame(true);
-                user.setGame(game);
-                ((SQLDatabase)getDatabase()).setUserGame(user.getId(),game.getName());
+                joinGame(game, user);
                 tabs.remove(2);
                 tabs.add(tab4);
                 tabbedPanel.setSelectedTab(2);
@@ -301,13 +306,17 @@ public class Lobby extends BasePage {
                 LOGGER.debug("New game '" + name + "' creation failed");
             }
         }
-    };
+    }
+
+    ;
 
 
     private class TabPanel4 extends Panel {
-        /** UID for serialization. */
+        /**
+         * UID for serialization.
+         */
         private static final long serialVersionUID = 1L;
- 
+
         private final AjaxButton leaveButton;
         private final AjaxButton startButton;
         private Game game;
@@ -316,12 +325,12 @@ public class Lobby extends BasePage {
         public TabPanel4(String id) {
             super(id);
 
-            user = ((TBIALSession)getSession()).getUser();
+            user = ((TBIALSession) getSession()).getUser();
             //mini implementation of singleton
             List<Game> appGames = getTbialApplication().getAvailableGames();
             Game uGame = user.getGame();
             for (Game g : appGames) {
-                if(g.equals(uGame)) {
+                if (g.equals(uGame)) {
                     game = g;
                     user.setGame(game);
                     break;
@@ -354,7 +363,7 @@ public class Lobby extends BasePage {
                     game.removePlayer(user);
                     user.setGame(null);
                     user.setJoinedGame(false);
-                    ((SQLDatabase)getDatabase()).setUserGame(user.getId(),"NULL");
+                    ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
                     tabs.remove(2);
                     tabs.add(tab3);
                     setResponsePage(getApplication().getHomePage());
@@ -362,7 +371,8 @@ public class Lobby extends BasePage {
                 }
 
                 @Override
-                protected void onError(AjaxRequestTarget target) {}
+                protected void onError(AjaxRequestTarget target) {
+                }
             };
 
             startButton = new AjaxButton("startbutton") {
@@ -373,11 +383,12 @@ public class Lobby extends BasePage {
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("startbutton");
-                    game.addPlayer(new User("new Player", "pw",null));
+                    game.addPlayer(new User("new Player", "pw", null));
                 }
 
                 @Override
-                protected void onError(AjaxRequestTarget target) {}
+                protected void onError(AjaxRequestTarget target) {
+                }
             };
 
             Form<?> form = new Form<>("form");
@@ -401,7 +412,7 @@ public class Lobby extends BasePage {
                             User user = listItem.getModelObject();
                             user.setGame(null);
                             user.setJoinedGame(false);
-                            ((SQLDatabase)getDatabase()).setUserGame(user.getId(),"NULL");
+                            ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
                             game.removePlayer(listItem.getModelObject());
 //                            setResponsePage(getApplication().getHomePage());
                         }
@@ -412,7 +423,7 @@ public class Lobby extends BasePage {
                             return null;
                         }
                     });
-                    
+
                     listItem.add(removePlayerButton);
                     removePlayerButton.setVisible(false);
                     if (listItem.getModelObject() == null) {
@@ -457,15 +468,16 @@ public class Lobby extends BasePage {
 
         }
 
-    };
+    }
+
+    ;
 
     public void joinGame(Game game, User player) {
         game.addPlayer(player);
         player.setGame(game);
         player.setJoinedGame(true);
-        ((SQLDatabase)getDatabase()).setUserGame(player.getId(),game.getName());
+        ((Database) getDatabase()).setUserGame(player.getId(), game.getName());
     }
-
 
 
 }

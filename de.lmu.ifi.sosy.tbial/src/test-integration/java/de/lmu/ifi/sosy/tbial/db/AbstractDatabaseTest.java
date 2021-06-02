@@ -39,7 +39,7 @@ public abstract class AbstractDatabaseTest {
     id = 1;
     gameState = "newState";
     game = new Game(id, "name", "", 5, null, name);
-    user = new User(name, password, game);
+    user = new User(name, password, null);
     prestige = 10;
     health = 100;
     role = "testRole";
@@ -51,8 +51,8 @@ public abstract class AbstractDatabaseTest {
     addUser(user);
   }
 
-  protected void addGame() {
-    addGame(game);
+  protected void createGame() {
+    createGame(game.getName(), game.getHostName(), game.getPassword(), game.getGameState(), game.getNumPlayers());
   }
 
   protected void setGameState() {
@@ -67,7 +67,7 @@ public abstract class AbstractDatabaseTest {
 
   protected abstract void addUser(User user);
 
-  protected abstract void addGame(Game game);
+  protected abstract void createGame(String name, String host, String password, String gamestate, int numplayers);
 
   protected abstract void removeGame(int id);
 
@@ -129,21 +129,19 @@ public abstract class AbstractDatabaseTest {
     assertThat(user, is(nullValue()));
   }
 
-  @Test
-  public void getGameWhenGameDoesNotExistReturnsNull() {
+  @Test(expected = DatabaseException.class)
+  public void getGameWhenGameDoesNotExistThrowsSQLException() {
     addUser();
-    addGame(new Game(-1, "name", "", 4, "", name));
-    Game game = database.getGame("hi");
-
-    assertThat(game, is(nullValue()));
+    createGame();
+    database.getGame("hi");
   }
 
   @Test
   public void getGameStateAfterSet() {
     addUser();
-    addGame(new Game(1, "name", "", 4, "", name));
+    createGame("name", name, "", "", 4);
+    setGameState(1, "newState");
     Game game = database.getGame("name");
-    game.setGameState("newState");
 
     assertThat(game.getGameState(), is("newState"));
   }
@@ -174,13 +172,12 @@ public abstract class AbstractDatabaseTest {
     assertThat(user, hasNameAndPassword(name, password));
   }
 
-  @Test
-  public void removeGameWhenGameIsRemoved() {
+  @Test(expected = DatabaseException.class)
+  public void removeGameWhenGameIsRemovedThrowsDatabaseException() {
     addUser();
-    addGame();
+    createGame();
     removeGame(id);
-    Game game = database.getGame("name");
-    assertThat(game, is(nullValue()));
+    database.getGame("name");
 
   }
 
@@ -203,9 +200,9 @@ public abstract class AbstractDatabaseTest {
   @Test
   public void getUserGameAndUserExistsInGame() {
     addUser();
-    addGame();
-    User user = database.getUser(name);
+    createGame();
     Game game = database.getGame(name);
+    User user = database.getUser(name);
 
     assertEquals(user.getGame(), game);
   }
@@ -228,5 +225,24 @@ public abstract class AbstractDatabaseTest {
     assertEquals(charachter, newCharacter);
   }
 
+  @Test(expected = DatabaseException.class)
+  public void getUserCharachterUsernotFound() {
+    database.getUserCharacter(-1);
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void getUserRoleUsernotFound() {
+    database.getUserRole(-1);
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void getUserHealthUsernotFound() {
+    database.getUserCharacter(-1);
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void getUserPrestigeUsernotFound() {
+    database.getUserCharacter(-1);
+  }
 
 }

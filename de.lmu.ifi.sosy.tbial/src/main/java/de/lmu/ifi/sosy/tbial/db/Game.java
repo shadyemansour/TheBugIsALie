@@ -289,6 +289,10 @@ public class Game implements Serializable {
 		propertyChangeSupport.firePropertyChange("GameStateProperty", id, gameState);
 	}
 
+	public synchronized void setGameStateInMemoryDatabase(String gameState) {
+		this.gameState = gameState;
+	}
+
 	public int getActivePlayers() {
 		int ap = 0;
 		if (host == null) {

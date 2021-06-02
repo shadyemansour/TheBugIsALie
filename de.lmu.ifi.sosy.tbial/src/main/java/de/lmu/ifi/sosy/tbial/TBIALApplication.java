@@ -184,7 +184,7 @@ public class TBIALApplication extends WebApplication {
         for (User u : loggedInUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
-            ((SQLDatabase) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
+            ((Database) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
             g.setHost(u);
             g.setHostName(u.getName());
             break;

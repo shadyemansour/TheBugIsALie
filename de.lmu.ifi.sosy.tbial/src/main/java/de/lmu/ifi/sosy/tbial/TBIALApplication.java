@@ -148,7 +148,7 @@ public class TBIALApplication extends WebApplication {
    }  */
   public List<Game> getAvailableGames() {
     if (availableGames.isEmpty()) {
-      List<Game> games = ((SQLDatabase) database).getGames();
+      List<Game> games = ((Database) database).getGames();
       for (Game g : games) {
         GameListener listener = new GameListener();
         g.addPropertyChangeListener(listener);
@@ -177,12 +177,12 @@ public class TBIALApplication extends WebApplication {
     @Override
     public void propertyChange(PropertyChangeEvent event) {
       if (event.getPropertyName().equals("GameStateProperty")) {
-        ((SQLDatabase) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
+        ((Database) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("GameHostProperty")) {
         for (User u : loggedInUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
-            ((SQLDatabase) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
+            ((Database) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
             g.setHost(u);
             g.setHostName(u.getName());
             break;
@@ -192,7 +192,7 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {
         Game game = (Game) event.getNewValue();
         removeGame(game);
-        ((SQLDatabase) database).removeGame(game.getId());
+        ((Database) database).removeGame(game.getId());
       }
     }
   }
@@ -204,16 +204,16 @@ public class TBIALApplication extends WebApplication {
 
       if (event.getPropertyName().equals("PrestigeProperty")) {
         int prestige = Integer.parseInt(event.getNewValue().toString());
-        ((SQLDatabase) database).setUserPrestige(id, prestige);
+        ((Database) database).setUserPrestige(id, prestige);
       } else if (event.getPropertyName().equals("HealthProperty")) {
         int health = Integer.parseInt(event.getNewValue().toString());
-        ((SQLDatabase) database).setUserHealth(id, health);
+        ((Database) database).setUserHealth(id, health);
       } else if (event.getPropertyName().equals("RoleProperty")) {
         String role = event.getNewValue().toString();
-        ((SQLDatabase) database).setUserRole(id, role);
+        ((Database) database).setUserRole(id, role);
       } else if (event.getPropertyName().equals("CharacterProperty")) {
         String character = event.getNewValue().toString();
-        ((SQLDatabase) database).setUserCharacter(id, character);
+        ((Database) database).setUserCharacter(id, character);
       }
     }
   }

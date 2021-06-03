@@ -1,7 +1,7 @@
 package de.lmu.ifi.sosy.tbial;
 
+import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
-import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
 
 import java.util.ArrayList;
@@ -299,7 +299,7 @@ public class Lobby extends BasePage {
     }
 
     public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
-      Game game = ((SQLDatabase) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
+      Game game = ((Database) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
       if (game != null) {
         info("Registration successful! You are now logged in.");
         LOGGER.info("New game '" + name + "' created");
@@ -307,7 +307,7 @@ public class Lobby extends BasePage {
         User user = ((TBIALSession) getSession()).getUser();
         user.setJoinedGame(true);
         user.setGame(game);
-        ((SQLDatabase) getDatabase()).setUserGame(user.getId(), game.getName());
+        ((Database) getDatabase()).setUserGame(user.getId(), game.getName());
         tabs.remove(2);
         tabs.add(tab4);
         tabbedPanel.setSelectedTab(2);
@@ -375,7 +375,7 @@ public class Lobby extends BasePage {
           game.removePlayer(user);
           user.setGame(null);
           user.setJoinedGame(false);
-          ((SQLDatabase) getDatabase()).setUserGame(user.getId(), "NULL");
+          ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
           tabs.remove(2);
           tabs.add(tab3);
           setResponsePage(getApplication().getHomePage());
@@ -435,7 +435,7 @@ public class Lobby extends BasePage {
               User user = listItem.getModelObject();
               user.setGame(null);
               user.setJoinedGame(false);
-              ((SQLDatabase) getDatabase()).setUserGame(user.getId(), "NULL");
+              ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
               game.removePlayer(listItem.getModelObject());
               WebSocketManager.getInstance().sendMessage(removePlayerJSONMessage(((TBIALSession) getSession()).getUser().getId(), user.getId()));
             }
@@ -508,7 +508,6 @@ public class Lobby extends BasePage {
       boxedGameLobby.add(gameState).add(form).add(joinedPlayerListContainer);
       add(boxedGameLobby);
 
-
     }
 
   }
@@ -519,7 +518,7 @@ public class Lobby extends BasePage {
     game.addPlayer(player);
     player.setGame(game);
     player.setJoinedGame(true);
-    ((SQLDatabase) getDatabase()).setUserGame(player.getId(), game.getName());
+    ((Database) getDatabase()).setUserGame(player.getId(), game.getName());
   }
 
   private JSONMessage removePlayerJSONMessage(int userId, int targetId) {
@@ -557,7 +556,7 @@ public class Lobby extends BasePage {
           User user = ((TBIALSession) getSession()).getUser();
           user.setGame(null);
           user.setJoinedGame(false);
-          ((SQLDatabase) getDatabase()).setUserGame(user.getId(), "NULL");
+          ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
           game.removePlayer(user);
           tabs.remove(2);
           tabs.add(tab3);

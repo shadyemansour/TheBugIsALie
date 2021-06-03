@@ -94,76 +94,20 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
   }
 
   @Override
-  protected void addGame(Game game) {
-    Connection con = null;
-    PreparedStatement ps = null;
-    try {
-      con = dataSource.getConnection();
-      con.setAutoCommit(true);
+  protected void createGame(String name, String host, String password, String gamestate, int numplayers) {
+    database.createGame(name, host, password, gamestate, numplayers);
 
-      ps =
-          con.prepareStatement(
-              "INSERT INTO GAMES (NAME,HOST,PASSWORD,NUMPLAYERS) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-      ps.setString(1, game.getName());
-      ps.setString(2, game.getHostName());
-      ps.setString(3, game.getPassword());
-      ps.setInt(4, game.getNumPlayers());
-
-      ps.executeUpdate();
-
-      ResultSet generatedIds = ps.getGeneratedKeys();
-      int id = -1;
-      if (generatedIds.next()) {
-        id = generatedIds.getInt(1);
-      } else {
-        throw new SQLException("No id was generated for new row in table Games.");
-      }
-
-      user.setId(id);
-
-    } catch (SQLException ex) {
-      throw new ConfigurationException("msg.exception.ConfigException", ex);
-
-    } finally {
-      try {
-        if (ps != null) {
-          ps.close();
-        }
-        if (con != null) {
-          con.close();
-        }
-      } catch (Exception ex) {
-        ex.printStackTrace(System.err);
-      }
-    }
   }
 
   @Override
   public void removeGame(int id) {
-    try {
-      Connection connection = dataSource.getConnection();
-      PreparedStatement remove = connection.prepareStatement("DELETE FROM GAMES WHERE ID = ?");
-      remove.setInt(1, id);
-      remove.executeUpdate();
-      connection.commit();
-    } catch (SQLException ex) {
-      throw new DatabaseException("Error while updating gameState " + id, ex);
-    }
+    database.removeGame(id);
   }
 
 
   @Override
   public void setGameState(int id, String gameState) {
-    try {
-      Connection connection = dataSource.getConnection();
-      PreparedStatement insert = connection.prepareStatement("UPDATE GAMES SET GAMESTATE = ? WHERE ID = ?");
-      insert.setString(1, gameState);
-      insert.setInt(2, id);
-      insert.executeUpdate();
-      connection.commit();
-    } catch (SQLException ex) {
-      throw new DatabaseException("Error while updating gameState " + id, ex);
-    }
+    database.setGameState(id, gameState);
   }
 
   @Override
@@ -369,6 +313,7 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
     when(rs.getString("NAME")).thenReturn("name");
     when(rs.getString("PASSWORD")).thenReturn("pass");
     when(rs.getInt("ID")).thenReturn(1);
+    when(rs.getString("GAME")).thenReturn("NULL");
     return rs;
   }
 

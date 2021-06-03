@@ -112,46 +112,7 @@ public class Lobby extends BasePage {
     tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
     add(tabbedPanel);
 
-//        new StartGameChecker().start();
   }
-
-//    private class StartGameChecker implements Runnable {
-//  		boolean running = false;
-//  		User user = ((TBIALSession) getSession()).getUser();
-//  		List<Game> games = getTbialApplication().getAvailableGames();
-//  		public void start() {
-//  			running = true;
-//  			new Thread(this).start();
-//  		}
-//  		public void run() {
-//  			while(running) {
-//  				if(user.getGame()!=null) {
-//  					for(Game g : games) {
-//  						if(g.getName().equals(user.getGame().getName())) {
-//  							user.setGame(g);
-//  						}
-//  					}
-//  				}
-//
-//  				if(user!=null && user.getJoinedGame()) {
-//  					System.out.println("joined game");
-//  					if(user.getGame()!=null && user.getGame().getGameState() == "running") {
-//  						System.out.println("running gamestate");
-//  						PageParameters pageParameters = new PageParameters();
-//              pageParameters.add("name", "your own game");
-//              setResponsePage(GameView.class, pageParameters);
-//              running = false;
-//  					}
-//  				}
-//  				try {
-//  					Thread.sleep(6000);
-//  				} catch (InterruptedException e) {
-//  					e.printStackTrace();
-//  				}
-//  				System.out.println("testing thread");
-//  			}
-//  		}
-//  	}
 
   @Override
   protected void onInitialize() {
@@ -318,7 +279,6 @@ public class Lobby extends BasePage {
           if (!publicGame.getModelObject()) {
             pw = password.getModelObject();
           }
-          //info("name: " + name + " pub: " + pub + " pw: " + pw + " host: " + host + " player: " + numplayers);
           performCreation(name, host, pw, gamestate, numplayers);
         }
       };
@@ -374,6 +334,8 @@ public class Lobby extends BasePage {
 
     public TabPanel4(String id) {
       super(id);
+      
+      add(new FeedbackPanel("feedback"));
 
       user = ((TBIALSession) getSession()).getUser();
       //mini implementation of singleton
@@ -432,36 +394,19 @@ public class Lobby extends BasePage {
 
         @Override
         public void onSubmit(AjaxRequestTarget target) {
-          //if(user.equals(game.getHost())) {
-          //    int currentplayers = game.getActivePlayers();
-          //    int numplayers = game.getNumPlayers();
-          //    if(currentplayers < numplayers) {
-          //        info("the game has not enough players");
-          //    } else {
-          //        game.setGameState("running");
-          //        user.setGame(game);
-          //        PageParameters pageParameters = new PageParameters();
-          //        pageParameters.add("gameID", game.getID());
-          //        setResponsePage(GameView.class, pageParameters);
-          //    }
-          //} else {
-          //    info("only the host can start the game");
-          //}
-          System.out.println("startbutton");
-
-          // for testing purpose
-          int currentplayers = game.getActivePlayers();
-          int numplayers = game.getNumPlayers();
-          if (currentplayers < numplayers) {
-            game.addPlayer(new User("new Player", "pw", null));
+          if(user.equals(game.getHost())) {
+              int currentplayers = game.getActivePlayers();
+              int numplayers = game.getNumPlayers();
+              if(currentplayers < numplayers) {
+              		info("the game has not enough players");
+              		//game.addPlayer(new User("new Player", "pw", null));
+              } else {
+                  WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+              }
           } else {
-            game.setGameState("running");
-            //PageParameters pageParameters = new PageParameters();
-            //pageParameters.add("name", "your own game");
-            setResponsePage(GameView.class);
-            WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
-
+          	info("only the host can start the game");
           }
+          System.out.println("startbutton");
         }
 
         @Override

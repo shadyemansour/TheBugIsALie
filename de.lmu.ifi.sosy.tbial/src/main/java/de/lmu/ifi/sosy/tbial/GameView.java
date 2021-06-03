@@ -8,10 +8,8 @@ public class GameView extends BasePage {
 
   private static final long serialVerisonUID = 1L;
 
-  public GameView(PageParameters parameters) {
-    //super(parameters);
-    String name = parameters.get("name").toString();
-    System.out.println(name);
+  public GameView() {
+
   }
 
 }

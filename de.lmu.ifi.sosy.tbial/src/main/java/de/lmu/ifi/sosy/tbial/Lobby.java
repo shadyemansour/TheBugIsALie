@@ -184,7 +184,8 @@ public class Lobby extends BasePage {
                             	
                             	
                             		TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
-                            			"Do you want to leave the current game and join a new game?"){
+                            			"You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '" 
+                            		+ listItem.getModelObject().getName() + "'?"){
                             		
                             			private static final long serialVersionUID = 1L;
                             		

@@ -11,9 +11,10 @@ public class Card implements Serializable {
     private String bottomDesc;
     private boolean playable;
     private boolean visible;
+    private String gameLogic;
 
     public Card(String type, String title, String subTitle, String middleDesc,
-                      String bottomDesc, boolean playable, boolean visible){
+                      String bottomDesc, boolean playable, boolean visible, String gameLogic){
         this.type = type;
         this.title = title;
         this.subTitle = subTitle;
@@ -21,6 +22,7 @@ public class Card implements Serializable {
         this.bottomDesc = bottomDesc;
         this.playable = playable;
         this.visible = visible;
+        this.gameLogic=gameLogic;
 
     }
 
@@ -64,4 +66,16 @@ public class Card implements Serializable {
     public boolean isVisible() {
     	return visible;
     }
+    
+
+    public String getGameLogic() {
+        return gameLogic;
+    }
+
+    public void setGameLogic(String gameLogic) {
+        this.gameLogic = gameLogic;
+    }
+    
+    
+    
 }

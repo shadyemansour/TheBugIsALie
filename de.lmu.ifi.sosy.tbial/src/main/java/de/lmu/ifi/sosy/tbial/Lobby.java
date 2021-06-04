@@ -150,28 +150,28 @@ public class Lobby extends BasePage {
 //            WebMarkupContainer cardtest = new WebMarkupContainer("cardtestcontainer");
 //            add(cardtest);
             
-            Card card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, false);
+            Card card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, false, null);
             CardPanel cardPanel1 = new CardPanel("card-panel1", new Model<Card>(card1));
             add(cardPanel1);
             
-            Card card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true);
+            Card card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
             CardPanel cardPanel2 = new CardPanel("card-panel2", Model.of(card2));
             add(cardPanel2);
             
-            Card card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true);
+            Card card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
             card3.setVisible(!card3.isVisible());
             CardPanel cardPanel3 = new CardPanel("card-panel3", Model.of(card3));
             add(cardPanel3);
             
-            Card card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true);
+            Card card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
             CardPanel cardPanel4 = new CardPanel("card-panel4", new CompoundPropertyModel<Card>(card4));
             add(cardPanel4);
             
-            Card card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true);
+            Card card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
             CardPanel cardPanel5 = new CardPanel("card-panel5", Model.of(card5));
             add(cardPanel5);
             
-            Card card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true);
+            Card card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
             CardPanel cardPanel6 = new CardPanel("card-panel6", Model.of(card6));
             add(cardPanel6);
             

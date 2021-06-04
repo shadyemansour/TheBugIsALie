@@ -28,9 +28,14 @@ public class Game implements Serializable {
 	private String password;
 	private Integer numPlayers; // 4 - 7
 	private List<User> players;
+	private String[] playerNames;
 	private String hostName;
 	private User host;
 	private int playersTurn; // 1 - 7
+	private boolean gamePaused;
+	private boolean gameStarted;
+	private boolean addedPlayers;
+
 
 	//   private  ArrayList<Card> charakterCards = new  ArrayList<Card>(); TODO later (US37)
 
@@ -56,6 +61,8 @@ public class Game implements Serializable {
 		} else {
 			this.pwProtected = true;
 		}
+		this.gameStarted = false;
+		this.gamePaused = false;
 		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>();
 		this.hostName = requireNonNull(hostName);
@@ -64,6 +71,7 @@ public class Game implements Serializable {
 		}
 		this.generatePlayerAttributes();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
+		this.addedPlayers = false;
 	}
 
 	/**
@@ -120,6 +128,9 @@ public class Game implements Serializable {
 		for (int i = 0; i < this.players.size(); i++) {
 			if (this.players.get(i) == null) {
 				this.players.set(i, player);
+				if (!player.getName().equals(hostName)) {
+					propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
+				}
 				break;
 			}
 		}
@@ -130,11 +141,30 @@ public class Game implements Serializable {
 		//	this.generatePlayerAttributes(); // only necessary for debug
 	}
 
+	public void addPlayerCreate(User player) {
+		for (int i = 0; i < this.players.size(); i++) {
+			if (this.players.get(i) == null) {
+				this.players.set(i, player);
+				break;
+			}
+		}
+//		if (!players.contains(player)){
+//			players.add(player);
+//		}
+		//	this.generatePlayerAttributes(); // only necessary for debug
+	}
+
 	public void removePlayer(User player) {
 		for (int i = 0; i < this.players.size(); i++) {
 			if (player.equals(players.get(i))) {
 				this.players.set(i, null);
-				break;
+				if (!gameStarted) {
+					propertyChangeSupport.firePropertyChange("PlayerRemoved", this, player.getName());
+					break;
+				} else {
+					propertyChangeSupport.firePropertyChange("PlayerRemovedGameRunning", this, player.getName());
+					break;
+				}
 			}
 		}
 //		this.players.remove(player);
@@ -213,6 +243,14 @@ public class Game implements Serializable {
 		this.id = requireNonNull(id);
 	}
 
+	public String[] getPlayerNames() {
+		return playerNames;
+	}
+
+	public void setPlayerNames(String[] playerNames) {
+		this.playerNames = playerNames;
+	}
+
 	public Boolean getPwProtected() {
 		return pwProtected;
 	}
@@ -280,6 +318,22 @@ public class Game implements Serializable {
 		return gameState;
 	}
 
+	public boolean isGameStarted() {
+		return gameStarted;
+	}
+
+	public void setGameStarted(boolean gameStarted) {
+		this.gameStarted = gameStarted;
+	}
+
+	public boolean isGamePaused() {
+		return gamePaused;
+	}
+
+	public void setGamePaused(boolean gamePaused) {
+		this.gamePaused = gamePaused;
+	}
+
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
@@ -295,15 +349,21 @@ public class Game implements Serializable {
 			propertyChangeSupport.firePropertyChange("GameHostProperty", this, hostName);
 			addPlayer(host);
 		}
+
 		for (User player : players) {
 			if (player != null) {
 				ap++;
+			}
+			if (!addedPlayers && playerNames != null && playerNames.length > ap) {
+				propertyChangeSupport.firePropertyChange("GameIsNewAddPlayers", this, playerNames);
+				addedPlayers = true;
 			}
 		}
 		return ap;
 	}
 
 	public void startGame() {
+		gameStarted = true;
 		stack = new ArrayList<Card>(); // all action, ability, and stumbling blocks cards
 		playableStack = new ArrayList<Card>();
 		setStack();

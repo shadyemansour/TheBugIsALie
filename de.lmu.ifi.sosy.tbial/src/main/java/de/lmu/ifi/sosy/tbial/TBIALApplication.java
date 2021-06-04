@@ -20,6 +20,7 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
+import org.apache.wicket.util.lang.Bytes;
 
 
 /**
@@ -84,6 +85,7 @@ public class TBIALApplication extends WebApplication {
     mountPage("login", Login.class);
     mountPage("register", Register.class);
     mountPage("lobby", Lobby.class);
+    // mountPage("gameview", new GameView());
   }
 
   /**
@@ -148,7 +150,7 @@ public class TBIALApplication extends WebApplication {
    }  */
   public List<Game> getAvailableGames() {
     if (availableGames.isEmpty()) {
-      List<Game> games = ((SQLDatabase) database).getGames();
+      List<Game> games = ((Database) database).getGames();
       for (Game g : games) {
         GameListener listener = new GameListener();
         g.addPropertyChangeListener(listener);
@@ -177,12 +179,12 @@ public class TBIALApplication extends WebApplication {
     @Override
     public void propertyChange(PropertyChangeEvent event) {
       if (event.getPropertyName().equals("GameStateProperty")) {
-        ((SQLDatabase) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
+        ((Database) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("GameHostProperty")) {
         for (User u : loggedInUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
-            ((SQLDatabase) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
+            ((Database) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
             g.setHost(u);
             g.setHostName(u.getName());
             break;
@@ -192,7 +194,25 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {
         Game game = (Game) event.getNewValue();
         removeGame(game);
-        ((SQLDatabase) database).removeGame(game.getId());
+        ((Database) database).removeGame(game.getId());
+      } else if (event.getPropertyName().equals("PlayerAdded")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerRemoved")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerRemovedGameRunning")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+
+      } else if (event.getPropertyName().equals("GameIsNewAddPlayers")) {
+        Game game = (Game) event.getOldValue();
+        String[] players = (String[]) event.getNewValue();
+        for (int i = 0; i < players.length; i++) {
+          if (!players[i].equals(game.getHostName())) {
+            game.addPlayerCreate(((Database) database).getUser(players[i]));
+          }
+        }
       }
     }
   }

@@ -209,4 +209,47 @@ public class InMemoryDatabase implements Database {
       return null;
     }
   }
+
+  @Override
+  public void removePlayerFromGame(int gameID, String playerName) {
+    //TODO
+  }
+
+  @Override
+  public void addPlayerToGame(int gameID, String playerName) {
+    //TODO
+  }
+
+  @Override
+  public String getGamePlayers(int gameID) {
+    //TODO
+    return null;
+  }
+
+  @Override
+  public void setUserGame(int id, String name) {
+    Game g = null;
+    synchronized (games) {
+      for (Game game : games) {
+        if (name == game.getName()) {
+          g = game;
+          break;
+        }
+      }
+    }
+    synchronized (users) {
+      for (User user : users) {
+        if (id == user.getId()) {
+          user.setGame(g);
+          break;
+
+        }
+      }
+    }
+  }
+
+  @Override
+  public List<Game> getGames() {
+    return games;
+  }
 }

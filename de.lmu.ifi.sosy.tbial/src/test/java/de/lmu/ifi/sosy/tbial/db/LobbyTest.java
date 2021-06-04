@@ -17,6 +17,9 @@ import org.junit.Test;
 public class LobbyTest extends PageTestBase {
   User host;
   Game game;
+  User player2;
+  User player3;
+  User player4;
   WebMarkupContainer tabs;
 
   private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
@@ -39,7 +42,12 @@ public class LobbyTest extends PageTestBase {
         tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer)
         tabbedPanel.get("tabs-container:tabs");
-
+    player2 = new User("test2", "test2pw", null);
+    database.register("test2", "test2pw");
+    player3 = new User("test3", "test3pw", null);
+    database.register("test3", "test3pw");
+    player4 = new User("test4", "test4pw", null);
+    database.register("test4", "test4pw");
 
   }
 
@@ -125,6 +133,28 @@ public class LobbyTest extends PageTestBase {
     form.submit("leavebutton");
     assertTrue(getSession().getUser().getGame() == null);
 
+  }
+  
+  @Test
+  public void startingGame() {
+    game.addPlayer(player2);
+    game.addPlayer(player3);
+    game.addPlayer(player4);
+    game.addPlayer(host);
+
+    tester.assertRenderedPage(Lobby.class);
+    WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("2");
+    AjaxFallbackLink sitesTabLink = (AjaxFallbackLink) siteTab.get("link");
+
+    tester.clickLink(sitesTabLink.getPageRelativePath(), true);
+    FormTester form = tester.newFormTester("tabs:panel:create");
+    form.setValue("name", "testGame");
+    form.submit("submitgame");
+
+    form = tester.newFormTester("tabs:panel:boxedGameLobby:form");
+    form.submit("startbutton");
+
+    //tester.assertRenderedPage(GameView.class);
   }
 
   private void attemptLogin(String name, String password) {

@@ -46,13 +46,6 @@ public class WebSocketManager {
     }
   }
 
-  public void sendMessage(MyTarget msg) {
-    if (null != broadcaster) {
-      broadcaster.broadcastAll(connections.entrySet().iterator().next().getValue().getApplication(), msg);
-    } else {
-      throw new RuntimeException("Unable to send message");
-    }
-  }
 
   //TODO CLIENT -> SERVER
   public void onMessage(WebSocketRequestHandler handler,

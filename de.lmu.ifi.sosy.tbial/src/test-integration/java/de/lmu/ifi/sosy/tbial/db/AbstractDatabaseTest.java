@@ -53,6 +53,7 @@ public abstract class AbstractDatabaseTest {
 
   protected void createGame() {
     createGame(game.getName(), game.getHostName(), game.getPassword(), game.getGameState(), game.getNumPlayers());
+    user.setGame(database.getGame(game.getName()));
   }
 
   protected void setGameState() {
@@ -129,11 +130,11 @@ public abstract class AbstractDatabaseTest {
     assertThat(user, is(nullValue()));
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void getGameWhenGameDoesNotExistThrowsSQLException() {
     addUser();
     createGame();
-    database.getGame("hi");
+    assertEquals(null, database.getGame("hi"));
   }
 
   @Test
@@ -172,12 +173,12 @@ public abstract class AbstractDatabaseTest {
     assertThat(user, hasNameAndPassword(name, password));
   }
 
-  @Test(expected = DatabaseException.class)
-  public void removeGameWhenGameIsRemovedThrowsDatabaseException() {
+  @Test
+  public void removeGameWhenGameIsRemovedReturnsNull() {
     addUser();
     createGame();
     removeGame(id);
-    database.getGame("name");
+    assertEquals(null, database.getGame("name"));
 
   }
 

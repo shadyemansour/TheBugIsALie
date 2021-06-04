@@ -6,7 +6,9 @@ import static java.util.Objects.requireNonNull;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A simple in-memory database using a list for managing users.
@@ -52,6 +54,11 @@ public class InMemoryDatabase implements Database {
       }
       return null;
     }
+  }
+
+  @Override
+  public Set<User> getAllUsers() {
+    return new HashSet<>(users);
   }
 
   @Override
@@ -211,6 +218,44 @@ public class InMemoryDatabase implements Database {
   }
 
   @Override
+  public void removePlayerFromGame(int gameID, String playerName) {
+    //TODO
+  }
+
+  @Override
+  public void addPlayerToGame(int gameID, String playerName) {
+    //TODO
+  }
+
+  @Override
+  public String getGamePlayers(int gameID) {
+    //TODO
+    return null;
+  }
+
+  @Override
+  public void setUserGame(int id, String name) {
+    Game g = null;
+    synchronized (games) {
+      for (Game game : games) {
+        if (name == game.getName()) {
+          g = game;
+          break;
+        }
+      }
+    }
+    synchronized (users) {
+      for (User user : users) {
+        if (id == user.getId()) {
+          user.setGame(g);
+          break;
+
+        }
+      }
+    }
+  }
+
+  @Override
   public Game createGame(String name, String host, String password, String gamestate, int numplayers) {
     Game game = new Game(games.size(), name, password, numplayers, gamestate, host);
     synchronized (games) {
@@ -219,29 +264,9 @@ public class InMemoryDatabase implements Database {
     return game;
   }
 
+
   @Override
   public List<Game> getGames() {
     return games;
-  }
-
-  @Override
-  public void setUserGame(int id, String name) {
-    Game game1 = null;
-    if (!name.equals("NULL")) {
-      synchronized (games) {
-        for (Game game : games) {
-          if (name == game.getName()) {
-            game1 = game;
-          }
-        }
-      }
-    }
-    synchronized (users) {
-      for (User user : users) {
-        if (id == user.getId()) {
-          user.setGame(game1);
-        }
-      }
-    }
   }
 }

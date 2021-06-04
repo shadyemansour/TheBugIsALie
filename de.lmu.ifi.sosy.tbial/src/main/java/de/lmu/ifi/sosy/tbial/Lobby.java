@@ -139,19 +139,19 @@ public class Lobby extends BasePage {
 
             add(new FeedbackPanel("feedback"));
             IModel<List<User>> playerModel =
-                    (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
+                (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
             PageableListView<User> playerList =
-                    new PageableListView<User>("loggedInUsers", playerModel, 4) {
+                new PageableListView<User>("loggedInUsers", playerModel, 4) {
 
-                        private static final long serialVersionUID = 1L;
+                    private static final long serialVersionUID = 1L;
 
-                        @Override
-                        protected void populateItem(final ListItem<User> listItem) {
+                    @Override
+                    protected void populateItem(final ListItem<User> listItem) {
 
-                            listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
-                            listItem.add(new Label("status", listItem.getModelObject().getJoinedGame()?"inGame":"free"));
-                        }
-                    };
+                        listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
+                        listItem.add(new Label("status", listItem.getModelObject().getJoinedGame() ? "inGame" : "free"));
+                    }
+                };
             Form<?> form = new Form<>("onlinePlayers");
             form.add(playerList);
             form.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
@@ -160,7 +160,9 @@ public class Lobby extends BasePage {
             add(form);
 
         }
-    };
+    }
+
+    ;
 
 
     private class TabPanel2 extends Panel {
@@ -197,11 +199,14 @@ public class Lobby extends BasePage {
                             if (!user.getJoinedGame()) {
                                 Game game = listItem.getModelObject();
                                 joinGame(game, user);
-                                listItem.setOutputMarkupId(true);
-                                tabs.remove(2);
-                                tabs.add(tab4);
-                                tabbedPanel.setSelectedTab(2);
-
+                                if (game.isGameStarted()) {
+                                    setResponsePage(new GameView(game));
+                                } else {
+                                    listItem.setOutputMarkupId(true);
+                                    tabs.remove(2);
+                                    tabs.add(tab4);
+                                    tabbedPanel.setSelectedTab(2);
+                                }
                             } else {
 
                             }
@@ -225,7 +230,9 @@ public class Lobby extends BasePage {
 
 
         }
-    };
+    }
+
+    ;
 
 
     private class TabPanel3 extends Panel {
@@ -306,7 +313,7 @@ public class Lobby extends BasePage {
         }
 
         public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
-            Game game = ((Database) getDatabase()).createGame(name, host, pw, gamestate, numplayers);
+            Game game = getDatabase().createGame(name, host, pw, gamestate, numplayers);
             if (game != null) {
                 info("Registration successful! You are now logged in.");
                 LOGGER.info("New game '" + name + "' created");
@@ -322,7 +329,9 @@ public class Lobby extends BasePage {
                 LOGGER.debug("New game '" + name + "' creation failed");
             }
         }
-    };
+    }
+
+    ;
 
 
     private class TabPanel4 extends Panel {
@@ -397,11 +406,24 @@ public class Lobby extends BasePage {
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("startbutton");
-                    game.addPlayer(new User("new Player", "pw",null));
+                    int currentplayers = game.getActivePlayers();
+                    int numplayers = game.getNumPlayers();
+                    if (currentplayers < numplayers) {
+                    } else {
+                        game.setGameState("running");
+//                        PageParameters pageParameters = new PageParameters();
+//                        pageParameters.add("game", game);
+                        game.setGameStarted(true);
+                        setResponsePage(new GameView(game));
+                        WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+
+                    }
+
                 }
 
                 @Override
-                protected void onError(AjaxRequestTarget target) {}
+                protected void onError(AjaxRequestTarget target) {
+                }
             };
 
             Form<?> form = new Form<>("form");
@@ -501,7 +523,9 @@ public class Lobby extends BasePage {
 
         }
 
-    };
+    }
+
+    ;
 
     public void joinGame(Game game, User player) {
         player.setGame(game);

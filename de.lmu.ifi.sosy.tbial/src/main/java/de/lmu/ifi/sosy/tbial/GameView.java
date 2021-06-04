@@ -18,6 +18,9 @@ import org.apache.wicket.protocol.ws.api.message.IWebSocketPushMessage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.json.JSONObject;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 
 @AuthenticationRequired
 public class GameView extends BasePage {
@@ -31,6 +34,7 @@ public class GameView extends BasePage {
 
   public GameView(Game game) {
     this.game = game;
+    this.game.addPropertyChangeListener(new GameViewListener());
     this.instance = this;
 
 
@@ -106,6 +110,16 @@ public class GameView extends BasePage {
             modalWindow.show(target);
           });
         }
+      case "ContinueGame":
+        body = jsonMsg.getJSONObject("msgBody");
+        gameID = (int) body.get("gameID");
+        userID = (int) body.get("userID");
+        if (gameID == game.getId() && userID != ((TBIALSession) getSession()).getUser().getId()) {
+          RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
+            game.setGamePaused(false);
+            modalWindow.close(target);
+          });
+        }
     }
   }
 
@@ -121,6 +135,30 @@ public class GameView extends BasePage {
 
   public static GameView getInstance() {
     return instance;
+  }
+
+  public class GameViewListener implements PropertyChangeListener {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      if (event.getPropertyName().equals("PlayerAdded")) {
+        Game g = (Game) event.getOldValue();
+        if (g.getName().equals(game.getName()) && game.isGamePaused() && game.getActivePlayers() == game.getNumPlayers()) {
+          game.setGamePaused(false);
+          WebSocketManager.getInstance().sendMessage(continueGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+
+        }
+      }
+    }
+  }
+
+  private JSONMessage continueGameJSONMessage(int userId, int gameId) {
+    JSONObject msgBody = new JSONObject();
+    msgBody.put("gameID", gameId);
+    msgBody.put("userID", userId);
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "ContinueGame");
+    msg.put("msgBody", msgBody);
+    return new JSONMessage(msg);
   }
 
 

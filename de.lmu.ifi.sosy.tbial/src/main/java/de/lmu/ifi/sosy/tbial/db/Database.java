@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosy.tbial.db;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * The interface offered by the database (or, more precisely, the data access layer).
@@ -72,4 +73,11 @@ public interface Database {
   void setUserGame(int id, String name);
 
   List<Game> getGames();
+
+  Set<User> getAllUsers();
+
+
+  Game createGame(String name, String host, String password, String gamestate, int numplayers);
+
+
 }

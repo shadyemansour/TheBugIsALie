@@ -35,6 +35,7 @@ public class TBIALApplication extends WebApplication {
   // Use LinkedHashSet to keep iteration order over current users always the same
   private final Set<User> loggedInUsers = Collections.synchronizedSet(new LinkedHashSet<>());
   private final Set<Game> availableGames = Collections.synchronizedSet(new LinkedHashSet<>());
+  private Set<User> allUsers = new HashSet<>();
 
   public static Database getDatabase() {
     return ((TBIALApplication) get()).database;
@@ -48,6 +49,7 @@ public class TBIALApplication extends WebApplication {
   TBIALApplication(Database database) {
     super();
     this.database = database;
+    this.allUsers = database.getAllUsers();
   }
 
   @Override
@@ -136,10 +138,15 @@ public class TBIALApplication extends WebApplication {
     return new ArrayList<>(loggedInUsers);
   }
 
+  public List<User> getAllUsers() {
+    return new ArrayList<>(allUsers);
+  }
+
   public void userLoggedIn(final User pUser) {
     UserListener listener = new UserListener();
     pUser.addPropertyChangeListener(listener);
     loggedInUsers.add(pUser);
+    allUsers.add(pUser);
   }
 
   public void userLoggedOut(final User pUser) {
@@ -182,7 +189,7 @@ public class TBIALApplication extends WebApplication {
       if (event.getPropertyName().equals("GameStateProperty")) {
         ((Database) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("GameHostProperty")) {
-        for (User u : loggedInUsers) {
+        for (User u : allUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
             ((Database) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());

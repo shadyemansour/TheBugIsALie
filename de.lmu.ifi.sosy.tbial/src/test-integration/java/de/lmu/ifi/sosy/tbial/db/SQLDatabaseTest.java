@@ -95,7 +95,9 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
 
   @Override
   protected void createGame(String name, String host, String password, String gamestate, int numplayers) {
-    database.createGame(name, host, password, gamestate, numplayers);
+    Game game1 = database.createGame(name, host, password, gamestate, numplayers);
+    User user = database.getUser(host);
+    database.setUserGame(user.getId(), name);
 
   }
 

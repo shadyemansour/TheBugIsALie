@@ -6,7 +6,9 @@ import static java.util.Objects.requireNonNull;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A simple in-memory database using a list for managing users.
@@ -52,6 +54,11 @@ public class InMemoryDatabase implements Database {
       }
       return null;
     }
+  }
+
+  @Override
+  public Set<User> getAllUsers() {
+    return new HashSet<>(users);
   }
 
   @Override
@@ -247,6 +254,16 @@ public class InMemoryDatabase implements Database {
       }
     }
   }
+
+  @Override
+  public Game createGame(String name, String host, String password, String gamestate, int numplayers) {
+    Game game = new Game(games.size(), name, password, numplayers, gamestate, host);
+    synchronized (games) {
+      games.add(game);
+    }
+    return game;
+  }
+
 
   @Override
   public List<Game> getGames() {

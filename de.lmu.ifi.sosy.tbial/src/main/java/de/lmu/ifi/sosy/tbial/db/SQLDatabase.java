@@ -4,10 +4,7 @@ import de.lmu.ifi.sosy.tbial.ConfigurationException;
 import de.lmu.ifi.sosy.tbial.DatabaseException;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -172,8 +169,10 @@ public class SQLDatabase implements Database {
       if (result != null && result.next()) {
         int id = result.getInt(1);
         Game game = new Game(id, name, password, numplayers, gamestate, host);
-        game.setHost(getUser(host));
-        game.addPlayer(getUser(host));
+        User user = getUser(host);
+        game.setHost(user);
+        //game.addPlayer(getUser(host));
+
         connection.commit();
         connection.close();
         return game;
@@ -185,6 +184,31 @@ public class SQLDatabase implements Database {
     } catch (SQLException ex) {
       throw new DatabaseException("Error while creating game " + name, ex);
     }
+  }
+
+  @Override
+  public Set<User> getAllUsers() {
+
+    try (Connection connection = getConnection();
+         PreparedStatement query = connection.prepareStatement("SELECT * FROM USERS");
+         ResultSet result = query.executeQuery()) {
+      return getAllUsersFromResult(result);
+    } catch (SQLException e) {
+      throw new DatabaseException("Error while querying for user in DB.", e);
+    }
+  }
+
+  private Set<User> getAllUsersFromResult(ResultSet result) throws SQLException {
+    Set<User> users = new HashSet<>();
+    while (result.next()) {
+      int id = result.getInt("ID");
+      String name = result.getString("NAME");
+      String password = result.getString("PASSWORD");
+      Game game = getGame(result.getString("GAME"));
+      users.add(new User(id, name, password, game));
+    }
+    return users;
+
   }
 
   @Override
@@ -468,7 +492,7 @@ public class SQLDatabase implements Database {
       int prestige = result.getInt("PRESTIGE");
       return prestige;
     } else {
-      return -1;
+      throw new SQLException();
     }
   }
 
@@ -520,7 +544,7 @@ public class SQLDatabase implements Database {
       int health = result.getInt("HEALTH");
       return health;
     } else {
-      return -1;
+      throw new SQLException();
     }
   }
 
@@ -572,7 +596,7 @@ public class SQLDatabase implements Database {
       String role = result.getString("ROLE");
       return role;
     } else {
-      return null;
+      throw new SQLException();
     }
   }
 
@@ -626,7 +650,7 @@ public class SQLDatabase implements Database {
 
       return charachter;
     } else {
-      return "";
+      throw new SQLException();
     }
   }
 

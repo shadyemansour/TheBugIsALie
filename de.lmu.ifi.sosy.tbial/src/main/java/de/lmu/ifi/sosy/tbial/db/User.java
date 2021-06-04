@@ -25,8 +25,12 @@ public class User implements Serializable {
   
   private int prestige;
   private int health;
-  private String role;
+  private Card characterCard;
+  private Card roleCard;
+  // remove String role, character later
+  private String role; 
   private String character;
+  
   private List<Card> hand= new ArrayList<Card>();
 
 
@@ -45,6 +49,8 @@ public class User implements Serializable {
     this.game = game;
     this.prestige=-1;
     this.health=-1;
+    this.roleCard=null;
+    this.characterCard=null;
     this.role = null;
     this.character = null;
     this.hand=null;
@@ -105,6 +111,22 @@ public class User implements Serializable {
       return health;
   }
   
+  
+
+  public Card getRoleCard(){return this.roleCard;}
+
+  public void setRoleCard(Card role){this.roleCard=role;}
+
+
+  public void setCharacterCard(Card character) {
+      this.characterCard = character;
+  }
+
+  public Card getCharacterCard() {
+      return characterCard;
+  }
+
+ 
   public String getRole() {
 		return role;
 	}

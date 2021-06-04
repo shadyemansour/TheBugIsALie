@@ -62,9 +62,14 @@ public interface Database {
 
   String getUserCharacter(int id);
 
-  Game createGame(String name, String host, String password, String gamestate, int numplayers);
+  void removePlayerFromGame(int gameID, String playerName);
 
-  List<Game> getGames();
+  void addPlayerToGame(int gameID, String playerName);
+
+  String getGamePlayers(int gameID);
+
 
   void setUserGame(int id, String name);
+
+  List<Game> getGames();
 }

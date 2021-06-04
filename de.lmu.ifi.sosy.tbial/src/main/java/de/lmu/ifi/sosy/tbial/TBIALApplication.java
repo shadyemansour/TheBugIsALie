@@ -4,7 +4,6 @@ import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
-import de.lmu.ifi.sosy.tbial.networking.BugWebSocketResource;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.beans.PropertyChangeEvent;
@@ -21,6 +20,7 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
+import org.apache.wicket.util.lang.Bytes;
 
 
 /**
@@ -66,11 +66,11 @@ public class TBIALApplication extends WebApplication {
 
   @Override
   protected void init() {
+    super.init();
     initMarkupSettings();
     initPageMounts();
     initAuthorization();
     // initExceptionHandling();
-    getSharedResources().add(BugWebSocketResource.NAME, new BugWebSocketResource());
   }
 
   private void initMarkupSettings() {
@@ -86,6 +86,7 @@ public class TBIALApplication extends WebApplication {
     mountPage("login", Login.class);
     mountPage("register", Register.class);
     mountPage("lobby", Lobby.class);
+    // mountPage("gameview", new GameView());
   }
 
   /**
@@ -195,6 +196,24 @@ public class TBIALApplication extends WebApplication {
         Game game = (Game) event.getNewValue();
         removeGame(game);
         ((Database) database).removeGame(game.getId());
+      } else if (event.getPropertyName().equals("PlayerAdded")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerRemoved")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerRemovedGameRunning")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+
+      } else if (event.getPropertyName().equals("GameIsNewAddPlayers")) {
+        Game game = (Game) event.getOldValue();
+        String[] players = (String[]) event.getNewValue();
+        for (int i = 0; i < players.length; i++) {
+          if (!players[i].equals(game.getHostName())) {
+            game.addPlayerCreate(((Database) database).getUser(players[i]));
+          }
+        }
       }
     }
   }

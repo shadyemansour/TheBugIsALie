@@ -211,37 +211,45 @@ public class InMemoryDatabase implements Database {
   }
 
   @Override
-  public Game createGame(String name, String host, String password, String gamestate, int numplayers) {
-    Game game = new Game(games.size(), name, password, numplayers, gamestate, host);
-    synchronized (games) {
-      games.add(game);
-    }
-    return game;
+  public void removePlayerFromGame(int gameID, String playerName) {
+    //TODO
   }
 
   @Override
-  public List<Game> getGames() {
-    return games;
+  public void addPlayerToGame(int gameID, String playerName) {
+    //TODO
+  }
+
+  @Override
+  public String getGamePlayers(int gameID) {
+    //TODO
+    return null;
   }
 
   @Override
   public void setUserGame(int id, String name) {
-    Game game1 = null;
-    if (!name.equals("NULL")) {
-      synchronized (games) {
-        for (Game game : games) {
-          if (name == game.getName()) {
-            game1 = game;
-          }
+    Game g = null;
+    synchronized (games) {
+      for (Game game : games) {
+        if (name == game.getName()) {
+          g = game;
+          break;
         }
       }
     }
     synchronized (users) {
       for (User user : users) {
         if (id == user.getId()) {
-          user.setGame(game1);
+          user.setGame(g);
+          break;
+
         }
       }
     }
+  }
+
+  @Override
+  public List<Game> getGames() {
+    return games;
   }
 }

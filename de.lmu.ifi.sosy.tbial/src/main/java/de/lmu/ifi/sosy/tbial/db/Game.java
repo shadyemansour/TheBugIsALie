@@ -129,7 +129,11 @@ public class Game implements Serializable {
 			if (this.players.get(i) == null) {
 				this.players.set(i, player);
 				if (!player.getName().equals(hostName)) {
-					propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
+					if (!gameStarted) {
+						propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
+					} else {
+						propertyChangeSupport.firePropertyChange("PlayerAddedGameRunning", this, this.players.get(i).getName());
+					}
 				}
 				break;
 			}

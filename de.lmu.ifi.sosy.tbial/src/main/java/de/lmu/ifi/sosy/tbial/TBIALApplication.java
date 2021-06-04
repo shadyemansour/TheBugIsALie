@@ -206,6 +206,12 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("PlayerAdded")) {
         Game game = (Game) event.getOldValue();
         ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerAddedGameRunning")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+        if (game.getActivePlayers() == game.getNumPlayers()) {
+
+        }
       } else if (event.getPropertyName().equals("PlayerRemoved")) {
         Game game = (Game) event.getOldValue();
         ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());

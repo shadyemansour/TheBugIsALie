@@ -116,7 +116,6 @@ public class GameView extends BasePage {
         userID = (int) body.get("userID");
         if (gameID == game.getId() && userID != ((TBIALSession) getSession()).getUser().getId()) {
           RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
-            game.setGamePaused(false);
             modalWindow.close(target);
           });
         }
@@ -140,9 +139,9 @@ public class GameView extends BasePage {
   public class GameViewListener implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-      if (event.getPropertyName().equals("PlayerAdded")) {
+      if (event.getPropertyName().equals("PlayerAddedGameRunning")) {
         Game g = (Game) event.getOldValue();
-        if (g.getName().equals(game.getName()) && game.isGamePaused() && game.getActivePlayers() == game.getNumPlayers()) {
+        if (g.getName().equals(game.getName()) && game.getActivePlayers() == game.getNumPlayers()) {
           game.setGamePaused(false);
           WebSocketManager.getInstance().sendMessage(continueGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
 

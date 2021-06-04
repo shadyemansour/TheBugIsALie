@@ -139,22 +139,18 @@ div.nav a li label username {
 }
 
 div.gameboard {
-	position: relative;
-	width: 1500px;
-	height: 1000px;
+	display: block;
 	color: white;
-	background: transparent url('images/boardBackground.png') no-repeat;
+	/* background: transparent url('images/boardBackground.png') no-repeat; */
+	background-image: url('images/boardBackground.png');
 }
 div.chatfield {
-	position: realtive;
 	background-color: gray;
-	width: 1500px;
 	height: 300px;
 }
 div.playerTop {
-	position: absolute;
-	top: 20px;
-  	left: 520px;
+	position: relative;
+   	left: 35%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -165,9 +161,9 @@ div.playerTop {
     -webkit-transform: rotate(180deg);
 }
 div.playerTopLeft {
-	position: absolute;
-	top: 20px;
-  	left: 290px;
+	position: relative;
+	display: inline-block;
+  	left: 19%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -178,9 +174,9 @@ div.playerTopLeft {
     -webkit-transform: rotate(180deg);
 }
 div.playerTopRight {
-	position: absolute;
-	top: 20px;
-  	left: 760px;
+	position: relative;
+	display: inline-block;
+  	left: 19%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -191,9 +187,9 @@ div.playerTopRight {
     -webkit-transform: rotate(180deg);
 }
 div.playerLeft {
-	position: absolute;
-    top: 370px;
-  	left: -90px;
+	position: relative;
+    top: 125px;
+  	left: -6%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -204,9 +200,9 @@ div.playerLeft {
     -webkit-transform: rotate(90deg);
 }
 div.playerLeftTop {
-	position: absolute;
-    top: 140px;
-  	left: -90px;
+	position: relative;
+    top: -80px;
+  	left: -6%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -217,9 +213,9 @@ div.playerLeftTop {
     -webkit-transform: rotate(90deg);
 }
 div.playerLeftBottom {
-	position: absolute;
-    bottom: 140px;
-  	left: -90px;
+	position: relative;
+    top: 130px;
+  	left: -6%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -230,9 +226,9 @@ div.playerLeftBottom {
     -webkit-transform: rotate(90deg);
 }
 div.playerRight {
-	position: absolute;
-    top: 370px;
-  	right: -90px;
+	position: relative;
+    bottom: 125px;
+  	left: 74%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -243,9 +239,9 @@ div.playerRight {
     -webkit-transform: rotate(-90deg);
 }
 div.playerRightTop {
-	position: absolute;
-    top: 140px;
-  	right: -90px;
+	position: relative;
+    top: -580px;
+  	left: 74.5%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -256,9 +252,9 @@ div.playerRightTop {
     -webkit-transform: rotate(90deg);
 }
 div.playerRightBottom {
-	position: absolute;
-    bottom: 140px;
-  	right: -90px;
+	position: relative;
+	top: -370px;
+  	left: 74.5%;
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
@@ -269,11 +265,20 @@ div.playerRightBottom {
     -webkit-transform: rotate(90deg);
 }
 div.playerBottom {
-	position: absolute;
-    bottom: 20px;
-  	left: 450px;
+	position: relative;
+  	left: 30%;
   	width: 600px;
   	height: 300px;
+  	bottom: 10px;
+  	border: 1px solid white;
+}
+div.playerBottom2 {
+	position: absolute;
+	top: 900px;
+  	left: 30%;
+  	width: 600px;
+  	height: 300px;
+  	bottom: 10px;
   	border: 1px solid white;
 }
 div.cards{

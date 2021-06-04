@@ -233,16 +233,15 @@ public class Lobby extends BasePage {
             add(stack);
       
             /*
-             * card hand
+             * card drop area
              */
-            List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
-            cardHandModels.add(Model.of(card1));
-            cardHandModels.add(Model.of(card2));
-            cardHandModels.add(Model.of(card3));
-            cardHandModels.add(Model.of(card4));
-            cardHandModels.add(Model.of(card5));
-//            cardHandModels.add(Model.of(card6));
+            List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+            cardDropModels.add(Model.of(card4));
+            cardDropModels.add(Model.of(card2));
             
+            /*
+             * player card container includes card-drop-area and card-hand 
+             */
             WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container");
             add(playerCardContainer);
             RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area") {
@@ -250,11 +249,11 @@ public class Lobby extends BasePage {
 
 							@Override
 							protected Iterator<IModel<Card>> getItemModels() {
-								return cardHandModels.iterator();
+								return cardDropModels.iterator();
 							}
 							int width = 300;
 							
-							int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
+							int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
 							int stepSize = posLeft + 50;
 
 							@Override
@@ -268,6 +267,17 @@ public class Lobby extends BasePage {
             };
             cardDropArea.setOutputMarkupId(true);
             playerCardContainer.add(cardDropArea);
+            
+            /*
+             * card hand
+             */
+            List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
+            cardHandModels.add(Model.of(card1));
+            cardHandModels.add(Model.of(card2));
+            cardHandModels.add(Model.of(card3));
+            cardHandModels.add(Model.of(card4));
+            cardHandModels.add(Model.of(card5));
+//            cardHandModels.add(Model.of(card6));
             
             RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand") {
 							private static final long serialVersionUID = 1L;
@@ -292,6 +302,72 @@ public class Lobby extends BasePage {
             };
             cardHand.setOutputMarkupId(true);
             playerCardContainer.add(cardHand);
+            
+            /*
+             * includes cards for second player-card-container
+             */
+            List<IModel<Card>> cardDropModels2 = new ArrayList<IModel<Card>>();
+            cardDropModels2.add(Model.of(card5));
+            
+            /*
+             * second player-card-container includes card-drop-area and card-hand 
+             * this is for testing drag and drop
+             */
+            WebMarkupContainer playerCardContainer2 = new WebMarkupContainer("player-card-container2");
+            add(playerCardContainer2);
+            RefreshingView<Card> cardDropArea2 = new RefreshingView<Card>("card-drop-area2") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected Iterator<IModel<Card>> getItemModels() {
+								return cardDropModels2.iterator();
+							}
+							int width = 300;
+							
+							int posLeft = (width - cardDropModels2.size() * 50) / (cardDropModels2.size() + 1);
+							int stepSize = posLeft + 50;
+
+							@Override
+							protected void populateItem(Item<Card> item) {
+								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+								posLeft += stepSize;
+//								posTop += 2;
+								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+							}
+            	
+            };
+            cardDropArea2.setOutputMarkupId(true);
+            playerCardContainer2.add(cardDropArea2);
+
+            List<IModel<Card>> cardHandModels2 = new ArrayList<IModel<Card>>();
+            cardHandModels2.add(Model.of(card2));
+            cardHandModels2.add(Model.of(card3));
+            cardHandModels2.add(Model.of(card4));
+            cardHandModels2.add(Model.of(card5));
+            
+            RefreshingView<Card> cardHand2 = new RefreshingView<Card>("card-hand2") {
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							protected Iterator<IModel<Card>> getItemModels() {
+								return cardHandModels2.iterator();
+							}
+							int width = 300;
+							
+							int posLeft = (width - cardHandModels2.size() * 50) / (cardHandModels2.size() + 1);
+							int stepSize = posLeft + 50;
+
+							@Override
+							protected void populateItem(Item<Card> item) {
+								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+								posLeft += stepSize;
+//								posTop += 2;
+								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+							}
+            	
+            };
+            cardHand2.setOutputMarkupId(true);
+            playerCardContainer2.add(cardHand2);
 
         }
     };

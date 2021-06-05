@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial;
 
+import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
@@ -37,7 +38,6 @@ public class GameView extends BasePage {
     this.game.addPropertyChangeListener(new GameViewListener());
     this.instance = this;
 
-
     add(new WebSocketBehavior() {
       private static final long serialVersionUID = 1L;
 
@@ -74,7 +74,7 @@ public class GameView extends BasePage {
         game.removePlayer(user);
         user.setGame(null);
         user.setJoinedGame(false);
-        ((SQLDatabase) getDatabase()).setUserGame(user.getId(), "NULL");
+        ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
         WebSocketManager.getInstance().sendMessage(gamePausedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
         setResponsePage(Lobby.class);
       }
@@ -88,6 +88,15 @@ public class GameView extends BasePage {
     form.add(leaveButton).add(modalWindow);
     form.setOutputMarkupId(true);
     add(form);
+
+//    if(!game.getGameState().equals("running")){
+//      RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
+//        game.setGamePaused(true);
+//        modalWindow.setContent(new GamePausedPanel(modalWindow.getContentId()));
+//        modalWindow.setVisible(true);
+//        modalWindow.show(target);
+//      });
+//    }
   }
 
 

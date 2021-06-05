@@ -56,12 +56,13 @@ public class Game implements Serializable {
 		this.name = requireNonNull(name);
 		this.password = password;
 		this.gameState = gameState;
+		this.gameStarted = gameState.equals("running");
+
 		if (password.length() == 0) {
 			this.pwProtected = false;
 		} else {
 			this.pwProtected = true;
 		}
-		this.gameStarted = false;
 		this.gamePaused = false;
 		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>();

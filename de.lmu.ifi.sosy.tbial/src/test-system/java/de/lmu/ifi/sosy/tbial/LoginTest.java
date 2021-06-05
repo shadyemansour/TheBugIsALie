@@ -17,7 +17,9 @@ import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 
-/** Simple test using the WicketTester */
+/**
+ * Simple test using the WicketTester
+ */
 public class LoginTest extends PageTestBase {
   @Before
   public void setUp() {
@@ -50,18 +52,6 @@ public class LoginTest extends PageTestBase {
     tester.assertLabel("users", "1 player online.");
   }
 
-  private void attemptLogin(String name, String password) {
-    // start and render the test page
-    tester.startPage(Login.class);
-
-    // assert rendered page class
-    tester.assertRenderedPage(Login.class);
-
-    FormTester form = tester.newFormTester("login");
-    form.setValue("name", name);
-    form.setValue("password", password);
-    form.submit("loginbutton");
-  }
 
   @Test
   public void loginErrorUnknownUser() {
@@ -97,7 +87,7 @@ public class LoginTest extends PageTestBase {
     assertNotNull(session);
     assertTrue(session.isSignedIn());
     // check that the first user is logged in
-    assertThat(session.getUser(), equalTo(new User("testuser", "testpassword",null)));
+    assertThat(session.getUser(), equalTo(new User("testuser", "testpassword", null)));
 
     attemptLogin("testuser2", "testpassword2");
 
@@ -105,7 +95,7 @@ public class LoginTest extends PageTestBase {
     assertNotNull(session);
     assertTrue(session.isSignedIn());
     // check that the second user is logged in // TODO why not keep first user?
-    assertThat(session.getUser(), equalTo(new User("testuser2", "testpassword2",null)));
+    assertThat(session.getUser(), equalTo(new User("testuser2", "testpassword2", null)));
 
     assertThat(usersLoggedIn(), is(2));
 

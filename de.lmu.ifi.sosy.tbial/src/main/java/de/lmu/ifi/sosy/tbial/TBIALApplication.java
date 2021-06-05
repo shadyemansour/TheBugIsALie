@@ -54,6 +54,7 @@ public class TBIALApplication extends WebApplication {
 
   @Override
   public Class<Lobby> getHomePage() {
+
     return Lobby.class;
   }
 

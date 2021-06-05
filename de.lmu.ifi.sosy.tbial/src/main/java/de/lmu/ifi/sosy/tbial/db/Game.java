@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosy.tbial.db;
 
 import org.apache.wicket.model.IModel;
+
 import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
@@ -16,8 +17,10 @@ import java.util.Collections;
 
 public class Game implements Serializable {
 
-  /** UID for serialization. */
-  private static final long serialVersionUID = 1L;
+	/**
+	 * UID for serialization.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private String name;
 	private int id;
@@ -25,23 +28,29 @@ public class Game implements Serializable {
 	private String password;
 	private Integer numPlayers; // 4 - 7
 	private List<User> players;
+	private String[] playerNames;
 	private String hostName;
 	private User host;
 	private int playersTurn; // 1 - 7
+	private boolean gamePaused;
+	private boolean gameStarted;
+	private boolean addedPlayers;
+
+
+	//   private  ArrayList<Card> charakterCards = new  ArrayList<Card>(); TODO later (US37)
 
 	private  List<Card> roleCards;
     private List<Card> characterCards;
     private List<Card> stack; // all action, ability, and stumbling blocks cards
     private List<Card> playableStack; // only bugs, exuses, solutions playable
 
-    //    private  List<Card> heap = new  ArrayList<Card>(); 
 
-	
-//	private GameState state; 
+	//    private  List<Card> heap = new  ArrayList<Card>(); TODO later
+
+	//	private GameState state;
 	private volatile String gameState; // waiting for players, ready, playing, stopped, game over
 	protected PropertyChangeSupport propertyChangeSupport;
 
-	
 	public Game(int id, String name, String password, Integer numPlayers, String gameState, String hostName) {
 		this.id = id;
 		this.name = requireNonNull(name);
@@ -52,16 +61,19 @@ public class Game implements Serializable {
 		} else {
 			this.pwProtected = true;
 		}
+		this.gameStarted = false;
+		this.gamePaused = false;
 		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>();
 		this.hostName = requireNonNull(hostName);
-		for (int i=0; i<numPlayers; i++) {
+		for (int i = 0; i < numPlayers; i++) {
 			this.players.add(null);
 		}
 		this.generatePlayerAttributes();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
+		this.addedPlayers = false;
 	}
-	
+
 	/**
 	 * method created for setup of us7
 	 * player attributes should be generated random for real game
@@ -74,7 +86,7 @@ public class Game implements Serializable {
 		String consultantRole = "Consultant"; // only 1 card exists
 		String honestDeveloperRole = "Honest Developer"; // 2 cards exist
 		String evilCodeMonkeyRole = "Evil Code Monkey"; // 3 cards exist
-		
+
 		String markZuckerbergCharacter = "Mark Zuckerberg";
 		String tomAndersonCharacter = "Tom Anderson";
 		String jeffTaylorCharacter = "Jeff Taylor";
@@ -82,28 +94,28 @@ public class Game implements Serializable {
 		String larryEllisonCharacter = "Larry Ellison";
 		String kentBeckCharacter = "Kent Beck";
 		String steveJobsCharacter = "Steve Jobs";
-		
-		for (int i=0; i<this.players.size(); i++) {
+
+		for (int i = 0; i < this.players.size(); i++) {
 			if (this.players.get(i) != null) {
-				if (i==0) {
+				if (i == 0) {
 					this.players.get(i).setRole(managerRole);
 					this.players.get(i).setCharacter(markZuckerbergCharacter);
-				} else if (i==1) {
+				} else if (i == 1) {
 					this.players.get(i).setRole(consultantRole);
 					this.players.get(i).setCharacter(tomAndersonCharacter);
-				} else if (i==2) {
+				} else if (i == 2) {
 					this.players.get(i).setRole(honestDeveloperRole);
 					this.players.get(i).setCharacter(jeffTaylorCharacter);
-				} else if (i==3) {
+				} else if (i == 3) {
 					this.players.get(i).setRole(evilCodeMonkeyRole);
 					this.players.get(i).setCharacter(larryPageCharacter);
-				} else if (i==4) {
+				} else if (i == 4) {
 					this.players.get(i).setRole(honestDeveloperRole);
 					this.players.get(i).setCharacter(larryEllisonCharacter);
-				} else if (i==5) {
+				} else if (i == 5) {
 					this.players.get(i).setRole(evilCodeMonkeyRole);
 					this.players.get(i).setCharacter(kentBeckCharacter);
-				} else if (i==6) {
+				} else if (i == 6) {
 					this.players.get(i).setRole(evilCodeMonkeyRole);
 					this.players.get(i).setCharacter(steveJobsCharacter);
 				}
@@ -111,7 +123,6 @@ public class Game implements Serializable {
 				this.players.get(i).setPrestige(1);
 			}
 		}
-	
 	}
 	
 	
@@ -120,7 +131,24 @@ public class Game implements Serializable {
 	
 
 	public void addPlayer(User player) {
-		for (int i=0; i<this.players.size(); i++) {
+		for (int i = 0; i < this.players.size(); i++) {
+			if (this.players.get(i) == null) {
+				this.players.set(i, player);
+				if (!player.getName().equals(hostName)) {
+					propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
+				}
+				break;
+			}
+		}
+//		if (!players.contains(player)){
+//			players.add(player);
+//		}
+		this.gameLobbyGameState();
+		//	this.generatePlayerAttributes(); // only necessary for debug
+	}
+
+	public void addPlayerCreate(User player) {
+		for (int i = 0; i < this.players.size(); i++) {
 			if (this.players.get(i) == null) {
 				this.players.set(i, player);
 				break;
@@ -129,25 +157,31 @@ public class Game implements Serializable {
 //		if (!players.contains(player)){
 //			players.add(player);
 //		}
-		this.gameLobbyGameState();
-		this.generatePlayerAttributes(); // only necessary for debug
+		//	this.generatePlayerAttributes(); // only necessary for debug
 	}
 
 	public void removePlayer(User player) {
-		for (int i=0; i<this.players.size(); i++) {
+		for (int i = 0; i < this.players.size(); i++) {
 			if (player.equals(players.get(i))) {
 				this.players.set(i, null);
+				if (!gameStarted) {
+					propertyChangeSupport.firePropertyChange("PlayerRemoved", this, player.getName());
+					break;
+				} else {
+					propertyChangeSupport.firePropertyChange("PlayerRemovedGameRunning", this, player.getName());
+					break;
+				}
 			}
 		}
 //		this.players.remove(player);
 		this.gameLobbyGameState();
-		
+
 		// handle if host leaves the game
 		if (player.equals(host)) {
 			if (this.getActivePlayers() > 0) {
-				for (int i=0; i<this.players.size(); i++) {
+				for (int i = 0; i < this.players.size(); i++) {
 					if (this.players.get(i) != null) {
-						this.setHost(this.players.get(i));
+						propertyChangeSupport.firePropertyChange("GameHostProperty", this, this.players.get(i).getName());
 						break;
 					}
 				}
@@ -157,10 +191,10 @@ public class Game implements Serializable {
 			}
 		}
 	}
-	
+
 	private Integer calcOpenSpots() {
 		int openSpots = 0;
-		for (int i=0; i<this.players.size(); i++) {
+		for (int i = 0; i < this.players.size(); i++) {
 			if (this.players.get(i) == null) {
 				openSpots++;
 			}
@@ -168,7 +202,7 @@ public class Game implements Serializable {
 //		return numPlayers-players.size();
 		return openSpots;
 	}
-	
+
 	private void gameLobbyGameState() {
 		int openSpots = this.calcOpenSpots();
 		if (openSpots > 1) {
@@ -198,42 +232,55 @@ public class Game implements Serializable {
 	public int hashCode() {
 		return Objects.hash(name, password);
 	}
-	
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = requireNonNull(name);
 	}
-	
+
 	public int getId() {
 		return id;
 	}
+
 	void setId(int id) {
 		this.id = requireNonNull(id);
 	}
-	
+
+	public String[] getPlayerNames() {
+		return playerNames;
+	}
+
+	public void setPlayerNames(String[] playerNames) {
+		this.playerNames = playerNames;
+	}
+
 	public Boolean getPwProtected() {
 		return pwProtected;
 	}
+
 	public void setPwProtected(Boolean pwProtected) {
 		this.pwProtected = pwProtected;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public Integer getNumPlayers() {
 		return numPlayers;
 	}
+
 	public void setNumPlayers(Integer numPlayers) {
 		this.numPlayers = requireNonNull(numPlayers);
 	}
-	
+
 	public String getHostName() {
 		return hostName;
 	}
@@ -245,58 +292,89 @@ public class Game implements Serializable {
 	public User getHost() {
 		return host;
 	}
+
 	public void setHost(User host) {
+
 		this.host = host;
+		setHostName(host.getName());
 	}
 
 	public int getPlayersTurn() {
 		return playersTurn;
 	}
+
 	public void setPlayersTurn(int playersTurn) {
 		this.playersTurn = playersTurn;
 	}
-	
+
 	public List<User> getPlayers() {
-		if (host == null){
-			propertyChangeSupport.firePropertyChange("GameHostProperty",this, hostName);
+		if (host == null) {
+			propertyChangeSupport.firePropertyChange("GameHostProperty", this, hostName);
 			addPlayer(host);
 		}
 		return players;
 
 	}
+
 	public void setPlayers(List<User> players) {
 		this.players = players;
 	}
-	
+
 	public String getGameState() {
 		return gameState;
 	}
+
+	public boolean isGameStarted() {
+		return gameStarted;
+	}
+
+	public void setGameStarted(boolean gameStarted) {
+		this.gameStarted = gameStarted;
+	}
+
+	public boolean isGamePaused() {
+		return gamePaused;
+	}
+
+	public void setGamePaused(boolean gamePaused) {
+		this.gamePaused = gamePaused;
+	}
+
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 
 	public synchronized void setGameState(String gameState) {
 		this.gameState = gameState;
-		propertyChangeSupport.firePropertyChange("GameStateProperty",id, gameState);
+		propertyChangeSupport.firePropertyChange("GameStateProperty", id, gameState);
+	}
+
+	public synchronized void setGameStateInMemoryDatabase(String gameState) {
+		this.gameState = gameState;
 	}
 
 	public int getActivePlayers() {
-		int ap=0;
-		if (host == null){
-			propertyChangeSupport.firePropertyChange("GameHostProperty",this, hostName);
+		int ap = 0;
+		if (host == null) {
+			propertyChangeSupport.firePropertyChange("GameHostProperty", this, hostName);
 			addPlayer(host);
 		}
-		for (User player:players){
-			if(player!=null){
+
+		for (User player : players) {
+			if (player != null) {
 				ap++;
+			}
+			if (!addedPlayers && playerNames != null && playerNames.length > ap) {
+				propertyChangeSupport.firePropertyChange("GameIsNewAddPlayers", this, playerNames);
+				addedPlayers = true;
 			}
 		}
 		return ap;
 	}
 
-
     public void startGame() {
-    	
+
+				gameStarted = true;
         roleCards=new ArrayList<Card>();
         characterCards= new ArrayList<Card>();
         stack=new  ArrayList<Card>();
@@ -332,29 +410,26 @@ public class Game implements Serializable {
 
             characterCards.remove(0);
 
-           if(player.getRoleCard().getTitle().equals("Manager")) {
-               player.setHealth(player.getHealth() + 1);
+            if(player.getRoleCard().getTitle().equals("Manager")) {
+              player.setHealth(player.getHealth() + 1);
 
+	            List<Card> hand= new ArrayList<Card>();
+	
+	            for (int i = 0; i < player.getHealth(); i++) {
+	                hand.add(playableStack.get(i));
+	            }
+	            
+	            player.setHand(hand);
+	            for (int i = 0; i < player.getHealth(); i++) {
+	                playableStack.remove(i);
+	
+	            }
             }
-
-            List<Card> hand= new ArrayList<Card>();
-
-            for (int i = 0; i < player.getHealth(); i++) {
-                hand.add(playableStack.get(i));
-            }
-            player.setHand(hand);
-
-
-
-            for (int i = 0; i < player.getHealth(); i++) {
-                playableStack.remove(i);
-
-            }
-        }
 
 
 
         }
+    }
     
   
 	   public void setRoleCards() {
@@ -466,54 +541,48 @@ public class Game implements Serializable {
 
 		}
  
-        
-    public void setStack() {
-
-        for (int i=1;i<=4;i++) {
-
-            stack.add(new Card("Action", "Nullpointer!","--bug--",null,
-                    "-1 mental health", true,false,null));
-            stack.add(new Card("Action ", "Off By One!","--bug--",null,
-                    "-1 mental health", true,false,null));
-            stack.add(new Card("Action", "Class Not Found!","--bug--", null,
-                    "-1 mental health", true,false, null));
-            stack.add(new Card("Action", "System Hangs!","--bug--",null,
-                    "-1 mental health", true,false, null));
-            stack.add(new Card("Action", "Core Damp!","--bug--", null,
-                    "-1 mental health", true, false, null));
-            stack.add(new Card("Action", "Customer Hates \nUI!", "--bug--",null,
-                    "-1 mental health", true, false, null));
-
-            stack.add(new Card("Action", "Works For Me!","--lame excuse--", null,
-                    "Fends of bug report", true, false, null));
-            stack.add(new Card("Action", "It's a Feature!", "--lame excuse--", null,
-                    "Fends of bug report", true ,false, null));
-            stack.add(new Card("Action", "I'm not Responsible!","--lame excuse--",null,
-                    "Fends of bug report", true, false, null));
-
-            stack.add(new Card("Action", "I refactored \nyour code. \nAway",null, null,
-                    "Ignors prestige. \nDrop one card", false, false, null));
-            stack.add(new Card("Action", "Pwnd.", null, null,
-                    "Cede one card. Same or \nlower prestige required", false, false, null));
+     
 
 
+	
 
+	public void setStack() {
 
-        }
+		for (int i = 1; i <= 4; i++) {
 
-        for (int i=1;i<=3;i++){
-
+						stack.add(new Card("Action", "Nullpointer!","--bug--",null,
+					          "-1 mental health", true,false,null));
+					  stack.add(new Card("Action ", "Off By One!","--bug--",null,
+					          "-1 mental health", true,false,null));
+					  stack.add(new Card("Action", "Class Not Found!","--bug--", null,
+					          "-1 mental health", true,false, null));
+					  stack.add(new Card("Action", "System Hangs!","--bug--",null,
+					          "-1 mental health", true,false, null));
+					  stack.add(new Card("Action", "Core Damp!","--bug--", null,
+					          "-1 mental health", true, false, null));
+					  stack.add(new Card("Action", "Customer Hates \nUI!", "--bug--",null,
+					          "-1 mental health", true, false, null));
+					
+					  stack.add(new Card("Action", "Works For Me!","--lame excuse--", null,
+					          "Fends of bug report", true, false, null));
+					  stack.add(new Card("Action", "It's a Feature!", "--lame excuse--", null,
+					          "Fends of bug report", true ,false, null));
+					  stack.add(new Card("Action", "I'm not Responsible!","--lame excuse--",null,
+					          "Fends of bug report", true, false, null));
+					
+					  stack.add(new Card("Action", "I refactored \nyour code. \nAway",null, null,
+					          "Ignors prestige. \nDrop one card", false, false, null));
+					  stack.add(new Card("Action", "Pwnd.", null, null,
+				          	"Cede one card. Same or \nlower prestige required", false, false, null));
             stack.add(new Card("Action", "System Integration", null, null,
                     "My code is better than \nyours!", false, false, null));
             stack.add(new Card("Ability", "Microsoft", "(Previous Job)", null,
                     "1 prestige", false, false, null));
             stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
                     "Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
+		}
 
-
-        }
-        for (int i=1;i<=2;i++){
-
+		for (int i = 1; i <= 3; i++) {
             stack.add(new Card("Action", "Coffee", "--Solution--", null,
                     "+1 mental health", true, false, null));
             stack.add(new Card("Action", "Code+Fix \nSession", "--Solution--", null,
@@ -537,7 +606,7 @@ public class Game implements Serializable {
             stack.add(new Card("Ability", "Google", "-previous job-", null,
                     "2 prestige", false, false, null));
 
-        }
+		}
 
         stack.add(new Card("Action", "BUG", "-bug-", null,
                 "-1 mental health", true,false, null));
@@ -562,20 +631,19 @@ public class Game implements Serializable {
                 "Only playable on self. \nTakes 3 health points. \n.85 chance to deflect to \nnext developer",
                false, false, null));
 
+	}
 
-    }
-
-    public void setPlayableStack(List<Card> stack){
-
-
-        for (Card card : this.stack){
-            if (card.isPlayable())
-                this.playableStack.add(card);
-
-        }
+	public void setPlayableStack(List<Card> stack) {
 
 
-    }
+		for (Card card : this.stack) {
+			if (card.isPlayable())
+				this.playableStack.add(card);
+
+		}
+
+
+	}
 
 	public List<Card> getStack() {
 		return stack;

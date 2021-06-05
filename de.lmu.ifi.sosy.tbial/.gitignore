@@ -16,4 +16,4 @@ bin
 ../derby.log
 ../tbial_development/*
 tbial_development/*
-
+.DS_Store

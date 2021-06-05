@@ -138,7 +138,157 @@ div.nav a li label username {
 	border-left: 1px solid #FB8F46;
 }
 
-
+div.gameboard {
+	display: block;
+	color: white;
+	/* background: transparent url('images/boardBackground.png') no-repeat; */
+	background-image: url('images/boardBackground.png');
+}
+div.chatfield {
+	background-color: gray;
+	height: 300px;
+}
+div.playerTop {
+	position: relative;
+   	left: 35%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+  	transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+div.playerTopLeft {
+	position: relative;
+	display: inline-block;
+  	left: 19%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+  	transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+div.playerTopRight {
+	position: relative;
+	display: inline-block;
+  	left: 19%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+  	transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+div.playerLeft {
+	position: relative;
+    top: 125px;
+  	left: -6%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerLeftTop {
+	position: relative;
+    top: -80px;
+  	left: -6%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerLeftBottom {
+	position: relative;
+    top: 130px;
+  	left: -6%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerRight {
+	position: relative;
+    bottom: 125px;
+  	left: 74%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+    transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+}
+div.playerRightTop {
+	position: relative;
+    top: -580px;
+  	left: 74.5%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerRightBottom {
+	position: relative;
+	top: -370px;
+  	left: 74.5%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerBottom {
+	position: relative;
+  	left: 30%;
+  	width: 600px;
+  	height: 300px;
+  	bottom: 10px;
+  	border: 1px solid white;
+}
+div.playerBottom2 {
+	position: absolute;
+	top: 900px;
+  	left: 30%;
+  	width: 600px;
+  	height: 300px;
+  	bottom: 10px;
+  	border: 1px solid white;
+}
+div.cards{
+	position: absolute;
+    top: 370px;
+  	left: 520px;
+  	width: 450px;
+  	height: 250px;
+  	border: 2px solid white;
+}
 
 /* headers */
 h1 {
@@ -691,6 +841,7 @@ pre.boxed {
 	border-radius: 5px;
 	text-align: center;
 	background: white;
+	color: black;
   	transition: 0.3s;
 }
 
@@ -724,7 +875,7 @@ pre.boxed {
 	top: -35px;
 	height: 140px;
 	width: 100px;
-	border: 1px solid;
+	border: 1px solid black;
 	border-radius: 10px;
 	text-align: center;
 }

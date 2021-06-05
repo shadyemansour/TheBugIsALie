@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<meta charset="utf-8" />
+<title>4 Player Table</title>
+</head>
+
+<body>
+  <wicket:extend>
+    <div>
+      <div class="playerTop">
+    	<span wicket:id="p1"></span>
+      </div>
+      <div class="playerLeft">
+    	<span wicket:id="p2"></span>
+      </div>
+      <div class="playerRight">
+    	<span wicket:id="p3"></span>
+  	  </div>
+      <div class="playerBottom">
+    	<span wicket:id="p4"></span>
+      </div>
+      <div class="cards">
+        Cards
+        
+        <!-- this is the stack -->
+        <div class='stack'>
+          <div wicket:id="stack" class="card-stack">
+            <div wicket:id="card">x</div>
+          </div>
+        </div>
+        
+        <!-- this is the heap example -->
+        <div class="heap">
+          <div wicket:id="heap" class="card-heap">
+            <div wicket:id="card">x</div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+</wicket:extend>
+</body>
+
+</html>

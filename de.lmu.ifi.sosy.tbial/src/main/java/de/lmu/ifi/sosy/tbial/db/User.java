@@ -2,10 +2,15 @@ package de.lmu.ifi.sosy.tbial.db;
 
 import static java.util.Objects.requireNonNull;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.net.http.WebSocket;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.wicket.protocol.ws.api.AbstractWebSocketConnection;
 
 /**
  * A user with a user name and a plain-text password.
@@ -14,7 +19,9 @@ import java.util.List;
  */
 public class User implements Serializable {
 
-  /** UID for serialization. */
+  /**
+   * UID for serialization.
+   */
   private static final long serialVersionUID = 1L;
 
   private int id = -1;
@@ -22,7 +29,8 @@ public class User implements Serializable {
   private String name;
 
   private String password;
-  
+
+
   private int prestige;
   private int health;
   private Card characterCard;
@@ -30,19 +38,20 @@ public class User implements Serializable {
   // remove String role, character later
   private String role; 
   private String character;
-  
-  private List<Card> hand= new ArrayList<Card>();
+  private List<Card> hand = new ArrayList<Card>();
 
 
   private Boolean joinedGame;
 
   private Game game;
 
+  protected PropertyChangeSupport propertyChangeSupport;
+
   public User(String name, String password, Game game) {
     this(-1, name, password, game);
   }
 
-  public User(int id, String name, String password,Game game) {
+  public User(int id, String name, String password, Game game) {
     this.id = id;
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
@@ -53,8 +62,10 @@ public class User implements Serializable {
     this.characterCard=null;
     this.role = null;
     this.character = null;
-    this.hand=null;
-    this.joinedGame = game !=null;
+    this.hand = null;
+    this.joinedGame = game != null;
+    this.propertyChangeSupport = new PropertyChangeSupport(this);
+
 
   }
 
@@ -94,24 +105,33 @@ public class User implements Serializable {
   void setId(int id) {
     this.id = id;
   }
-  
+
   public void setPrestige(int prestige) {
-      this.prestige=prestige;
+    this.prestige = prestige;
+    propertyChangeSupport.firePropertyChange("PrestigeProperty", id, prestige);
+
+  }
+
+  public void setPrestigeInMemoryDatabase(int prestige) {
+    this.prestige = prestige;
   }
 
   public int getPrestige() {
-      return prestige;
+    return prestige;
   }
-  
+
   public void setHealth(int health) {
-      this.health = health;
+    this.health = health;
+    propertyChangeSupport.firePropertyChange("HealthProperty", id, health);
+  }
+
+  public void setHealthInMemoryDatabase(int health) {
+    this.health = health;
   }
 
   public int getHealth() {
-      return health;
+    return health;
   }
-  
-  
 
   public Card getRoleCard(){return this.roleCard;}
 
@@ -126,32 +146,44 @@ public class User implements Serializable {
       return characterCard;
   }
 
- 
   public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
-	public String getCharacter() {
-		return character;
-	}
-
-	public void setCharacter(String character) {
-		this.character = character;
-	}
-
-	public void setHand(List<Card> hand) {
-      this.hand=hand;
+    return role;
   }
-  public List<Card> getHand(){
 
-      return hand;
+  public void setRole(String role) {
+    this.role = role;
+    propertyChangeSupport.firePropertyChange("RoleProperty", id, role);
 
   }
-  
+
+  public void setRoleInMemoryDatabase(String role) {
+    this.role = role;
+
+  }
+
+  public String getCharacter() {
+    return character;
+  }
+
+  public void setCharacter(String character) {
+    this.character = character;
+    propertyChangeSupport.firePropertyChange("CharacterProperty", id, character);
+
+  }
+
+  public void setCharacterInMemoryDatabase(String character) {
+    this.character = character;
+  }
+
+  public void setHand(List<Card> hand) {
+    this.hand = hand;
+  }
+
+  public List<Card> getHand() {
+    return hand;
+
+  }
+
 
   @Override
   public String toString() {
@@ -186,5 +218,9 @@ public class User implements Serializable {
 
   public void setGame(Game game) {
     this.game = game;
+  }
+
+  public void addPropertyChangeListener(PropertyChangeListener listener) {
+    propertyChangeSupport.addPropertyChangeListener(listener);
   }
 }

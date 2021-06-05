@@ -20,6 +20,7 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
+import org.apache.wicket.util.lang.Bytes;
 
 
 /**
@@ -34,6 +35,7 @@ public class TBIALApplication extends WebApplication {
   // Use LinkedHashSet to keep iteration order over current users always the same
   private final Set<User> loggedInUsers = Collections.synchronizedSet(new LinkedHashSet<>());
   private final Set<Game> availableGames = Collections.synchronizedSet(new LinkedHashSet<>());
+  private Set<User> allUsers = new HashSet<>();
 
   public static Database getDatabase() {
     return ((TBIALApplication) get()).database;
@@ -47,6 +49,7 @@ public class TBIALApplication extends WebApplication {
   TBIALApplication(Database database) {
     super();
     this.database = database;
+    this.allUsers = database.getAllUsers();
   }
 
   @Override
@@ -69,6 +72,7 @@ public class TBIALApplication extends WebApplication {
     initMarkupSettings();
     initPageMounts();
     initAuthorization();
+    // initExceptionHandling();
   }
 
   private void initMarkupSettings() {
@@ -84,6 +88,7 @@ public class TBIALApplication extends WebApplication {
     mountPage("login", Login.class);
     mountPage("register", Register.class);
     mountPage("lobby", Lobby.class);
+    // mountPage("gameview", new GameView());
   }
 
   /**
@@ -133,10 +138,15 @@ public class TBIALApplication extends WebApplication {
     return new ArrayList<>(loggedInUsers);
   }
 
+  public List<User> getAllUsers() {
+    return new ArrayList<>(allUsers);
+  }
+
   public void userLoggedIn(final User pUser) {
     UserListener listener = new UserListener();
     pUser.addPropertyChangeListener(listener);
     loggedInUsers.add(pUser);
+    allUsers.add(pUser);
   }
 
   public void userLoggedOut(final User pUser) {
@@ -179,7 +189,7 @@ public class TBIALApplication extends WebApplication {
       if (event.getPropertyName().equals("GameStateProperty")) {
         ((Database) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("GameHostProperty")) {
-        for (User u : loggedInUsers) {
+        for (User u : allUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
             ((Database) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
@@ -193,6 +203,24 @@ public class TBIALApplication extends WebApplication {
         Game game = (Game) event.getNewValue();
         removeGame(game);
         ((Database) database).removeGame(game.getId());
+      } else if (event.getPropertyName().equals("PlayerAdded")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerRemoved")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerRemovedGameRunning")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+
+      } else if (event.getPropertyName().equals("GameIsNewAddPlayers")) {
+        Game game = (Game) event.getOldValue();
+        String[] players = (String[]) event.getNewValue();
+        for (int i = 0; i < players.length; i++) {
+          if (!players[i].equals(game.getHostName())) {
+            game.addPlayerCreate(((Database) database).getUser(players[i]));
+          }
+        }
       }
     }
   }

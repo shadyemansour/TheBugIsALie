@@ -76,6 +76,7 @@ public class GameView extends BasePage {
         user.setJoinedGame(false);
         ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
         WebSocketManager.getInstance().sendMessage(gamePausedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+        game.setGamePaused(true);
         setResponsePage(Lobby.class);
       }
 
@@ -85,7 +86,7 @@ public class GameView extends BasePage {
     };
     form = new Form<>("form");
     modalWindow.setVisible(true);
-    form.add(leaveButton).add(modalWindow);
+    form.add(leaveButton);
     form.setOutputMarkupId(true);
     add(form);
 
@@ -112,9 +113,13 @@ public class GameView extends BasePage {
         gameID = (int) body.get("gameID");
         userID = (int) body.get("userID");
         if (gameID == game.getId() && userID != ((TBIALSession) getSession()).getUser().getId()) {
+          // TODO Returns WebSocketRequestHandler, that's why the content isn't displayed.
           RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
-            game.setGamePaused(true);
             modalWindow.setContent(new GamePausedPanel(modalWindow.getContentId()));
+            modalWindow.setTitle("Game Paused");
+            modalWindow.setResizable(false);
+            modalWindow.setCssClassName("div.wicket-modal");
+            game.setGamePaused(true);
             modalWindow.setVisible(true);
             modalWindow.show(target);
           });

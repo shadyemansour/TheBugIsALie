@@ -3,16 +3,11 @@ package de.lmu.ifi.sosy.tbial;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.User;
 import org.apache.derby.jdbc.EmbeddedDataSource;
-import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 public class GameViewTest extends PageTestBase {
@@ -79,13 +74,6 @@ public class GameViewTest extends PageTestBase {
     FormTester form = tester.newFormTester("form");
     form.submit("leaveButton");
   }
-
-
-//  attemptLogout();
-//  attemptLogin("user1", "user1");
-//  //TODO to be changed when player is redirected to gameview on login
-//  //TODO CONTINUE TEST MODALPANEL
-//  pressStartGameAfterLoggingBackIn();
 
 
 }

@@ -30,7 +30,10 @@ public class LobbyTest extends PageTestBase {
   User host;
   User user1;
   Game game;
-
+  User player2;
+  User player3;
+  User player4;
+  WebMarkupContainer tabs;
 
   private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
 
@@ -42,7 +45,6 @@ public class LobbyTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    //tester1 = new WicketTester(super.getApplication());
     user1 = new User("user1", "user1", null);
     host = new User("testhost", "testpassword", null);
     database.register("testhost", "testpassword");
@@ -54,9 +56,16 @@ public class LobbyTest extends PageTestBase {
     tester.assertRenderedPage(Lobby.class);
     AjaxTabbedPanel tabbedPanel = (AjaxTabbedPanel)
         tester.getComponentFromLastRenderedPage("tabs");
-    tabs = (WebMarkupContainer) tabbedPanel.get("tabs-container:tabs");
-  }
+    tabs = (WebMarkupContainer)
+        tabbedPanel.get("tabs-container:tabs");
+    player2 = new User("test2", "test2pw", null);
+    database.register("test2", "test2pw");
+    player3 = new User("test3", "test3pw", null);
+    database.register("test3", "test3pw");
+    player4 = new User("test4", "test4pw", null);
+    database.register("test4", "test4pw");
 
+  }
 
   @Test
   public void getUserAttsAfterSet() {
@@ -134,6 +143,28 @@ public class LobbyTest extends PageTestBase {
   }
 
   @Test
+  public void startingGame() {
+    game.addPlayer(player2);
+    game.addPlayer(player3);
+    game.addPlayer(player4);
+    game.addPlayer(host);
+
+    tester.assertRenderedPage(Lobby.class);
+    WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("2");
+    AjaxFallbackLink sitesTabLink = (AjaxFallbackLink) siteTab.get("link");
+
+    tester.clickLink(sitesTabLink.getPageRelativePath(), true);
+    FormTester form = tester.newFormTester("tabs:panel:create");
+    form.setValue("name", "testGame");
+    form.submit("submitgame");
+
+    form = tester.newFormTester("tabs:panel:boxedGameLobby:form");
+    form.submit("startbutton");
+
+    //tester.assertRenderedPage(GameView.class);
+  }
+
+  @Test
   public void hostRemovesPlayer() {
     createGame("hostRemovesPlayerFromGame");
     attemptLogout();
@@ -169,6 +200,4 @@ public class LobbyTest extends PageTestBase {
     startGame();
 
   }
-
-
 }

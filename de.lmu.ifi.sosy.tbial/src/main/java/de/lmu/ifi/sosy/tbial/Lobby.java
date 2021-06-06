@@ -209,7 +209,41 @@ public class Lobby extends BasePage {
                                 }
                             } else {
 
-                            }
+
+                            		TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
+                            			"You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '"
+                            		+ listItem.getModelObject().getName() + "'?"){
+
+                            			private static final long serialVersionUID = 1L;
+
+                            			@Override
+                            			protected void onCancel() {
+                                    this.replaceWith(TabPanel2.this);
+                            			}
+
+                            			@Override
+                            			protected void onConfirm() {
+
+                            				User user = ((TBIALSession) getSession()).getUser();
+                            				Game newGame = listItem.getModelObject();
+                            				Game currentGame = user.getGame();
+                            				currentGame.removePlayer(user);
+                            				user.setGame(newGame);
+                            				newGame.addPlayer(user);
+                            				user.setJoinedGame(true);
+                            				listItem.setOutputMarkupId(true);
+
+
+                                    this.replaceWith(TabPanel2.this);
+                            			}
+
+
+                            			}
+
+                            			);
+
+
+                            	}
                         }
                     });
                     User user = ((TBIALSession) getSession()).getUser();

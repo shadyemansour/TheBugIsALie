@@ -228,18 +228,14 @@ public class Lobby extends BasePage {
                             			@Override
                             			protected void onConfirm() {
                                 	
-                            				Game currentGame = user.getGame();
+                            				User user = ((TBIALSession) getSession()).getUser();
                             				Game newGame = listItem.getModelObject();
-                                  
-                           
-                                  
-                            				if(currentGame.equals(newGame)==false) {
-                            					currentGame.removePlayer(user);
-                            					user.setGame(newGame);
-                            					newGame.addPlayer(user);
-                            					user.setJoinedGame(true);
-                            					listItem.setOutputMarkupId(true);
-                            				}
+                            				Game currentGame = user.getGame();
+                            				currentGame.removePlayer(user);
+                            				user.setGame(newGame);
+                            				newGame.addPlayer(user);
+                            				user.setJoinedGame(true);
+                            				listItem.setOutputMarkupId(true);
                                
                                	
                                     this.replaceWith(TabPanel2.this);

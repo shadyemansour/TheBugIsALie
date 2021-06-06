@@ -116,11 +116,6 @@ public class Lobby extends BasePage {
         tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
         tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
         add(tabbedPanel);
-
-        add(new BookmarkablePageLink("four", FourBoard.class));
-        add(new BookmarkablePageLink("five", FiveBoard.class));
-        add(new BookmarkablePageLink("six", SixBoard.class));
-        add(new BookmarkablePageLink("seven", SevenBoard.class));
     }
 
     @Override
@@ -200,7 +195,16 @@ public class Lobby extends BasePage {
                                 Game game = listItem.getModelObject();
                                 joinGame(game, user);
                                 if (game.isGameStarted()) {
-                                    setResponsePage(new GameView(game));
+                                    int numplayers = game.getNumPlayers();
+                                    if(numplayers == 4) {
+                                        setResponsePage(FourBoard.class);
+                                    } else if(numplayers == 5) {
+                                        setResponsePage(FiveBoard.class);
+                                    } else if(numplayers == 6) {
+                                        setResponsePage(SixBoard.class);
+                                    } else if(numplayers == 7) {
+                                        setResponsePage(SevenBoard.class);
+                                    }
                                 } else {
                                     listItem.setOutputMarkupId(true);
                                     tabs.remove(2);
@@ -292,7 +296,6 @@ public class Lobby extends BasePage {
                     if (!publicGame.getModelObject()) {
                         pw = password.getModelObject();
                     }
-                    //info("name: " + name + " pub: " + pub + " pw: " + pw + " host: " + host + " player: " + numplayers);
                     performCreation(name, host, pw, gamestate, numplayers);
                 }
             };
@@ -315,7 +318,6 @@ public class Lobby extends BasePage {
         public void performCreation(String name, String host, String pw, String gamestate, int numplayers) {
             Game game = getDatabase().createGame(name, host, pw, gamestate, numplayers);
             if (game != null) {
-                info("Registration successful! You are now logged in.");
                 LOGGER.info("New game '" + name + "' created");
                 getTbialApplication().addGame(game);
                 User user = ((TBIALSession) getSession()).getUser();
@@ -417,7 +419,15 @@ public class Lobby extends BasePage {
                         } else {
                             game.setGameState("running");
                             game.setGameStarted(true);
-                            setResponsePage(new GameView(game));
+                            if(numplayers == 4) {
+                                setResponsePage(FourBoard.class);
+                            } else if(numplayers == 5) {
+                                setResponsePage(FiveBoard.class);
+                            } else if(numplayers == 6) {
+                                setResponsePage(SixBoard.class);
+                            } else if(numplayers == 7) {
+                                setResponsePage(SevenBoard.class);
+                            }
                             WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
                         }
                     } else {
@@ -467,26 +477,11 @@ public class Lobby extends BasePage {
                     removePlayerButton.setVisible(false);
                     if (listItem.getModelObject() == null) {
                         listItem.add(new Label("name", "free spot"));
-                        // just test for us7 - will be removed later
-//                        listItem.add(new Label("role", ""));
-//                        listItem.add(new Label("character", ""));
-//                        listItem.add(new Label("health", ""));
-//                        listItem.add(new Label("prestige", ""));
                     } else {
                         listItem.add(new Label("name"));
                         if (user.equals(game.getHost()) && !user.equals(listItem.getModelObject())) {
                             removePlayerButton.setVisible(true);
                         }
-                        // just test for us7 - will be removed later
-                        // show role if role is Manager or if is own role
-//                        if (listItem.getModelObject().getRole().equals("Manager") || listItem.getModelObject().getName().equals(user.getName())) {
-//                        	listItem.add(new Label("role", listItem.getModelObject().getRole()));
-//                        } else {
-//                        	listItem.add(new Label("role", ""));
-//                        }
-//                        listItem.add(new Label("character", listItem.getModelObject().getCharacter()));
-//                        listItem.add(new Label("health", listItem.getModelObject().getHealth()));
-//                        listItem.add(new Label("prestige", listItem.getModelObject().getPrestige()));
                     }
                 }
             };
@@ -585,7 +580,16 @@ public class Lobby extends BasePage {
                 body = jsonMsg.getJSONObject("msgBody");
                 id = (int) body.get("gameID");
                 if (id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
-                    setResponsePage(new GameView(game));
+                    int numplayers = game.getNumPlayers();
+                    if(numplayers == 4) {
+                        setResponsePage(FourBoard.class);
+                    } else if(numplayers == 5) {
+                        setResponsePage(FiveBoard.class);
+                    } else if(numplayers == 6) {
+                        setResponsePage(SixBoard.class);
+                    } else if(numplayers == 7) {
+                        setResponsePage(SevenBoard.class);
+                    }
                 }
 
         }

@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial;
 
+import de.lmu.ifi.sosy.tbial.db.Card;
 import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
@@ -8,6 +9,7 @@ import de.lmu.ifi.sosy.tbial.gametable.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
@@ -17,11 +19,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -36,6 +40,11 @@ import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -169,7 +178,7 @@ public class Lobby extends BasePage {
 
         public TabPanel2(String id) {
             super(id);
-           
+
             add(new FeedbackPanel("feedback"));
 
             IModel<List<Game>> gameModel =
@@ -196,13 +205,13 @@ public class Lobby extends BasePage {
                                 joinGame(game, user);
                                 if (game.isGameStarted()) {
                                     int numplayers = game.getNumPlayers();
-                                    if(numplayers == 4) {
+                                    if (numplayers == 4) {
                                         setResponsePage(FourBoard.class);
-                                    } else if(numplayers == 5) {
-                                    		setResponsePage(FiveBoard.class);
-                                    } else if(numplayers == 6) {
+                                    } else if (numplayers == 5) {
+                                        setResponsePage(FiveBoard.class);
+                                    } else if (numplayers == 6) {
                                         setResponsePage(SixBoard.class);
-                                    } else if(numplayers == 7) {
+                                    } else if (numplayers == 7) {
                                         setResponsePage(SevenBoard.class);
                                     }
                                 } else {
@@ -212,42 +221,42 @@ public class Lobby extends BasePage {
                                     tabbedPanel.setSelectedTab(2);
                                 }
                             } else {
-                            	
-                            	
-                            		TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
-                            			"You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '" 
-                            		+ listItem.getModelObject().getName() + "'?"){
-                            		
-                            			private static final long serialVersionUID = 1L;
-                            		
-                            			@Override
-                            			protected void onCancel() {
-                                    this.replaceWith(TabPanel2.this);
-                            			}
-                     
-                            			@Override
-                            			protected void onConfirm() {
-                                	
-                            				User user = ((TBIALSession) getSession()).getUser();
-                            				Game newGame = listItem.getModelObject();
-                            				Game currentGame = user.getGame();
-                            				currentGame.removePlayer(user);
-                            				user.setGame(newGame);
-                            				newGame.addPlayer(user);
-                            				user.setJoinedGame(true);
-                            				listItem.setOutputMarkupId(true);
-                               
-                               	
-                                    this.replaceWith(TabPanel2.this);
-                            			}
-                            		
-                            		
-                            			}
-                  		
-                            			);
-                           
 
-                            	}
+
+                                TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
+                                                               "You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '"
+                                                                   + listItem.getModelObject().getName() + "'?") {
+
+                                                               private static final long serialVersionUID = 1L;
+
+                                                               @Override
+                                                               protected void onCancel() {
+                                                                   this.replaceWith(TabPanel2.this);
+                                                               }
+
+                                                               @Override
+                                                               protected void onConfirm() {
+
+                                                                   User user = ((TBIALSession) getSession()).getUser();
+                                                                   Game newGame = listItem.getModelObject();
+                                                                   Game currentGame = user.getGame();
+                                                                   currentGame.removePlayer(user);
+                                                                   user.setGame(newGame);
+                                                                   newGame.addPlayer(user);
+                                                                   user.setJoinedGame(true);
+                                                                   listItem.setOutputMarkupId(true);
+
+
+                                                                   this.replaceWith(TabPanel2.this);
+                                                               }
+
+
+                                                           }
+
+                                );
+
+
+                            }
                         }
                     });
                     User user = ((TBIALSession) getSession()).getUser();
@@ -444,28 +453,28 @@ public class Lobby extends BasePage {
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("startbutton");
-                    if(user.equals(game.getHost())) {
+                    if (user.equals(game.getHost())) {
                         int currentplayers = game.getActivePlayers();
                         int numplayers = game.getNumPlayers();
-                        if(currentplayers < numplayers) {
-              		        info("the game has not enough players");
-              		        //game.addPlayer(new User("new Player", "pw", null));
+                        if (currentplayers < numplayers) {
+                            info("the game has not enough players");
+                            //game.addPlayer(new User("new Player", "pw", null));
                         } else {
                             game.setGameState("running");
                             game.setGameStarted(true);
-                            if(numplayers == 4) {
+                            if (numplayers == 4) {
                                 setResponsePage(FourBoard.class);
-                            } else if(numplayers == 5) {
+                            } else if (numplayers == 5) {
                                 setResponsePage(FiveBoard.class);
-                            } else if(numplayers == 6) {
+                            } else if (numplayers == 6) {
                                 setResponsePage(SixBoard.class);
-                            } else if(numplayers == 7) {
+                            } else if (numplayers == 7) {
                                 setResponsePage(SevenBoard.class);
                             }
                             WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
                         }
                     } else {
-          	            info("only the host can start the game");
+                        info("only the host can start the game");
                     }
                 }
 
@@ -615,13 +624,13 @@ public class Lobby extends BasePage {
                 id = (int) body.get("gameID");
                 if (id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
                     int numplayers = game.getNumPlayers();
-                    if(numplayers == 4) {
+                    if (numplayers == 4) {
                         setResponsePage(FourBoard.class);
-                    } else if(numplayers == 5) {
+                    } else if (numplayers == 5) {
                         setResponsePage(FiveBoard.class);
-                    } else if(numplayers == 6) {
+                    } else if (numplayers == 6) {
                         setResponsePage(SixBoard.class);
-                    } else if(numplayers == 7) {
+                    } else if (numplayers == 7) {
                         setResponsePage(SevenBoard.class);
                     }
                 }

@@ -11,8 +11,9 @@ bin
 .idea/sqldialects.xml
 .idea/workspace.xml
 .idea/artifacts/*
-.settings/
+.settings/*
 .classpath
-.classpath
-.settings/
+../derby.log
+../tbial_development/*
+tbial_development/*
 .DS_Store

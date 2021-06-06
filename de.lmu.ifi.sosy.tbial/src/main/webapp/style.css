@@ -245,11 +245,11 @@ div.playerRightTop {
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
-	transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
+	transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
 }
 div.playerRightBottom {
 	position: relative;
@@ -258,11 +258,11 @@ div.playerRightBottom {
   	width: 450px;
   	height: 250px;
   	border: 1px solid white;
-	transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
+	transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
 }
 div.playerBottom {
 	position: relative;

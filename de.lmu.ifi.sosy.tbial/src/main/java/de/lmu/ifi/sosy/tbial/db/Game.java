@@ -56,12 +56,13 @@ public class Game implements Serializable {
 		this.name = requireNonNull(name);
 		this.password = password;
 		this.gameState = gameState;
+		this.gameStarted = gameState.equals("running");
+
 		if (password.length() == 0) {
 			this.pwProtected = false;
 		} else {
 			this.pwProtected = true;
 		}
-		this.gameStarted = false;
 		this.gamePaused = false;
 		this.numPlayers = requireNonNull(numPlayers);
 		this.players = new ArrayList<User>();
@@ -135,7 +136,11 @@ public class Game implements Serializable {
 			if (this.players.get(i) == null) {
 				this.players.set(i, player);
 				if (!player.getName().equals(hostName)) {
-					propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
+					if (!gameStarted) {
+						propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
+					} else {
+						propertyChangeSupport.firePropertyChange("PlayerAddedGameRunning", this, this.players.get(i).getName());
+					}
 				}
 				break;
 			}

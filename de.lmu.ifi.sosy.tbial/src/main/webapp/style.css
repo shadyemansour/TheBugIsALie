@@ -718,6 +718,21 @@ div.footer p a {
 	line-height: 33px;
 	font-size: 0.8em;
 }
+
+
+.yesnoform {
+	margin: 0 auto;
+	width: 600px;
+	padding: 14px;
+	border: solid 2px #ff6600;
+	background: #e8e8e8;
+}
+
+
+
+
+
+
 /* default tables */
 table {
 	width: 100%;
@@ -759,8 +774,35 @@ table td.joinGame:hover {
 }
 /* Boxed <pre> element. At the moment only used on error page.*/
 pre.boxed {
-	white-space: pre-wrap;
-	border: solid 2px #ff6600;
+    white-space: pre-wrap;
+    border: solid 2px #ff6600;
+
+}
+
+.div.wicket-modal {
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 50%;
+    background-color: rgba(255, 125, 67, 0.07);
+}
+
+/* Modal Content/Box */
+.div.wicket-modal-content {
+    background-color: rgba(255, 125, 67, 0.07);
+    margin: 15% auto;
+    padding: 20px;
+    border: solid 10px #ff6600;
+    width: 50%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 0px;
+    font-weight: bold;
 }
 
 .heap {
@@ -772,7 +814,7 @@ pre.boxed {
 
 .card-heap {
 	position: absolute;
-    left: 85px; 
+    left: 85px;
     top: 90px;
 }
 
@@ -785,7 +827,7 @@ pre.boxed {
 
 .card-stack {
 	position: absolute;
-    left: 35px; 
+    left: 35px;
     top: 45px;
 }
 
@@ -799,7 +841,7 @@ pre.boxed {
 }
 
 .playable-card-container {
-	
+
 }
 
 .health-role-container {

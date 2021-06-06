@@ -4,6 +4,7 @@ import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
+import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.beans.PropertyChangeEvent;
@@ -54,6 +55,7 @@ public class TBIALApplication extends WebApplication {
 
   @Override
   public Class<Lobby> getHomePage() {
+
     return Lobby.class;
   }
 
@@ -88,7 +90,7 @@ public class TBIALApplication extends WebApplication {
     mountPage("login", Login.class);
     mountPage("register", Register.class);
     mountPage("lobby", Lobby.class);
-    // mountPage("gameview", new GameView());
+    // mountPage("gameview", GameView.class);
   }
 
   /**
@@ -206,6 +208,12 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("PlayerAdded")) {
         Game game = (Game) event.getOldValue();
         ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+      } else if (event.getPropertyName().equals("PlayerAddedGameRunning")) {
+        Game game = (Game) event.getOldValue();
+        ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+        if (game.getActivePlayers() == game.getNumPlayers()) {
+
+        }
       } else if (event.getPropertyName().equals("PlayerRemoved")) {
         Game game = (Game) event.getOldValue();
         ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());

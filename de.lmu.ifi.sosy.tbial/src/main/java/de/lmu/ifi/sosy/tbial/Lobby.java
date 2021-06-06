@@ -61,6 +61,8 @@ public class Lobby extends BasePage {
     protected final AbstractTab tab2;
     protected final AbstractTab tab3;
     protected final AbstractTab tab4;
+    
+   
     protected final List<ITab> tabs;
     protected final AjaxTabbedPanel<ITab> tabbedPanel;
     private Game game;
@@ -104,6 +106,8 @@ public class Lobby extends BasePage {
                 return new TabPanel4(panelId);
             }
         };
+        
+        
         tabs.add(tab1);
         tabs.add(tab2);
         if (!((TBIALSession) getSession()).getUser().getJoinedGame()) {
@@ -174,7 +178,7 @@ public class Lobby extends BasePage {
 
         public TabPanel2(String id) {
             super(id);
-
+           
             add(new FeedbackPanel("feedback"));
 
             IModel<List<Game>> gameModel =
@@ -208,10 +212,46 @@ public class Lobby extends BasePage {
                                     tabbedPanel.setSelectedTab(2);
                                 }
                             } else {
+                            	
+                            	
+                            		TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
+                            			"You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '" 
+                            		+ listItem.getModelObject().getName() + "'?"){
+                            		
+                            			private static final long serialVersionUID = 1L;
+                            		
+                            			@Override
+                            			protected void onCancel() {
+                                    this.replaceWith(TabPanel2.this);
+                            			}
+                     
+                            			@Override
+                            			protected void onConfirm() {
+                                	
+                            				User user = ((TBIALSession) getSession()).getUser();
+                            				Game newGame = listItem.getModelObject();
+                            				Game currentGame = user.getGame();
+                            				currentGame.removePlayer(user);
+                            				user.setGame(newGame);
+                            				newGame.addPlayer(user);
+                            				user.setJoinedGame(true);
+                            				listItem.setOutputMarkupId(true);
+                               
+                               	
+                                    this.replaceWith(TabPanel2.this);
+                            			}
+                            		
+                            		
+                            			}
+                  		
+                            			);
+                           
 
-                            }
+                            	}
                         }
                     });
+                    
+                    
                     User user = ((TBIALSession) getSession()).getUser();
                     if (user != null && user.getGame() != null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
@@ -362,7 +402,7 @@ public class Lobby extends BasePage {
 //            game.addPlayer(new User("Player 2", "pw",null));
 //            game.addPlayer(new User("Player 3", "pw",null));
 
-//    	game = getSession().getGame(gameId);
+//    				game = getSession().getGame(gameId);
 
             final Label label = new Label("gamename", game.getName());
             add(label);
@@ -371,7 +411,7 @@ public class Lobby extends BasePage {
              * self updating game status
              */
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
-//    	add(gameState);
+//    				add(gameState);
             gameState.setOutputMarkupId(true);
             gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
 
@@ -486,6 +526,36 @@ public class Lobby extends BasePage {
                     }
                 }
             };
+            
+            
+            
+            
+            
+            
+            
+            
+            
+         
+            
+            
+            
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
             add(new WebSocketBehavior() {
                 private static final long serialVersionUID = 1L;

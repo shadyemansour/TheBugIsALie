@@ -138,7 +138,159 @@ div.nav a li label username {
 	border-left: 1px solid #FB8F46;
 }
 
-
+div.gameboard {
+	display: block;
+	color: white;
+	/* background: transparent url('images/boardBackground.png') no-repeat; */
+	background-image: url('images/boardBackground.png');
+}
+div.chatfield {
+	background-color: gray;
+	height: 300px;
+}
+div.playerTop {
+	position: relative;
+   	left: 35%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+  	transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+div.playerTopLeft {
+	position: relative;
+	display: inline-block;
+  	left: 19%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+  	transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+div.playerTopRight {
+	position: relative;
+	display: inline-block;
+  	left: 19%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+  	transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+div.playerLeft {
+	position: relative;
+    top: 125px;
+  	left: -6%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerLeftTop {
+	position: relative;
+    top: -80px;
+  	left: -6%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerLeftBottom {
+	position: relative;
+    top: 130px;
+  	left: -6%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.playerRight {
+	position: relative;
+    bottom: 125px;
+  	left: 74%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+    transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+}
+div.playerRightTop {
+	position: relative;
+    top: -580px;
+  	left: 74.5%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+}
+div.playerRightBottom {
+	position: relative;
+	top: -370px;
+  	left: 74.5%;
+  	width: 450px;
+  	height: 250px;
+  	border: 1px solid white;
+	transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+}
+div.playerBottom {
+	position: relative;
+  	left: 30%;
+  	width: 600px;
+  	height: 300px;
+  	bottom: 10px;
+  	border: 1px solid white;
+}
+div.playerBottom2 {
+	position: absolute;
+	top: 900px;
+  	left: 30%;
+  	width: 600px;
+  	height: 300px;
+  	bottom: 10px;
+  	border: 1px solid white;
+}
+div.cards{
+	position: absolute;
+	display: flex;
+	justify-content: space-evenly;
+    top: 370px;
+  	left: 520px;
+  	width: 450px;
+  	height: 250px;
+  	border: 2px solid white;
+}
 
 /* headers */
 h1 {
@@ -566,6 +718,21 @@ div.footer p a {
 	line-height: 33px;
 	font-size: 0.8em;
 }
+
+
+.yesnoform {
+	margin: 0 auto;
+	width: 600px;
+	padding: 14px;
+	border: solid 2px #ff6600;
+	background: #e8e8e8;
+}
+
+
+
+
+
+
 /* default tables */
 table {
 	width: 100%;
@@ -607,6 +774,318 @@ table td.joinGame:hover {
 }
 /* Boxed <pre> element. At the moment only used on error page.*/
 pre.boxed {
-	white-space: pre-wrap;
-	border: solid 2px #ff6600;
+    white-space: pre-wrap;
+    border: solid 2px #ff6600;
+
 }
+
+.div.wicket-modal {
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 50%;
+    background-color: rgba(255, 125, 67, 0.07);
+}
+
+/* Modal Content/Box */
+.div.wicket-modal-content {
+    background-color: rgba(255, 125, 67, 0.07);
+    margin: 15% auto;
+    padding: 20px;
+    border: solid 10px #ff6600;
+    width: 50%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 0px;
+    font-weight: bold;
+}
+
+.heap {
+	position: relative;
+	height: 250px;
+	width: 220px;
+	/* background: lightgray; */
+}
+
+.card-heap {
+	position: absolute;
+    left: 85px;
+    top: 90px;
+}
+
+.stack {
+	position: relative;
+	height: 250px;
+	width: 220px;
+	/* background: gray; */
+}
+
+.card-stack {
+	position: absolute;
+    left: 35px;
+    top: 45px;
+}
+
+.player-card-container {
+	display: flex;
+	width: 404px;
+	height: 214px;
+	padding: 10px;
+	background: slategray;
+	border-radius: 20px;
+}
+
+.playable-card-container {
+
+}
+
+.health-role-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.health-panel {
+	position: relative;
+	background: lightsteelblue;
+	height: 100px;
+	width: 80px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	border: solid 1px;
+}
+
+.role-card-panel {
+	position: relative;
+	background: lightsteelblue;
+	height: 100px;
+	width: 80px;
+	margin-left: 10px;
+	border-radius: 10px;
+	border: solid 1px;
+}
+
+.role-card {
+	position: absolute;
+	left: 15px;
+	top: 15px;
+}
+
+.card-drop-area-frame {
+	position: relative;
+	height: 100px;
+	width: 300px;
+	background: lightsteelblue;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	border: solid 1px;
+}
+
+.rotate-180 {
+	transform: rotate(180deg);
+}
+
+.card-rotate-m90 {
+  	transition: all 0.3s ease;
+}
+
+.card-rotate-m90:hover {
+	/* z-index: 10; */
+	transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+}
+
+.card-rotate-p90 {
+  	transition: all 0.3s ease;
+}
+
+.card-rotate-p90:hover {
+	/* z-index: 10; */
+	transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+
+.card-drop-area {
+	position: absolute;
+	left: 125px;
+	top: 15px;
+}
+
+.card-hand-frame {
+	position: relative;
+	height: 100px;
+	width: 300px;
+	background: lightsteelblue;
+	border-radius: 10px;
+	border: solid 1px;
+}
+
+.card-hand {
+	position: absolute;
+	left: 125px;
+	top: 15px;
+}
+
+#relPos {
+	position: relative;
+	width: 50px;
+	height: 70px;
+}
+
+#card {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: 70px;
+	width: 50px;
+	border: 1px solid white;
+	border-radius: 5px;
+	text-align: center;
+	background: white;
+	color: black;
+  	transition: 0.3s;
+}
+
+#card:hover {
+	z-index: 1;
+	left: -25px;
+	top: -35px;
+	height: 140px;
+	width: 100px;
+	border: 1px solid white;
+	border-radius: 10px;
+	text-align: center;
+}
+
+#card-back {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: 70px;
+	width: 50px;
+	border: 1px solid;
+	border-radius: 5px;
+	text-align: center;
+	background: radial-gradient(lightgreen, green);
+  	transition: 0.3s;
+}
+
+#card-back:hover {
+	z-index: 1;
+	left: -25px;
+	top: -35px;
+	height: 140px;
+	width: 100px;
+	border: 1px solid;
+	border-radius: 10px;
+	text-align: center;
+}
+
+#card .card-border {
+	display: flex;
+	flex-direction: column;
+	height: 60px;
+	width: 40px;
+	border: 5px solid;
+	border-radius: 5px;
+	padding: 0px;
+	font-size: 4px;
+	overflow: hidden;
+  	transition: all 0.3s ease;
+}
+
+#card:hover .card-border {
+	display: flex;
+	flex-direction: column;
+	height: 126px;
+	width: 86px;
+	border: 5px solid;
+	border-radius: 10px;
+	padding: 2px;
+	font-size: 8px;
+}
+
+#card-back .card-border {
+	display: none;
+}
+
+#card .card-title {
+	flex-grow: 1;
+	font-weight: normal;
+	font-size: 10px;
+	/*background: lightgray; */
+}
+
+#card:hover .card-title {
+	flex-grow: 1;
+	font-weight: normal;
+	font-size: 10px;
+	/*background: lightgray; */
+}
+
+/* #card-back .card-title {
+	display: none;
+} */
+
+#card .card-sub-title {
+	/*background: aquamarine;*/
+	visibility: hidden;
+}
+
+#card:hover .card-sub-title {
+	/*background: aquamarine;*/
+	visibility: visible;
+}
+
+/* #card-back .card-sub-title {
+	display: none;
+} */
+
+#card .card-middle-desc {
+	flex-grow: 20;
+	/*background: beige;*/
+	display: flex;
+  	justify-content: center;
+  	align-items: center;
+  	visibility: hidden;
+}
+
+#card:hover .card-middle-desc {
+	flex-grow: 20;
+	/*background: beige;*/
+	display: flex;
+  	justify-content: center;
+  	align-items: center;
+  	visibility: visible;
+}
+
+/* #card-back .card-middle-desc {
+	display: none;
+} */
+
+#card .card-bottom-desc {
+	flex-grow: 1;
+	/*background: gray;*/
+	visibility: hidden;
+}
+
+#card:hover .card-bottom-desc {
+	flex-grow: 1;
+	/*background: gray;*/
+	visibility: visible;
+}
+
+/* #card-back .card-bottom-desc {
+	display: none;
+} */

@@ -33,7 +33,6 @@ public class LobbyTest extends PageTestBase {
   User player2;
   User player3;
   User player4;
-  WebMarkupContainer tabs;
 
   private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
 

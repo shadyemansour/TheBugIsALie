@@ -4,6 +4,7 @@ import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
+import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.beans.PropertyChangeEvent;
@@ -89,7 +90,7 @@ public class TBIALApplication extends WebApplication {
     mountPage("login", Login.class);
     mountPage("register", Register.class);
     mountPage("lobby", Lobby.class);
-    // mountPage("gameview", new GameView());
+    // mountPage("gameview", GameView.class);
   }
 
   /**

@@ -2,6 +2,8 @@ package de.lmu.ifi.sosy.tbial;
 
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.User;
+import de.lmu.ifi.sosy.tbial.gametable.FourBoard;
+import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -39,13 +41,14 @@ public class GameViewTest extends PageTestBase {
         tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer) tabbedPanel.get("tabs-container:tabs");
     startGame();
-    tester.assertRenderedPage(GameView.class);
+    tester.startPage(FourBoard.class);
+    tester.assertRenderedPage(FourBoard.class);
   }
 
 
   @Test
   public void playerLeaveGameWhileGameIsRunning() {
-    tester.assertRenderedPage(GameView.class);
+    tester.assertRenderedPage(FourBoard.class);
     leaveGame();
     tester.assertRenderedPage(Lobby.class);
   }
@@ -55,7 +58,7 @@ public class GameViewTest extends PageTestBase {
     leaveGame();
     tester.assertRenderedPage(Lobby.class);
     joinGame();
-    tester.assertRenderedPage(GameView.class);
+    tester.assertRenderedPage(FourBoard.class);
   }
 
   //TODO to be changed when player is redirected to gameview on login
@@ -66,7 +69,7 @@ public class GameViewTest extends PageTestBase {
     attemptLogout();
     attemptLogin("user1", "user1");
     pressStartGameAfterLoggingBackIn();
-    tester.assertRenderedPage(GameView.class);
+    tester.assertRenderedPage(FourBoard.class);
   }
 
 

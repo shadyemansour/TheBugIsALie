@@ -2,6 +2,8 @@ package de.lmu.ifi.sosy.tbial;
 
 import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.InMemoryDatabase;
+import de.lmu.ifi.sosy.tbial.gametable.FourBoard;
+import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -97,7 +99,8 @@ public abstract class PageTestBase {
     tester.clickLink(sitesTabLink.getPageRelativePath(), true);
     FormTester form = tester.newFormTester("tabs:panel:boxedGameLobby:form");
     form.submit("startbutton");
-    tester.assertRenderedPage(GameView.class);
+    // tester.startPage(FourBoard.class);
+    tester.assertRenderedPage(FourBoard.class);
   }
 
   protected void pressStartGameAfterLoggingBackIn() {
@@ -106,7 +109,8 @@ public abstract class PageTestBase {
     tester.clickLink(sitesTabLink.getPageRelativePath(), true);
     FormTester form = tester.newFormTester("tabs:panel:boxedGameLobby:form");
     form.submit("startbutton");
-    tester.assertRenderedPage(GameView.class);
+    tester.startPage(FourBoard.class);
+    tester.assertRenderedPage(FourBoard.class);
   }
 
   protected TBIALSession getSession() {

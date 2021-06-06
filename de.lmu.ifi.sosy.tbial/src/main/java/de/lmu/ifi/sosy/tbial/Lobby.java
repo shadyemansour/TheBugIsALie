@@ -162,230 +162,6 @@ public class Lobby extends BasePage {
             form.setOutputMarkupId(true);
             form.add(new PagingNavigator("navigator", playerList));
             add(form);
-            
-//            PropertyModel<Card> cardModel = new PropertyModel<Card>(children, id);
-//            CardPanel card = new CardPanel("card-panel", cardModel);
-//            WebMarkupContainer cardtest = new WebMarkupContainer("cardtestcontainer");
-//            add(cardtest);
-            
-            Card card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, false, null);
-            CardPanel cardPanel1 = new CardPanel("card-panel1", new Model<Card>(card1));
-            add(cardPanel1);
-            
-            Card card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
-            CardPanel cardPanel2 = new CardPanel("card-panel2", Model.of(card2));
-            add(cardPanel2);
-            
-            Card card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-            card3.setVisible(!card3.isVisible());
-            CardPanel cardPanel3 = new CardPanel("card-panel3", Model.of(card3));
-            add(cardPanel3);
-            
-            Card card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
-            CardPanel cardPanel4 = new CardPanel("card-panel4", new CompoundPropertyModel<Card>(card4));
-            add(cardPanel4);
-            
-            Card card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-            CardPanel cardPanel5 = new CardPanel("card-panel5", Model.of(card5));
-            add(cardPanel5);
-            
-            Card card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-            CardPanel cardPanel6 = new CardPanel("card-panel6", Model.of(card6));
-            add(cardPanel6);
-            
-            List<IModel<Card>> cardModels = new ArrayList<IModel<Card>>();
-            cardModels.add(Model.of(card1));
-            cardModels.add(Model.of(card2));
-            cardModels.add(Model.of(card3));
-            cardModels.add(Model.of(card4));
-            cardModels.add(Model.of(card5));
-            cardModels.add(Model.of(card6));
-            
-            /*
-             * heap
-             */
-            RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected Iterator<IModel<Card>> getItemModels() {
-								return cardModels.iterator();
-							}
-
-							@Override
-							protected void populateItem(Item<Card> item) {
-								double rotation = Math.random() * 30 + 1;
-								double direction = Math.random() > 0.5 ? 1 : -1;
-								item.add(new AttributeAppender("style", "transform: rotate(" + (direction * rotation) + "deg);"));
-								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-							}
-            	
-            };
-            heap.setOutputMarkupId(true);
-            add(heap);
-            
-            /*
-             * stack
-             */
-            RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected Iterator<IModel<Card>> getItemModels() {
-								return cardModels.iterator();
-							}
-							
-							int posLeft = 35 - cardModels.size();
-							int posTop = 45 - cardModels.size();
-
-							@Override
-							protected void populateItem(Item<Card> item) {
-								item.add(new AttributeAppender("style", "left: " + posLeft + "px; top: " + posTop + "px;"));
-								posLeft += 2;
-								posTop += 2;
-								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-							}
-            	
-            };
-            stack.setOutputMarkupId(true);
-            add(stack);
-      
-            /*
-             * card drop area
-             */
-            List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
-            cardDropModels.add(Model.of(card4));
-            cardDropModels.add(Model.of(card2));
-            
-            /*
-             * player card container includes card-drop-area and card-hand 
-             */
-            WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container");
-            add(playerCardContainer);
-            RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected Iterator<IModel<Card>> getItemModels() {
-								return cardDropModels.iterator();
-							}
-							int width = 300;
-							
-							int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-							int stepSize = posLeft + 50;
-
-							@Override
-							protected void populateItem(Item<Card> item) {
-								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-								posLeft += stepSize;
-//								posTop += 2;
-								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-							}
-            	
-            };
-            cardDropArea.setOutputMarkupId(true);
-            playerCardContainer.add(cardDropArea);
-            
-            /*
-             * card hand
-             */
-            List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
-            cardHandModels.add(Model.of(card1));
-            cardHandModels.add(Model.of(card2));
-            cardHandModels.add(Model.of(card3));
-            cardHandModels.add(Model.of(card4));
-            cardHandModels.add(Model.of(card5));
-//            cardHandModels.add(Model.of(card6));
-            
-            RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected Iterator<IModel<Card>> getItemModels() {
-								return cardHandModels.iterator();
-							}
-							int width = 300;
-							
-							int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-							int stepSize = posLeft + 50;
-
-							@Override
-							protected void populateItem(Item<Card> item) {
-								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-								posLeft += stepSize;
-//								posTop += 2;
-								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-							}
-            	
-            };
-            cardHand.setOutputMarkupId(true);
-            playerCardContainer.add(cardHand);
-            
-            /*
-             * includes cards for second player-card-container
-             */
-            List<IModel<Card>> cardDropModels2 = new ArrayList<IModel<Card>>();
-            cardDropModels2.add(Model.of(card5));
-            
-            /*
-             * second player-card-container includes card-drop-area and card-hand 
-             * this is for testing drag and drop
-             */
-            WebMarkupContainer playerCardContainer2 = new WebMarkupContainer("player-card-container2");
-            add(playerCardContainer2);
-            RefreshingView<Card> cardDropArea2 = new RefreshingView<Card>("card-drop-area2") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected Iterator<IModel<Card>> getItemModels() {
-								return cardDropModels2.iterator();
-							}
-							int width = 300;
-							
-							int posLeft = (width - cardDropModels2.size() * 50) / (cardDropModels2.size() + 1);
-							int stepSize = posLeft + 50;
-
-							@Override
-							protected void populateItem(Item<Card> item) {
-								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-								posLeft += stepSize;
-//								posTop += 2;
-								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-							}
-            	
-            };
-            cardDropArea2.setOutputMarkupId(true);
-            playerCardContainer2.add(cardDropArea2);
-
-            List<IModel<Card>> cardHandModels2 = new ArrayList<IModel<Card>>();
-            cardHandModels2.add(Model.of(card2));
-            cardHandModels2.add(Model.of(card3));
-            cardHandModels2.add(Model.of(card4));
-            cardHandModels2.add(Model.of(card5));
-            
-            RefreshingView<Card> cardHand2 = new RefreshingView<Card>("card-hand2") {
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							protected Iterator<IModel<Card>> getItemModels() {
-								return cardHandModels2.iterator();
-							}
-							int width = 300;
-							
-							int posLeft = (width - cardHandModels2.size() * 50) / (cardHandModels2.size() + 1);
-							int stepSize = posLeft + 50;
-
-							@Override
-							protected void populateItem(Item<Card> item) {
-								item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-								posLeft += stepSize;
-//								posTop += 2;
-								item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-							}
-            	
-            };
-            cardHand2.setOutputMarkupId(true);
-            playerCardContainer2.add(cardHand2);
 
         }
     }
@@ -402,7 +178,7 @@ public class Lobby extends BasePage {
 
         public TabPanel2(String id) {
             super(id);
-           
+
             add(new FeedbackPanel("feedback"));
 
             IModel<List<Game>> gameModel =
@@ -429,13 +205,13 @@ public class Lobby extends BasePage {
                                 joinGame(game, user);
                                 if (game.isGameStarted()) {
                                     int numplayers = game.getNumPlayers();
-                                    if(numplayers == 4) {
+                                    if (numplayers == 4) {
                                         setResponsePage(FourBoard.class);
-                                    } else if(numplayers == 5) {
-                                    		setResponsePage(FiveBoard.class);
-                                    } else if(numplayers == 6) {
+                                    } else if (numplayers == 5) {
+                                        setResponsePage(FiveBoard.class);
+                                    } else if (numplayers == 6) {
                                         setResponsePage(SixBoard.class);
-                                    } else if(numplayers == 7) {
+                                    } else if (numplayers == 7) {
                                         setResponsePage(SevenBoard.class);
                                     }
                                 } else {
@@ -445,42 +221,42 @@ public class Lobby extends BasePage {
                                     tabbedPanel.setSelectedTab(2);
                                 }
                             } else {
-                            	
-                            	
-                            		TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
-                            			"You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '" 
-                            		+ listItem.getModelObject().getName() + "'?"){
-                            		
-                            			private static final long serialVersionUID = 1L;
-                            		
-                            			@Override
-                            			protected void onCancel() {
-                                    this.replaceWith(TabPanel2.this);
-                            			}
-                     
-                            			@Override
-                            			protected void onConfirm() {
-                                	
-                            				User user = ((TBIALSession) getSession()).getUser();
-                            				Game newGame = listItem.getModelObject();
-                            				Game currentGame = user.getGame();
-                            				currentGame.removePlayer(user);
-                            				user.setGame(newGame);
-                            				newGame.addPlayer(user);
-                            				user.setJoinedGame(true);
-                            				listItem.setOutputMarkupId(true);
-                               
-                               	
-                                    this.replaceWith(TabPanel2.this);
-                            			}
-                            		
-                            		
-                            			}
-                  		
-                            			);
-                           
 
-                            	}
+
+                                TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
+                                                               "You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '"
+                                                                   + listItem.getModelObject().getName() + "'?") {
+
+                                                               private static final long serialVersionUID = 1L;
+
+                                                               @Override
+                                                               protected void onCancel() {
+                                                                   this.replaceWith(TabPanel2.this);
+                                                               }
+
+                                                               @Override
+                                                               protected void onConfirm() {
+
+                                                                   User user = ((TBIALSession) getSession()).getUser();
+                                                                   Game newGame = listItem.getModelObject();
+                                                                   Game currentGame = user.getGame();
+                                                                   currentGame.removePlayer(user);
+                                                                   user.setGame(newGame);
+                                                                   newGame.addPlayer(user);
+                                                                   user.setJoinedGame(true);
+                                                                   listItem.setOutputMarkupId(true);
+
+
+                                                                   this.replaceWith(TabPanel2.this);
+                                                               }
+
+
+                                                           }
+
+                                );
+
+
+                            }
                         }
                     });
                     User user = ((TBIALSession) getSession()).getUser();
@@ -677,28 +453,28 @@ public class Lobby extends BasePage {
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
                     System.out.println("startbutton");
-                    if(user.equals(game.getHost())) {
+                    if (user.equals(game.getHost())) {
                         int currentplayers = game.getActivePlayers();
                         int numplayers = game.getNumPlayers();
-                        if(currentplayers < numplayers) {
-              		        info("the game has not enough players");
-              		        //game.addPlayer(new User("new Player", "pw", null));
+                        if (currentplayers < numplayers) {
+                            info("the game has not enough players");
+                            //game.addPlayer(new User("new Player", "pw", null));
                         } else {
                             game.setGameState("running");
                             game.setGameStarted(true);
-                            if(numplayers == 4) {
+                            if (numplayers == 4) {
                                 setResponsePage(FourBoard.class);
-                            } else if(numplayers == 5) {
+                            } else if (numplayers == 5) {
                                 setResponsePage(FiveBoard.class);
-                            } else if(numplayers == 6) {
+                            } else if (numplayers == 6) {
                                 setResponsePage(SixBoard.class);
-                            } else if(numplayers == 7) {
+                            } else if (numplayers == 7) {
                                 setResponsePage(SevenBoard.class);
                             }
                             WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
                         }
                     } else {
-          	            info("only the host can start the game");
+                        info("only the host can start the game");
                     }
                 }
 
@@ -848,13 +624,13 @@ public class Lobby extends BasePage {
                 id = (int) body.get("gameID");
                 if (id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
                     int numplayers = game.getNumPlayers();
-                    if(numplayers == 4) {
+                    if (numplayers == 4) {
                         setResponsePage(FourBoard.class);
-                    } else if(numplayers == 5) {
+                    } else if (numplayers == 5) {
                         setResponsePage(FiveBoard.class);
-                    } else if(numplayers == 6) {
+                    } else if (numplayers == 6) {
                         setResponsePage(SixBoard.class);
-                    } else if(numplayers == 7) {
+                    } else if (numplayers == 7) {
                         setResponsePage(SevenBoard.class);
                     }
                 }

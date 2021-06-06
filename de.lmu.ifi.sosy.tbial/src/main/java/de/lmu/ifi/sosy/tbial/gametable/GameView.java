@@ -29,7 +29,7 @@ public abstract class GameView extends WebPage {
   User user = ((TBIALSession) getSession()).getUser();
   AjaxButton leaveButton;
   Game game = user.getGame();
-  ModalWindow modalWindow;
+  //  ModalWindow modalWindow;
   private static GameView instance;
   Form<?> form;
 
@@ -70,8 +70,8 @@ public abstract class GameView extends WebPage {
       }
     });
 
-    add(modalWindow = new ModalWindow("gamePaused"));
-    modalWindow.setOutputMarkupId(true);
+//    add(modalWindow = new ModalWindow("gamePaused"));
+//    modalWindow.setOutputMarkupId(true);
 
     leaveButton = new AjaxButton("leaveButton") {
       /**
@@ -94,8 +94,9 @@ public abstract class GameView extends WebPage {
       }
     };
     form = new Form<>("form");
-    modalWindow.setVisible(true);
-    form.add(leaveButton).add(modalWindow);
+//    modalWindow.setVisible(true);
+    form.add(leaveButton);
+//    form..add(modalWindow);
     form.setOutputMarkupId(true);
     add(form);
   }
@@ -114,9 +115,9 @@ public abstract class GameView extends WebPage {
         if (gameID == game.getId() && userID != ((TBIALSession) getSession()).getUser().getId()) {
           RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
             game.setGamePaused(true);
-            modalWindow.setContent(new GamePausedPanel(modalWindow.getContentId()));
-            modalWindow.setVisible(true);
-            modalWindow.show(target);
+//            modalWindow.setContent(new GamePausedPanel(modalWindow.getContentId()));
+//            modalWindow.setVisible(true);
+//            modalWindow.show(target);
           });
         }
       case "ContinueGame":
@@ -126,7 +127,7 @@ public abstract class GameView extends WebPage {
         if (gameID == game.getId() && userID != ((TBIALSession) getSession()).getUser().getId()) {
           RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
             game.setGamePaused(false);
-            modalWindow.close(target);
+//            modalWindow.close(target);
           });
         }
     }

@@ -203,7 +203,7 @@ public class Lobby extends BasePage {
                                     if(numplayers == 4) {
                                         setResponsePage(FourBoard.class);
                                     } else if(numplayers == 5) {
-                                        setResponsePage(FiveBoard.class);
+                                    		setResponsePage(FiveBoard.class);
                                     } else if(numplayers == 6) {
                                         setResponsePage(SixBoard.class);
                                     } else if(numplayers == 7) {
@@ -525,36 +525,6 @@ public class Lobby extends BasePage {
                     }
                 }
             };
-            
-            
-            
-            
-            
-            
-            
-            
-            
-         
-            
-            
-            
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
 
             add(new WebSocketBehavior() {
                 private static final long serialVersionUID = 1L;

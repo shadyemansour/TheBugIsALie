@@ -236,11 +236,13 @@ public class InMemoryDatabase implements Database {
   @Override
   public void setUserGame(int id, String name) {
     Game g = null;
-    synchronized (games) {
-      for (Game game : games) {
-        if (name == game.getName()) {
-          g = game;
-          break;
+    if (!name.equals("NULL")) {
+      synchronized (games) {
+        for (Game game : games) {
+          if (name.equals(game.getName())) {
+            g = game;
+            break;
+          }
         }
       }
     }
@@ -260,6 +262,9 @@ public class InMemoryDatabase implements Database {
     Game game = new Game(games.size(), name, password, numplayers, gamestate, host);
     synchronized (games) {
       games.add(game);
+      User user = getUser(host);
+      game.setHost(user);
+      user.setGame(game);
     }
     return game;
   }

@@ -38,7 +38,7 @@ public abstract class AbstractDatabaseTest {
     password = "pass";
     id = 1;
     gameState = "newState";
-    game = new Game(id, "name", "", 5, null, name);
+    game = new Game(id, "name", "", 5, "", name);
     user = new User(name, password, null);
     prestige = 10;
     health = 100;

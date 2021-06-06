@@ -61,8 +61,6 @@ public class Lobby extends BasePage {
     protected final AbstractTab tab2;
     protected final AbstractTab tab3;
     protected final AbstractTab tab4;
-    
-   
     protected final List<ITab> tabs;
     protected final AjaxTabbedPanel<ITab> tabbedPanel;
     private Game game;
@@ -106,8 +104,6 @@ public class Lobby extends BasePage {
                 return new TabPanel4(panelId);
             }
         };
-        
-        
         tabs.add(tab1);
         tabs.add(tab2);
         if (!((TBIALSession) getSession()).getUser().getJoinedGame()) {
@@ -254,8 +250,6 @@ public class Lobby extends BasePage {
                             	}
                         }
                     });
-                    
-                    
                     User user = ((TBIALSession) getSession()).getUser();
                     if (user != null && user.getGame() != null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
@@ -577,7 +571,7 @@ public class Lobby extends BasePage {
         JSONObject msgBody = new JSONObject();
         msgBody.put("id", targetId);
         JSONObject msg = new JSONObject();
-        msg.put("msgType", "Player Removed");
+        msg.put("msgType", "PlayerRemoved");
         msg.put("msgBody", msgBody);
 
         JSONMessage message = new JSONMessage(msg);
@@ -604,18 +598,18 @@ public class Lobby extends BasePage {
             case "PlayerRemoved":
                 body = jsonMsg.getJSONObject("msgBody");
                 id = (int) body.get("id");
-                if (id == ((TBIALSession) getSession()).getUser().getId()) {
+                if (getSession().isSignedIn() && id == ((TBIALSession) getSession()).getUser().getId()) {
                     User user = ((TBIALSession) getSession()).getUser();
                     user.setGame(null);
                     user.setJoinedGame(false);
-                    ((SQLDatabase) getDatabase()).setUserGame(user.getId(), "NULL");
+                    ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
                     game.removePlayer(user);
                     tabs.remove(2);
                     tabs.add(tab3);
                     setResponsePage(getApplication().getHomePage());
                     tabbedPanel.setSelectedTab(1);
-
                 }
+                break;
             case "GameStarted":
                 body = jsonMsg.getJSONObject("msgBody");
                 id = (int) body.get("gameID");

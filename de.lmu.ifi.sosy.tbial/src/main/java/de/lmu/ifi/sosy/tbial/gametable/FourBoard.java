@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
@@ -53,6 +54,10 @@ public class FourBoard extends GameView {
   	createStack();
     createHeap();
    
+    createPlayer1Area();
+    createPlayer2Area();
+    createPlayer3Area();
+    createPlayer4Area();
 
   }
   
@@ -60,7 +65,7 @@ public class FourBoard extends GameView {
    * creates dummy cards, can be removed later
    */
   private void createDummyCards() {
-  	card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, false, null);
+  	card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
 //    CardPanel cardPanel1 = new CardPanel("card-panel1", new Model<Card>(card1));
 //    add(cardPanel1);
     
@@ -97,7 +102,7 @@ public class FourBoard extends GameView {
   /*
    * creates stack
    * TODO: fill with real cards later, npt dummy cards => adjust Iterator
-   * TODO: make sure that all cards show back side
+   * TODO: make sure that all cards show back side => will be automatic with real cards
    */
   private void createStack() {
     RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
@@ -108,8 +113,8 @@ public class FourBoard extends GameView {
 				return cardModels.iterator();
 			}
 			
-			int posLeft = 35 - cardModels.size();
-			int posTop = 45 - cardModels.size();
+			int posLeft = 85 - cardModels.size();
+			int posTop = 90 - cardModels.size();
 
 			@Override
 			protected void populateItem(Item<Card> item) {
@@ -127,7 +132,7 @@ public class FourBoard extends GameView {
   /*
    * creates heap
    * TODO: fill with real cards later, not dummy cards => adjust Iterator
-   * make sure, that all cards show front side
+   * make sure, that all cards show front side => will be automatic with real cards
    */
   private void createHeap() {
   	RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
@@ -149,5 +154,424 @@ public class FourBoard extends GameView {
     };
     heap.setOutputMarkupId(true);
     add(heap);
+  }
+  
+  /*
+   * creates player area for top player
+   */
+  private void createPlayer1Area() {
+  	/*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+    cardDropModels.add(Model.of(card5));
+    
+    /*
+     * player-card-container 
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container1");
+    add(playerCardContainer);
+    
+    /*
+     * left side container includes card-drop-area and card-hand 
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container1");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area1") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardDropModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
+
+    /*
+     * card hand
+     */
+    // dummy card model for card hand
+    List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
+    cardHandModels.add(Model.of(card2));
+    cardHandModels.add(Model.of(card3));
+    cardHandModels.add(Model.of(card4));
+    cardHandModels.add(Model.of(card5));
+    
+    RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand1") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardHandModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+//				posTop += 2;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
+    
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container1");
+    playerCardContainer.add(healthRoleContainer);
+    
+    /*
+     * mental health
+     * TODO: how do we want to display the mental health?
+     * TODO: show current mental health
+     */
+    Label health = new Label("health-player1", "mental health of player 1");
+    healthRoleContainer.add(health);
+    
+    /*
+     * role card
+     * TODO: put real role card here
+     * TODO: show or hide card depending on player and card
+     */
+    CardPanel roleCardPanel = new CardPanel("role-card-panel1", new Model<Card>(card1));
+    healthRoleContainer.add(roleCardPanel);
+  }
+
+  /*
+   * creates player area for left player
+   */
+  private void createPlayer2Area() {
+  	/*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+    cardDropModels.add(Model.of(card4));
+    cardDropModels.add(Model.of(card4));
+    cardDropModels.add(Model.of(card4));
+    cardDropModels.add(Model.of(card5));
+    
+    /*
+     * player-card-container 
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container2");
+    add(playerCardContainer);
+    
+    /*
+     * left side container includes card-drop-area and card-hand 
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container2");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area2") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardDropModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
+
+    /*
+     * card hand
+     */
+    // dummy card model for card hand
+    List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
+    cardHandModels.add(Model.of(card2));
+    cardHandModels.add(Model.of(card3));
+    cardHandModels.add(Model.of(card4));
+    cardHandModels.add(Model.of(card5));
+    
+    RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand2") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardHandModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+//				posTop += 2;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
+    
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container2");
+    playerCardContainer.add(healthRoleContainer);
+    
+    /*
+     * mental health
+     * TODO: how do we want to display the mental health?
+     * TODO: show current mental health
+     */
+    Label health = new Label("health-player2", "mental health of player 2");
+    healthRoleContainer.add(health);
+    
+    /*
+     * role card
+     * TODO: put real role card here
+     * TODO: show or hide card depending on player and card
+     */
+    CardPanel roleCardPanel = new CardPanel("role-card-panel2", new Model<Card>(card1));
+    healthRoleContainer.add(roleCardPanel);
+  }
+
+  /*
+   * creates player area for right player
+   */
+  private void createPlayer3Area() {
+  	/*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+    cardDropModels.add(Model.of(card5));
+    
+    /*
+     * player-card-container 
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container3");
+    add(playerCardContainer);
+    
+    /*
+     * left side container includes card-drop-area and card-hand 
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container3");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area3") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardDropModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
+
+    /*
+     * card hand
+     */
+    // dummy card model for card hand
+    List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
+    cardHandModels.add(Model.of(card2));
+    cardHandModels.add(Model.of(card3));
+    cardHandModels.add(Model.of(card4));
+    cardHandModels.add(Model.of(card5));
+    
+    RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand3") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardHandModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+//				posTop += 2;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
+    
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container3");
+    playerCardContainer.add(healthRoleContainer);
+    
+    /*
+     * mental health
+     * TODO: how do we want to display the mental health?
+     * TODO: show current mental health
+     */
+    Label health = new Label("health-player3", "mental health of player 3");
+    healthRoleContainer.add(health);
+    
+    /*
+     * role card
+     * TODO: put real role card here
+     * TODO: show or hide card depending on player and card
+     */
+    CardPanel roleCardPanel = new CardPanel("role-card-panel3", new Model<Card>(card1));
+    healthRoleContainer.add(roleCardPanel);
+  }
+  
+  /*
+   * creates player area for bottom player
+   */
+  private void createPlayer4Area() {
+  	/*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+    cardDropModels.add(Model.of(card5));
+    
+    /*
+     * player-card-container 
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container4");
+    add(playerCardContainer);
+    
+    /*
+     * left side container includes card-drop-area and card-hand 
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container4");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area4") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardDropModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
+
+    /*
+     * card hand
+     */
+    // dummy card model for card hand
+    List<IModel<Card>> cardHandModels = new ArrayList<IModel<Card>>();
+    cardHandModels.add(Model.of(card2));
+    cardHandModels.add(Model.of(card3));
+    cardHandModels.add(Model.of(card4));
+    cardHandModels.add(Model.of(card5));
+    
+    RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand4") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Iterator<IModel<Card>> getItemModels() {
+				return cardHandModels.iterator();
+			}
+			int width = 300;
+			
+			int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
+			int stepSize = posLeft + 50;
+
+			@Override
+			protected void populateItem(Item<Card> item) {
+				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+				posLeft += stepSize;
+//				posTop += 2;
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
+    
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container4");
+    playerCardContainer.add(healthRoleContainer);
+    
+    /*
+     * mental health
+     * TODO: how do we want to display the mental health?
+     * TODO: show current mental health
+     */
+    Label health = new Label("health-player4", "mental health of player 4");
+    healthRoleContainer.add(health);
+    
+    /*
+     * role card
+     * TODO: put real role card here
+     * TODO: show or hide card depending on player and card
+     */
+    CardPanel roleCardPanel = new CardPanel("role-card-panel4", new Model<Card>(card1));
+    healthRoleContainer.add(roleCardPanel);
   }
 }

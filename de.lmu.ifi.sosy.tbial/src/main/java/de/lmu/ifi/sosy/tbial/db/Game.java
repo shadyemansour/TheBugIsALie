@@ -385,7 +385,6 @@ public class Game implements Serializable {
         stack=new  ArrayList<Card>();
         playableStack=new  ArrayList<Card>();
 
-
         setRoleCards();
         Collections.shuffle(roleCards);
         setCharacterCards();

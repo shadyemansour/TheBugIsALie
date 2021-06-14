@@ -142,7 +142,7 @@ public class GameStartGameTest {
 		    
 		    for (User player : game.getPlayers()) {
 		    	
-		    	assertThat(player.getCharacterCard().getTitle().equals("  "), is(expected));
+		    	assertThat(player.getCharacterCard().getTitle().equals(null), is(expected));
 		    	
 		    }
 		  }

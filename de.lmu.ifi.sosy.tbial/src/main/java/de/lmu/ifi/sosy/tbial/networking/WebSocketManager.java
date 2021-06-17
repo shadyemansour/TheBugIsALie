@@ -1,12 +1,10 @@
 package de.lmu.ifi.sosy.tbial.networking;
 
 import java.util.HashMap;
-import java.util.concurrent.*;
 
 import org.apache.wicket.protocol.ws.WebSocketSettings;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
 import org.apache.wicket.protocol.ws.api.registry.IWebSocketConnectionRegistry;
-import org.apache.wicket.request.cycle.RequestCycle;
 
 
 public class WebSocketManager {
@@ -56,31 +54,5 @@ public class WebSocketManager {
     }
   }
 
-  public static class MyWebSocketPushMessageExecutor implements org.apache.wicket.protocol.ws.concurrent.Executor {
-
-    private final java.util.concurrent.Executor nonHttpRequestExecutor;
-    private final java.util.concurrent.Executor httpRequestExecutor;
-
-    public MyWebSocketPushMessageExecutor() {
-      this(Runnable::run, new ThreadPoolExecutor(1, 20,
-          60L, TimeUnit.SECONDS,
-          new SynchronousQueue<>(),
-          new WebSocketSettings.ThreadFactory()));
-    }
-
-    public MyWebSocketPushMessageExecutor(java.util.concurrent.Executor nonHttpRequestExecutor, java.util.concurrent.Executor httpRequestExecutor) {
-      this.nonHttpRequestExecutor = nonHttpRequestExecutor;
-      this.httpRequestExecutor = httpRequestExecutor;
-    }
-
-    @Override
-    public void run(final Runnable command) {
-      if (RequestCycle.get() != null) {
-        httpRequestExecutor.execute(command);
-      } else {
-        nonHttpRequestExecutor.execute(command);
-      }
-    }
-  }
 
 }

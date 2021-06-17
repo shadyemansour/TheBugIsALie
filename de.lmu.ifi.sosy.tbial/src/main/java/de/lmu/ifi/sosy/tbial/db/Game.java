@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosy.tbial.db;
 
-import de.lmu.ifi.sosy.tbial.gametable.GameView;
 
 import static java.util.Objects.requireNonNull;
 
@@ -251,15 +250,12 @@ public class Game implements Serializable {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cards", array);
-		//GameView.sendPrivateMessage("YourCards", msgBody, playerID);
 		propertyChangeSupport.firePropertyChange("SendPrivateMessage", createJSONMessage("YourCards", msgBody), playerID);
 
 		msgBody.put("playerID", playerID);
 		msgBody.put("cards", array.length());
 		msgBody.put("cardsInDeck", stack.size());
 		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardsDrawn", msgBody), players);
-
-		//	GameView.sendMessage("CardsDrawn",msgBody, players); //TODO should the player who drew the cards also receive this message
 	}
 
 	/**
@@ -286,7 +282,6 @@ public class Game implements Serializable {
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", currentID);
 		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CurrentPlayer", msgBody), players);
-		//	GameView.sendMessage("CurrentPlayer",msgBody, players);
 
 	}
 
@@ -298,7 +293,6 @@ public class Game implements Serializable {
 		msgBody.put("gameID", id);
 		msgBody.put(type.toLowerCase(), array);
 		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage(type, msgBody), players);
-		//	GameView.sendMessage(type,msgBody, players);
 	}
 
 	/**

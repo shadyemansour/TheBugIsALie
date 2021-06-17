@@ -232,6 +232,59 @@ public class Game implements Serializable {
 		currentID = players.get(currentPlayer).getId();
 	}
 
+	public void decksShuffled(int cardsInDeck, int cardsInHeap) {
+		//TODO implementation
+		decksShuffledMessage(cardsInDeck, cardsInHeap);
+	}
+
+	/**
+	 * sends Shuffle Message
+	 */
+	private void decksShuffledMessage(int cardsInDeck, int cardsInHeap) {
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("cardsInDeck", cardsInDeck);
+		msgBody.put("cardsInHeap", cardsInHeap);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("Shuffle", msgBody), players);
+	}
+
+	/**
+	 * should be called to change player's health
+	 *
+	 * @param playerID
+	 * @param health
+	 */
+	public void updateHealth(int playerID, int health) {
+		//TODO implementation
+		updateHealthMessage(playerID, health);
+	}
+
+	/**
+	 * sends Health Message
+	 */
+	private void updateHealthMessage(int playerID, int health) {
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("playerID", playerID);
+		msgBody.put("health", health);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("Health", msgBody), players);
+	}
+
+	public void gameWon(int playerID) {
+		//TODO implementation
+		gameWonMessage(playerID);
+	}
+
+	/**
+	 * sends GameWon Message
+	 */
+	private void gameWonMessage(int playerID) {
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("playerID", playerID);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("GameWon", msgBody), players);
+	}
+
 	public void defendCard(int playerID, Card card) {
 		//TODO implementation
 		cardDefendedMessage(playerID, card);

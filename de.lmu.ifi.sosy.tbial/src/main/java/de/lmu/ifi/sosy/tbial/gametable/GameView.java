@@ -206,6 +206,12 @@ public abstract class GameView extends WebPage {
           Card ca = (Card) body.get("card");
           //TODO USE THE DATA
           break;
+        case "Health":
+          int p = body.getInt("playerID");
+          int health = body.getInt("health");
+          //TODO USE THE DATA
+          break;
+
       }
 
     }

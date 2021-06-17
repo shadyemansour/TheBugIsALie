@@ -251,8 +251,8 @@ public class Game implements Serializable {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cards", array);
-		GameView.sendPrivateMessage("YourCards", msgBody, playerID);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("YourCards", msgBody), players);
+		//GameView.sendPrivateMessage("YourCards", msgBody, playerID);
+		propertyChangeSupport.firePropertyChange("SendPrivateMessage", createJSONMessage("YourCards", msgBody), playerID);
 
 		msgBody.put("playerID", playerID);
 		msgBody.put("cards", array.length());

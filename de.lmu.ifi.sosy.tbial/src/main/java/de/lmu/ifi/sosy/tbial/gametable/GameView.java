@@ -203,7 +203,9 @@ public abstract class GameView extends WebPage {
         sendMessage(message, players);
 
       } else if (event.getPropertyName().equals("SendPrivateMessage")) {
-
+        JSONMessage message = (JSONMessage) event.getOldValue();
+        int playerID = (int) event.getNewValue();
+        sendPrivateMessage(message, playerID);
       }
     }
   }
@@ -218,11 +220,7 @@ public abstract class GameView extends WebPage {
     return new JSONMessage(msg);
   }
 
-  public static void sendPrivateMessage(String type, JSONObject body, int playerID) {
-    JSONObject msg = new JSONObject();
-    msg.put("msgType", type);
-    msg.put("msgBody", body);
-    JSONMessage message = new JSONMessage(msg);
+  public static void sendPrivateMessage(JSONMessage message, int playerID) {
     WebSocketManager.getInstance().sendPrivateMessage(message, playerID);
   }
 
@@ -233,6 +231,5 @@ public abstract class GameView extends WebPage {
       }
     }
   }
-
 
 }

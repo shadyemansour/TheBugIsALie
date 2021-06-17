@@ -252,9 +252,13 @@ public class Game implements Serializable {
 		msgBody.put("gameID", id);
 		msgBody.put("cards", array);
 		GameView.sendPrivateMessage("YourCards", msgBody, playerID);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("YourCards", msgBody), players);
+
 		msgBody.put("playerID", playerID);
 		msgBody.put("cards", array.length());
 		msgBody.put("cardsInDeck", stack.size());
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardsDrawn", msgBody), players);
+
 		//	GameView.sendMessage("CardsDrawn",msgBody, players); //TODO should the player who drew the cards also receive this message
 	}
 
@@ -281,6 +285,7 @@ public class Game implements Serializable {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", currentID);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CurrentPlayer", msgBody), players);
 		//	GameView.sendMessage("CurrentPlayer",msgBody, players);
 
 	}

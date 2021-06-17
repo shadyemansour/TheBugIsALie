@@ -189,6 +189,17 @@ public abstract class GameView extends WebPage {
           int numDeckCards = body.getInt("cardsInDeck");
           //TODO USE THE DATA
           break;
+        case "CardPlayed":
+          int from = body.getInt("from");
+          int to = body.getInt("to");
+          Card car = (Card) body.get("card");
+          //TODO USE THE DATA
+          break;
+        case "CardDiscarded":
+          int player = body.getInt("playerID");
+          Card card = (Card) body.get("card");
+          //TODO USE THE DATA
+          break;
       }
 
     }
@@ -196,6 +207,16 @@ public abstract class GameView extends WebPage {
 
   public void drawCards() {
     game.drawCards(((TBIALSession) getSession()).getUser().getId(), 2 /*TODO CHANGE TO VARIABLE*/);
+  }
+
+  public void discardCard(Card card) {
+    //TODO implementation
+    game.discardCard(((TBIALSession) getSession()).getUser().getId(), card);
+  }
+
+  public void playCard(int to, Card card) {
+    //TODO implementation
+    game.playCard(((TBIALSession) getSession()).getUser().getId(), to, card);
   }
 
   private JSONMessage gamePausedJSONMessage(int userId, int gameId) {

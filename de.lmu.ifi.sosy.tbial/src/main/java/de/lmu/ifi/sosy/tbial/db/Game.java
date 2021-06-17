@@ -232,6 +232,40 @@ public class Game implements Serializable {
 		currentID = players.get(currentPlayer).getId();
 	}
 
+	public void playCard(int from, int to, Card card) {
+		//TODO implementation
+		CardPlayedMessage(from, to, card);
+	}
+
+	/**
+	 * sends CardPlayed Message
+	 */
+	private void CardPlayedMessage(int from, int to, Card card) {
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("from", from);
+		msgBody.put("to", to);
+		msgBody.put("card", card);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardPlayed", msgBody), players);
+	}
+
+
+	public void discardCard(int playerID, Card card) {
+		//TODO implementation add to heap?
+		discardCardMessage(playerID, card);
+	}
+
+	/**
+	 * sends CardDiscarded Message
+	 */
+	private void discardCardMessage(int playerID, Card card) {
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("playerID", playerID);
+		msgBody.put("card", card);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardDiscarded", msgBody), players);
+	}
+
 	public void drawCards(int playerID, int numCards) {
 		JSONArray cards = new JSONArray();
 
@@ -760,7 +794,7 @@ public class Game implements Serializable {
 	}
 
 
-//	
+//
 //	public List<Card> getHeap() {
 //		return heap;
 //	}

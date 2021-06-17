@@ -379,7 +379,7 @@ public class Game implements Serializable {
 
     public void startGame() {
 
-				gameStarted = true;
+		gameStarted = true;
         roleCards=new ArrayList<Card>();
         characterCards= new ArrayList<Card>();
         stack=new  ArrayList<Card>();
@@ -414,10 +414,15 @@ public class Game implements Serializable {
             }
 
             characterCards.remove(0);
+            
+            
 
             if(player.getRoleCard().getTitle().equals("Manager")) {
               player.setHealth(player.getHealth() + 1);
 
+            }
+              
+              
 	            List<Card> hand= new ArrayList<Card>();
 	
 	            for (int i = 0; i < player.getHealth(); i++) {
@@ -425,6 +430,8 @@ public class Game implements Serializable {
 	            }
 	            
 	            player.setHand(hand);
+	            
+	            
 	            for (int i = 0; i < player.getHealth(); i++) {
 	                playableStack.remove(i);
 	
@@ -434,7 +441,7 @@ public class Game implements Serializable {
 
 
         }
-    }
+    
     
   
 	   public void setRoleCards() {
@@ -555,7 +562,7 @@ public class Game implements Serializable {
 
 		for (int i = 1; i <= 4; i++) {
 
-						stack.add(new Card("Action", "Nullpointer!","--bug--",null,
+					stack.add(new Card("Action", "Nullpointer!","--bug--",null,
 					          "-1 mental health", true,false,null));
 					  stack.add(new Card("Action ", "Off By One!","--bug--",null,
 					          "-1 mental health", true,false,null));
@@ -579,6 +586,11 @@ public class Game implements Serializable {
 					          "Ignors prestige. \nDrop one card", false, false, null));
 					  stack.add(new Card("Action", "Pwnd.", null, null,
 				          	"Cede one card. Same or \nlower prestige required", false, false, null));
+	
+		}			  
+					  
+		 for (int i=1;i<=3;i++){			  
+					  
             stack.add(new Card("Action", "System Integration", null, null,
                     "My code is better than \nyours!", false, false, null));
             stack.add(new Card("Ability", "Microsoft", "(Previous Job)", null,
@@ -586,8 +598,11 @@ public class Game implements Serializable {
             stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
                     "Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
 		}
+		
+		
+		
 
-		for (int i = 1; i <= 3; i++) {
+		for (int i = 1; i <= 2; i++) {
             stack.add(new Card("Action", "Coffee", "--Solution--", null,
                     "+1 mental health", true, false, null));
             stack.add(new Card("Action", "Code+Fix \nSession", "--Solution--", null,
@@ -612,6 +627,9 @@ public class Game implements Serializable {
                     "2 prestige", false, false, null));
 
 		}
+		
+		
+		
 
         stack.add(new Card("Action", "BUG", "-bug-", null,
                 "-1 mental health", true,false, null));
@@ -638,6 +656,11 @@ public class Game implements Serializable {
 
 	}
 
+	
+	
+	
+	
+	
 	public void setPlayableStack(List<Card> stack) {
 
 

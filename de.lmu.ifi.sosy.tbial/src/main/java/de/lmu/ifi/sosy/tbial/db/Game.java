@@ -417,20 +417,16 @@ public class Game implements Serializable {
             if(player.getRoleCard().getTitle().equals("Manager")) {
               player.setHealth(player.getHealth() + 1);
 
-	            List<Card> hand= new ArrayList<Card>();
-	
-	            for (int i = 0; i < player.getHealth(); i++) {
-	                hand.add(playableStack.get(i));
-	            }
-	            
-	            player.setHand(hand);
-	            for (int i = 0; i < player.getHealth(); i++) {
-	                playableStack.remove(i);
-	
-	            }
             }
 
+            List<Card> hand= new ArrayList<Card>();
 
+            // test with stack instead of playableStack
+            for (int i = 0; i < player.getHealth(); i++) {
+              hand.add(stack.get(i));
+              stack.remove(i);
+            }
+            player.setHand(hand);
 
         }
     }
@@ -585,6 +581,7 @@ public class Game implements Serializable {
             stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
                     "Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
 		}
+		System.out.println(stack);
 
 		for (int i = 1; i <= 3; i++) {
             stack.add(new Card("Action", "Coffee", "--Solution--", null,

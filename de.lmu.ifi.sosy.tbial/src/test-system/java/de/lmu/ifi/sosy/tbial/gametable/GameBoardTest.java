@@ -76,10 +76,10 @@ public class GameBoardTest extends PageTestBase {
 
     tester.startPage(FourBoard.class);
     tester.assertRenderedPage(FourBoard.class);
-    tester.assertLabel("p1", "player1-name");
-    tester.assertLabel("p2", "player2-name");
-    tester.assertLabel("p3", "player3-name");
-    tester.assertLabel("p4", "player4-name");
+//    tester.assertLabel("p1", "player1-name");
+//    tester.assertLabel("p2", "player2-name");
+//    tester.assertLabel("p3", "player3-name");
+//    tester.assertLabel("p4", "player4-name");
   }
 
   @Test

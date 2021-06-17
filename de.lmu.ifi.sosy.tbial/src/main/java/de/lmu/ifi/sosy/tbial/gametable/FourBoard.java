@@ -3,6 +3,8 @@ package de.lmu.ifi.sosy.tbial.gametable;
 //import de.lmu.ifi.sosy.tbial.db.User;
 import de.lmu.ifi.sosy.tbial.*;
 import de.lmu.ifi.sosy.tbial.db.Card;
+import de.lmu.ifi.sosy.tbial.db.Game;
+import de.lmu.ifi.sosy.tbial.db.User;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,11 +20,20 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+
 @AuthenticationRequired
 public class FourBoard extends GameView {
     /** UID for serialization. */
   private static final long serialVersionUID = 1L;
   private int numPlayer = 4;
+  
+  /*
+   * real props
+   */
+  User user;
+  List<User> playerList;
+  Game game;
+  List<Card> stackList;
   
   /*
    * dummy cards
@@ -46,19 +57,18 @@ public class FourBoard extends GameView {
   
   public FourBoard() {
   	
-  	Label player1 = new Label("p1", "player1-name");
-  	add(player1);
-  	Label player2 = new Label("p2", "player2-name");
-  	add(player2);
-  	Label player3 = new Label("p3", "player3-name");
-  	add(player3);
-  	Label player4 = new Label("p4", "player4-name");
-  	add(player4);
-  	
   	/*
   	 * dummy cards serve as example
   	 */
   	createDummyCards();
+  	
+  	user = ((TBIALSession) getSession()).getUser();
+  	createDummyGame();
+  	playerList = game.getPlayers();
+  	game.startGame();
+  	
+  	orderPlayers();
+  	assignLabels();
   	
   	createStack();
     createHeap();
@@ -68,6 +78,57 @@ public class FourBoard extends GameView {
     createPlayer3Area();
     createPlayer4Area();
 
+  }
+  
+  /*
+   * rotates players in List, so that own player is displayed at the bottom (player 3 in this case)
+   */
+  private void orderPlayers() {
+  	int size = playerList.size();
+  	for (int i=0; i<size; i++) {
+  		// break loop, if own player is in correct position
+  		if (playerList.get(2).equals(user)) {
+  			break;
+  		}
+  		// move players
+  		User tempUser = playerList.get(size - 1);
+  		for (int j=size - 1; j>0; j--) {
+  			playerList.set(j,  playerList.get(j - 1));
+  		}
+  		playerList.set(0, tempUser);
+  	}
+  }
+  
+  /*
+   * assign labels for player names
+   */
+  private void assignLabels() {
+  	int size = playerList.size();
+  	for (int i=0; i<size; i++) {
+  		String labelId = "p" + (i + 1);
+  		Label player = new Label(labelId, playerList.get(i).getName());
+  		add(player);
+  	}
+  }
+  
+  /*
+   * function is called after each turn or when UI needs to be updated
+   */
+  private void updateTable() {
+  	System.out.println("update table");
+  }
+  
+  private void createDummyGame() {
+  	game = new Game(1234, "dummyGame", "", 4, "game created", user.getName());
+  	game.setHost(user);
+  	game.addPlayer(user);
+  	
+  	User player2 = new User(22, "player zwei", "1", game);
+  	User player3 = new User(33, "player drei", "1", game);
+  	User player4 = new User(44, "player vier", "1", game);
+  	game.addPlayer(player2);
+  	game.addPlayer(player3);
+  	game.addPlayer(player4);
   }
   
   /*
@@ -124,48 +185,48 @@ public class FourBoard extends GameView {
     otherCardModel.add(Model.of(otherCard2));
     otherCardModel.add(Model.of(otherCard3));
     
-    stackCard1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-    stackCard2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
-    stackCard3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-    stackCard4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
-    stackCard5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-    stackCard6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-    stackCard7 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-    stackCard8 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
-    stackCard9 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-    stackCard10 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
-    stackCard11 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-    stackCard12 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-    
-    stackModel = new ArrayList<IModel<Card>>();
-  	stackModel.add(Model.of(stackCard1));
-  	stackModel.add(Model.of(stackCard2));
-  	stackModel.add(Model.of(stackCard3));
-  	stackModel.add(Model.of(stackCard4));
-  	stackModel.add(Model.of(stackCard5));
-  	stackModel.add(Model.of(stackCard6));
-  	stackModel.add(Model.of(stackCard7));
-  	stackModel.add(Model.of(stackCard8));
-  	stackModel.add(Model.of(stackCard9));
-  	stackModel.add(Model.of(stackCard10));
-  	stackModel.add(Model.of(stackCard11));
-  	stackModel.add(Model.of(stackCard12));
-  	stackModel.add(Model.of(stackCard1));
-  	stackModel.add(Model.of(stackCard2));
-  	stackModel.add(Model.of(stackCard3));
-  	stackModel.add(Model.of(stackCard4));
-  	stackModel.add(Model.of(stackCard5));
-  	stackModel.add(Model.of(stackCard6));
-  	stackModel.add(Model.of(stackCard7));
-  	stackModel.add(Model.of(stackCard8));
-  	stackModel.add(Model.of(stackCard9));
-  	stackModel.add(Model.of(stackCard10));
-  	stackModel.add(Model.of(stackCard11));
-  	stackModel.add(Model.of(stackCard12));
-  	
-  	for (IModel<Card> cardModel: this.stackModel) {
-  		cardModel.getObject().setVisible(false);
-  	}
+//    stackCard1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
+//    stackCard2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
+//    stackCard3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+//    stackCard4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
+//    stackCard5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+//    stackCard6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+//    stackCard7 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
+//    stackCard8 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
+//    stackCard9 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+//    stackCard10 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
+//    stackCard11 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+//    stackCard12 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+//    
+//    stackModel = new ArrayList<IModel<Card>>();
+//  	stackModel.add(Model.of(stackCard1));
+//  	stackModel.add(Model.of(stackCard2));
+//  	stackModel.add(Model.of(stackCard3));
+//  	stackModel.add(Model.of(stackCard4));
+//  	stackModel.add(Model.of(stackCard5));
+//  	stackModel.add(Model.of(stackCard6));
+//  	stackModel.add(Model.of(stackCard7));
+//  	stackModel.add(Model.of(stackCard8));
+//  	stackModel.add(Model.of(stackCard9));
+//  	stackModel.add(Model.of(stackCard10));
+//  	stackModel.add(Model.of(stackCard11));
+//  	stackModel.add(Model.of(stackCard12));
+//  	stackModel.add(Model.of(stackCard1));
+//  	stackModel.add(Model.of(stackCard2));
+//  	stackModel.add(Model.of(stackCard3));
+//  	stackModel.add(Model.of(stackCard4));
+//  	stackModel.add(Model.of(stackCard5));
+//  	stackModel.add(Model.of(stackCard6));
+//  	stackModel.add(Model.of(stackCard7));
+//  	stackModel.add(Model.of(stackCard8));
+//  	stackModel.add(Model.of(stackCard9));
+//  	stackModel.add(Model.of(stackCard10));
+//  	stackModel.add(Model.of(stackCard11));
+//  	stackModel.add(Model.of(stackCard12));
+//  	
+//  	for (IModel<Card> cardModel: this.stackModel) {
+//  		cardModel.getObject().setVisible(false);
+//  	}
   	
   	heapCard1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
     heapCard2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
@@ -213,10 +274,13 @@ public class FourBoard extends GameView {
   
   /*
    * creates stack
-   * TODO: fill with real cards later, npt dummy cards => adjust Iterator
-   * TODO: make sure that all cards show back side => will be automatic with real cards
    */
   private void createStack() {
+  	stackModel = new ArrayList<IModel<Card>>();
+  	for (Card card : game.getPlayableStack()) {
+  		stackModel.add(Model.of(card));
+  	}
+  	
     RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
 			private static final long serialVersionUID = 1L;
 
@@ -318,16 +382,20 @@ public class FourBoard extends GameView {
     /*
      * card hand
      */
+    List<IModel<Card>> p1CardHandModelList = new ArrayList<IModel<Card>>();
+    for (Card card : playerList.get(0).getHand()) {
+    	p1CardHandModelList.add(Model.of(card));
+    }
     RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand1") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Iterator<IModel<Card>> getItemModels() {
-				return otherCardModel.iterator();
+				return p1CardHandModelList.iterator();
 			}
 			int width = 300;
 			
-			int posLeft = (width - otherCardModel.size() * 50) / (otherCardModel.size() + 1);
+			int posLeft = (width - p1CardHandModelList.size() * 50) / (p1CardHandModelList.size() + 1);
 			int stepSize = posLeft + 50;
 
 			@Override
@@ -361,7 +429,11 @@ public class FourBoard extends GameView {
      * TODO: put real role card here
      * TODO: show or hide card depending on player and card
      */
-    CardPanel roleCardPanel = new CardPanel("role-card-panel1", new Model<Card>(p1Role));
+    Card roleCard = playerList.get(0).getRoleCard();
+    if (playerList.get(0).getFired() || game.getGameState().equals("gameover")) {
+    	roleCard.setVisible(true);
+    }
+    CardPanel roleCardPanel = new CardPanel("role-card-panel1", new Model<Card>(roleCard));
     healthRoleContainer.add(roleCardPanel);
   }
 
@@ -418,16 +490,20 @@ public class FourBoard extends GameView {
     /*
      * card hand
      */
+    List<IModel<Card>> p2CardHandModelList = new ArrayList<IModel<Card>>();
+    for (Card card : playerList.get(1).getHand()) {
+    	p2CardHandModelList.add(Model.of(card));
+    }
     RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand2") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Iterator<IModel<Card>> getItemModels() {
-				return otherCardModel.iterator();
+				return p2CardHandModelList.iterator();
 			}
 			int width = 300;
 			
-			int posLeft = (width - otherCardModel.size() * 50) / (otherCardModel.size() + 1);
+			int posLeft = (width - p2CardHandModelList.size() * 50) / (p2CardHandModelList.size() + 1);
 			int stepSize = posLeft + 50;
 
 			@Override
@@ -461,7 +537,11 @@ public class FourBoard extends GameView {
      * TODO: put real role card here
      * TODO: show or hide card depending on player and card
      */
-    CardPanel roleCardPanel = new CardPanel("role-card-panel2", new Model<Card>(p2Role));
+    Card roleCard = playerList.get(1).getRoleCard();
+    if (playerList.get(1).getFired() || game.getGameState().equals("gameover")) {
+    	roleCard.setVisible(true);
+    }
+    CardPanel roleCardPanel = new CardPanel("role-card-panel2", new Model<Card>(roleCard));
     healthRoleContainer.add(roleCardPanel);
   }
 
@@ -515,16 +595,22 @@ public class FourBoard extends GameView {
     /*
      * card hand
      */
+    List<IModel<Card>> pCardHandModelList = new ArrayList<IModel<Card>>();
+    for (Card card : playerList.get(2).getHand()) {
+    	// set visible true for own cards
+    	card.setVisible(true);
+    	pCardHandModelList.add(Model.of(card));
+    }
     RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand3") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Iterator<IModel<Card>> getItemModels() {
-				return p3CardModel.iterator();
+				return pCardHandModelList.iterator();
 			}
 			int width = 300;
 			
-			int posLeft = (width - p3CardModel.size() * 50) / (p3CardModel.size() + 1);
+			int posLeft = (width - pCardHandModelList.size() * 50) / (pCardHandModelList.size() + 1);
 			int stepSize = posLeft + 50;
 
 			@Override
@@ -558,7 +644,8 @@ public class FourBoard extends GameView {
      * TODO: put real role card here
      * TODO: show or hide card depending on player and card
      */
-    CardPanel roleCardPanel = new CardPanel("role-card-panel3", new Model<Card>(p3Role));
+    playerList.get(2).getRoleCard().setVisible(true);
+    CardPanel roleCardPanel = new CardPanel("role-card-panel3", new Model<Card>(playerList.get(2).getRoleCard()));
     healthRoleContainer.add(roleCardPanel);
   }
   
@@ -612,16 +699,20 @@ public class FourBoard extends GameView {
     /*
      * card hand
      */
+    List<IModel<Card>> pCardHandModelList = new ArrayList<IModel<Card>>();
+    for (Card card : playerList.get(3).getHand()) {
+    	pCardHandModelList.add(Model.of(card));
+    }
     RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand4") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Iterator<IModel<Card>> getItemModels() {
-				return otherCardModel.iterator();
+				return pCardHandModelList.iterator();
 			}
 			int width = 300;
 			
-			int posLeft = (width - otherCardModel.size() * 50) / (otherCardModel.size() + 1);
+			int posLeft = (width - pCardHandModelList.size() * 50) / (pCardHandModelList.size() + 1);
 			int stepSize = posLeft + 50;
 
 			@Override
@@ -655,7 +746,11 @@ public class FourBoard extends GameView {
      * TODO: put real role card here
      * TODO: show or hide card depending on player and card
      */
-    CardPanel roleCardPanel = new CardPanel("role-card-panel4", new Model<Card>(p4Role));
+    Card roleCard = playerList.get(3).getRoleCard();
+    if (playerList.get(3).getFired() || game.getGameState().equals("gameover")) {
+    	roleCard.setVisible(true);
+    }
+    CardPanel roleCardPanel = new CardPanel("role-card-panel4", new Model<Card>(roleCard));
     healthRoleContainer.add(roleCardPanel);
   }
 }

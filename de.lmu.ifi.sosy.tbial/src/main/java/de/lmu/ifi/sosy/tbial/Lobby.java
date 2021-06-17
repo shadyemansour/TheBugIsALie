@@ -461,7 +461,8 @@ public class Lobby extends BasePage {
                             //game.addPlayer(new User("new Player", "pw", null));
                         } else {
                             game.setGameState("running");
-                            game.setGameStarted(true);
+                            //  game.setGameStarted(true);
+                            WebSocketManager.getInstance().sendMessage(startGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
                             if (numplayers == 4) {
                                 setResponsePage(FourBoard.class);
                             } else if (numplayers == 5) {
@@ -471,7 +472,8 @@ public class Lobby extends BasePage {
                             } else if (numplayers == 7) {
                                 setResponsePage(SevenBoard.class);
                             }
-                            WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+                            // game.startGame();
+
                         }
                     } else {
                         info("only the host can start the game");
@@ -582,16 +584,16 @@ public class Lobby extends BasePage {
         JSONObject msg = new JSONObject();
         msg.put("msgType", "PlayerRemoved");
         msg.put("msgBody", msgBody);
-
         JSONMessage message = new JSONMessage(msg);
         return message;
     }
 
-    private JSONMessage gameStartedJSONMessage(int userId, int gameId) {
+    private JSONMessage startGameJSONMessage(int userId, int gameId) {
         JSONObject msgBody = new JSONObject();
         msgBody.put("gameID", gameId);
+        msgBody.put("hostID", userId);
         JSONObject msg = new JSONObject();
-        msg.put("msgType", "GameStarted");
+        msg.put("msgType", "StartGame");
         msg.put("msgBody", msgBody);
 
         JSONMessage message = new JSONMessage(msg);
@@ -606,6 +608,7 @@ public class Lobby extends BasePage {
         switch (msgType) {
             case "PlayerRemoved":
                 body = jsonMsg.getJSONObject("msgBody");
+                System.out.println(body);
                 id = (int) body.get("id");
                 if (getSession().isSignedIn() && id == ((TBIALSession) getSession()).getUser().getId()) {
                     User user = ((TBIALSession) getSession()).getUser();
@@ -619,10 +622,11 @@ public class Lobby extends BasePage {
                     tabbedPanel.setSelectedTab(1);
                 }
                 break;
-            case "GameStarted":
+            case "StartGame":
                 body = jsonMsg.getJSONObject("msgBody");
                 id = (int) body.get("gameID");
-                if (id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
+                int hostID = (int) body.get("hostID");
+                if (hostID != ((TBIALSession) getSession()).getUser().getId() && id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
                     int numplayers = game.getNumPlayers();
                     if (numplayers == 4) {
                         setResponsePage(FourBoard.class);

@@ -3,23 +3,25 @@ package de.lmu.ifi.sosy.tbial.gametable;
 import de.lmu.ifi.sosy.tbial.db.*;
 import de.lmu.ifi.sosy.tbial.*;
 import de.lmu.ifi.sosy.tbial.networking.*;
-import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.*;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
 import org.apache.wicket.protocol.ws.api.message.IWebSocketPushMessage;
 import org.apache.wicket.request.cycle.RequestCycle;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Iterator;
+import java.util.List;
+
+import static de.lmu.ifi.sosy.tbial.TBIALApplication.getDatabase;
 
 public abstract class GameView extends WebPage {
   /**
@@ -30,25 +32,12 @@ public abstract class GameView extends WebPage {
   AjaxButton leaveButton;
   Game game = user.getGame();
   //  ModalWindow modalWindow;
-  private static GameView instance;
   Form<?> form;
-
-  protected Database getDatabase() {
-    return TBIALApplication.getDatabase();
-  }
-
-  protected TBIALApplication getTbialApplication() {
-    return (TBIALApplication) super.getApplication();
-  }
-
-  @Override
-  public TBIALSession getSession() {
-    return (TBIALSession) super.getSession();
-  }
+  private GameView instance;
 
   public GameView() {
     this.game.addPropertyChangeListener(new GameViewListener());
-    this.instance = this;
+
 
     add(new WebSocketBehavior() {
       private static final long serialVersionUID = 1L;
@@ -99,38 +88,93 @@ public abstract class GameView extends WebPage {
 //    form..add(modalWindow);
     form.setOutputMarkupId(true);
     add(form);
+
+    if (!game.isGameStarted() && ((TBIALSession) getSession()).getUser().getId() == game.getHost().getId()) {
+      try {
+        Thread.sleep(2000); //TODO delay this till all other gameviews have started
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+      game.startGame();
+    }
   }
 
   private void handleMessage(JSONMessage message) {
     JSONObject jsonMsg = message.getMessage();
     String msgType = (String) jsonMsg.get("msgType");
-    JSONObject body;
-    int gameID;
+    Iterator<Object> iterator;
+    JSONObject body = jsonMsg.getJSONObject("msgBody");
+    System.out.println(body);
+    int gameID = (int) body.get("gameID");
     int userID;
-    switch (msgType) {
-      case "GamePaused":
-        body = jsonMsg.getJSONObject("msgBody");
-        gameID = (int) body.get("gameID");
-        userID = (int) body.get("userID");
-        if (gameID == game.getId() && userID != ((TBIALSession) getSession()).getUser().getId()) {
-          RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
-            game.setGamePaused(true);
+
+    if (gameID == game.getId()) {
+      switch (msgType) {
+        case "GamePaused":
+          userID = (int) body.get("userID");
+          if (userID != ((TBIALSession) getSession()).getUser().getId()) {
+            RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
+              game.setGamePaused(true);
 //            modalWindow.setContent(new GamePausedPanel(modalWindow.getContentId()));
 //            modalWindow.setVisible(true);
 //            modalWindow.show(target);
-          });
-        }
-      case "ContinueGame":
-        body = jsonMsg.getJSONObject("msgBody");
-        gameID = (int) body.get("gameID");
-        userID = (int) body.get("userID");
-        if (gameID == game.getId() && userID != ((TBIALSession) getSession()).getUser().getId()) {
-          RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
-            game.setGamePaused(false);
+            });
+          }
+          break;
+        case "ContinueGame":
+          userID = (int) body.get("userID");
+          if (userID != ((TBIALSession) getSession()).getUser().getId()) {
+            RequestCycle.get().find(IPartialPageRequestHandler.class).ifPresent(target -> {
+              game.setGamePaused(false);
 //            modalWindow.close(target);
-          });
-        }
+            });
+          }
+          break;
+        case "GameStarted":
+          int cardsInDeck = (int) body.get("cardsInDeck");
+          int numPlayers = (int) body.get("numPlayers");
+          //TODO USE THE DATA
+          break;
+        case "Roles":
+          JSONArray roles = (JSONArray) body.get("roles");
+          iterator = roles.iterator();
+          while (iterator.hasNext()) {
+            JSONObject container = (JSONObject) iterator.next();
+            int playerID = container.getInt("playerID");
+            String role = container.getString("role");
+
+            //TODO USE THE DATA
+          }
+          break;
+        case "Characters":
+          JSONArray characters = (JSONArray) body.get("characters");
+          iterator = characters.iterator();
+          while (iterator.hasNext()) {
+            JSONObject container = (JSONObject) iterator.next();
+            int playerID = container.getInt("playerID");
+            String character = container.getString("character");
+            int health = container.getInt("health");
+
+            //TODO USE THE DATA
+
+          }
+          break;
+        case "CurrentPlayer":
+          int currentPlayerID = (int) body.get("playerID");
+          break;
+        case "Shuffle":
+          int numCardsInDeck = (int) body.get("cardsInDeck");
+          int numCardsInHeap = (int) body.get("cardsInHeap");
+          break;
+        case "GameWon":
+          int playerID = (int) body.get("playerID");
+          break;
+      }
     }
+  }
+
+  public void drawCards() {
+    game.drawCards(((TBIALSession) getSession()).getUser().getId(), 2 /*TODO CHANGE TO VARIABLE*/);
   }
 
   private JSONMessage gamePausedJSONMessage(int userId, int gameId) {
@@ -143,9 +187,6 @@ public abstract class GameView extends WebPage {
     return new JSONMessage(msg);
   }
 
-  public static GameView getInstance() {
-    return instance;
-  }
 
   public class GameViewListener implements PropertyChangeListener {
     @Override
@@ -156,6 +197,13 @@ public abstract class GameView extends WebPage {
           game.setGamePaused(false);
           WebSocketManager.getInstance().sendMessage(continueGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
         }
+      } else if (event.getPropertyName().equals("SendMessage") && user.getId() == game.getHost().getId()) {
+        JSONMessage message = (JSONMessage) event.getOldValue();
+        List<User> players = (List<User>) event.getNewValue();
+        sendMessage(message, players);
+
+      } else if (event.getPropertyName().equals("SendPrivateMessage")) {
+
       }
     }
   }
@@ -169,4 +217,22 @@ public abstract class GameView extends WebPage {
     msg.put("msgBody", msgBody);
     return new JSONMessage(msg);
   }
+
+  public static void sendPrivateMessage(String type, JSONObject body, int playerID) {
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", type);
+    msg.put("msgBody", body);
+    JSONMessage message = new JSONMessage(msg);
+    WebSocketManager.getInstance().sendPrivateMessage(message, playerID);
+  }
+
+  public static void sendMessage(JSONMessage message, List<User> users) {
+    for (User user : users) {
+      if (user != null) {
+        WebSocketManager.getInstance().sendPrivateMessage(message, user.getId());
+      }
+    }
+  }
+
+
 }

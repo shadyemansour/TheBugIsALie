@@ -14,7 +14,7 @@ public class WebSocketManager {
 
   private HashMap<Integer, ConnectedMessage> connections = new HashMap<>();
   private WebSocketPushBroadcaster broadcaster;
-
+  private IWebSocketConnectionRegistry webSocketConnectionRegistry;
   private static WebSocketManager instance;
 
   private WebSocketManager() {
@@ -33,8 +33,19 @@ public class WebSocketManager {
 
     if (null == broadcaster) {
       WebSocketSettings webSocketSettings = WebSocketSettings.Holder.get(msg.getApplication());
-      IWebSocketConnectionRegistry webSocketConnectionRegistry = webSocketSettings.getConnectionRegistry();
+      webSocketConnectionRegistry = webSocketSettings.getConnectionRegistry();
       broadcaster = new WebSocketPushBroadcaster(webSocketConnectionRegistry);
+
+    }
+  }
+
+  public void sendPrivateMessage(JSONMessage msg, int userID) {
+    if (connections.keySet().contains(userID)) {
+      if (null != broadcaster) {
+        broadcaster.broadcast(connections.get(userID), msg);
+      } else {
+        //throw new RuntimeException("Unable to send message");
+      }
     }
   }
 

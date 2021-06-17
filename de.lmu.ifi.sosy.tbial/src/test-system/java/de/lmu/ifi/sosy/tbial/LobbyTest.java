@@ -1,24 +1,14 @@
 package de.lmu.ifi.sosy.tbial;
 
-import de.lmu.ifi.sosy.tbial.*;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.User;
 import org.apache.derby.jdbc.EmbeddedDataSource;
-import org.apache.wicket.Application;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.protocol.ws.WebSocketSettings;
-import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
-import org.apache.wicket.protocol.ws.api.WebSocketPushBroadcaster;
-import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
-import org.apache.wicket.protocol.ws.api.message.IWebSocketPushMessage;
-import org.apache.wicket.protocol.ws.api.registry.IKey;
-import org.apache.wicket.protocol.ws.util.tester.WebSocketTester;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 
 import static org.junit.Assert.*;
@@ -30,9 +20,12 @@ public class LobbyTest extends PageTestBase {
   User host;
   User user1;
   Game game;
+  Game game2;
   User player2;
   User player3;
   User player4;
+  User player5;
+  User player6;
 
   private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
 
@@ -63,6 +56,11 @@ public class LobbyTest extends PageTestBase {
     database.register("test3", "test3pw");
     player4 = new User("test4", "test4pw", null);
     database.register("test4", "test4pw");
+    player5 = new User("test5", "test5pw", null);
+    database.register("test5", "test5pw");
+    player6 = new User("test6", "test6pw", null);
+    database.register("test6", "test6pw");
+    game2 = database.createGame("testGame1", player5.getName(), "", "new", 4);
 
   }
 
@@ -123,13 +121,35 @@ public class LobbyTest extends PageTestBase {
 
   @Test
   public void playerJoinedGame() {
-    joinGame();
+    joinGame(0, true);
     assertTrue(game.getPlayers().contains(host));
   }
 
   @Test
+  public void playerJoinedGameWhileInGame() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(0, true);
+    assertTrue(game.getPlayers().contains(player6));
+    joinGame(1, true);
+    assertTrue(!game.getPlayers().contains(player6));
+    assertTrue(game2.getPlayers().contains(player6));
+  }
+
+  @Test
+  public void playerJoinedGameWhileInGamePressesNo() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(0, true);
+    assertTrue(game.getPlayers().contains(player6));
+    joinGame(1, false);
+    assertTrue(game.getPlayers().contains(player6));
+    assertTrue(!game2.getPlayers().contains(player6));
+  }
+
+  @Test
   public void playerLeaveGame() {
-    joinGame();
+    joinGame(0, true);
     tester.assertRenderedPage(Lobby.class);
     WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("2");
     AjaxFallbackLink sitesTabLink = (AjaxFallbackLink) siteTab.get("link");
@@ -168,7 +188,7 @@ public class LobbyTest extends PageTestBase {
     createGame("hostRemovesPlayerFromGame");
     attemptLogout();
     attemptLogin("user1", "user1");
-    joinGame();
+    joinGame(0, true);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
     attemptLogin("testhost", "testpassword");

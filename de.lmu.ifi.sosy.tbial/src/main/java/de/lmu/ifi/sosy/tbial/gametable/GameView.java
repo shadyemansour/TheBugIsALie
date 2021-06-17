@@ -200,6 +200,12 @@ public abstract class GameView extends WebPage {
           Card card = (Card) body.get("card");
           //TODO USE THE DATA
           break;
+
+        case "CardDefended":
+          int pl = body.getInt("playerID");
+          Card ca = (Card) body.get("card");
+          //TODO USE THE DATA
+          break;
       }
 
     }
@@ -217,6 +223,11 @@ public abstract class GameView extends WebPage {
   public void playCard(int to, Card card) {
     //TODO implementation
     game.playCard(((TBIALSession) getSession()).getUser().getId(), to, card);
+  }
+
+  public void defendCard(Card card) {
+    //TODO implementation
+    game.defendCard(((TBIALSession) getSession()).getUser().getId(), card);
   }
 
   private JSONMessage gamePausedJSONMessage(int userId, int gameId) {

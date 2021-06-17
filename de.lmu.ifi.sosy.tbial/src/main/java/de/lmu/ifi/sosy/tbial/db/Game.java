@@ -232,6 +232,22 @@ public class Game implements Serializable {
 		currentID = players.get(currentPlayer).getId();
 	}
 
+	public void defendCard(int playerID, Card card) {
+		//TODO implementation
+		cardDefendedMessage(playerID, card);
+	}
+
+	/**
+	 * sends CardDefended Message
+	 */
+	private void cardDefendedMessage(int playerID, Card card) {
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("playerID", playerID);
+		msgBody.put("card", card);
+		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardDefended", msgBody), players);
+	}
+
 	public void playCard(int from, int to, Card card) {
 		//TODO implementation
 		CardPlayedMessage(from, to, card);

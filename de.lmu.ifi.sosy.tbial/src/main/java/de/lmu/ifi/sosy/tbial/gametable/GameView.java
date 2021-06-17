@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -91,7 +92,7 @@ public abstract class GameView extends WebPage {
 
     if (!game.isGameStarted() && ((TBIALSession) getSession()).getUser().getId() == game.getHost().getId()) {
       try {
-        Thread.sleep(2000); //TODO delay this till all other gameviews have started
+        Thread.sleep(1000); //TODO delay this till all other gameviews have started
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
@@ -161,15 +162,35 @@ public abstract class GameView extends WebPage {
           break;
         case "CurrentPlayer":
           int currentPlayerID = (int) body.get("playerID");
+          //TODO USE THE DATA
           break;
         case "Shuffle":
           int numCardsInDeck = (int) body.get("cardsInDeck");
           int numCardsInHeap = (int) body.get("cardsInHeap");
+          //TODO USE THE DATA
           break;
         case "GameWon":
           int playerID = (int) body.get("playerID");
+          //TODO USE THE DATA
+          break;
+
+        case "YourCards":
+          JSONArray cardsJSON = (JSONArray) body.get("cards");
+          iterator = cardsJSON.iterator();
+          List<Card> cards = new ArrayList<>();
+          while (iterator.hasNext()) {
+            cards.add((Card) iterator.next());
+          }
+          //TODO USE THE DATA
+          break;
+        case "CardsDrawn":
+          int playerId = body.getInt("playerID");
+          int numCards = body.getInt("cards");
+          int numDeckCards = body.getInt("cardsInDeck");
+          //TODO USE THE DATA
           break;
       }
+
     }
   }
 

@@ -417,19 +417,20 @@ public class Game implements Serializable {
 
             if(player.getRoleCard().getTitle().equals("Manager")) {
               player.setHealth(player.getHealth() + 1);
+			}
 
-	            List<Card> hand= new ArrayList<Card>();
+	            //List<Card> hand= new ArrayList<Card>();
 	
-	            for (int i = 0; i < player.getHealth(); i++) {
-	                hand.add(playableStack.get(i));
-	            }
+	            //for (int i = 0; i < player.getHealth(); i++) {
+	            //    hand.add(playableStack.get(i));
+	            //}
 	            
-	            player.setHand(hand);
-	            for (int i = 0; i < player.getHealth(); i++) {
-	                playableStack.remove(i);
+	            //player.setHand(hand);
+	            //for (int i = 0; i < player.getHealth(); i++) {
+	            //    playableStack.remove(i);
 	
-	            }
-            }
+	            //}
+            
 
 
 

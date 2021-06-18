@@ -36,6 +36,8 @@
           <element id="library" level="project" name="Maven: org.apache.derby:derbyshared:10.15.2.0" />
           <element id="library" level="project" name="Maven: org.apache.derby:derbytools:10.15.2.0" />
           <element id="library" level="project" name="Maven: org.apache.derby:derbyclient:10.15.2.0" />
+          <element id="library" level="project" name="Maven: org.skyscreamer:jsonassert:1.5.0" />
+          <element id="library" level="project" name="Maven: com.vaadin.external.google:android-json:0.0.20131108.vaadin1" />
         </element>
       </element>
       <element id="directory" name="META-INF">

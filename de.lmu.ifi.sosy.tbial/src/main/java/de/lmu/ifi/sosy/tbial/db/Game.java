@@ -70,7 +70,7 @@ public class Game implements Serializable {
 		for (int i = 0; i < numPlayers; i++) {
 			this.players.add(null);
 		}
-		this.generatePlayerAttributes();
+		//	this.generatePlayerAttributes();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
 		this.addedPlayers = false;
 	}
@@ -81,52 +81,50 @@ public class Game implements Serializable {
 	 */
 
 
-	public void generatePlayerAttributes() {
-
-		String managerRole = "Manager"; // only 1 card exists
-		String consultantRole = "Consultant"; // only 1 card exists
-		String honestDeveloperRole = "Honest Developer"; // 2 cards exist
-		String evilCodeMonkeyRole = "Evil Code Monkey"; // 3 cards exist
-
-		String markZuckerbergCharacter = "Mark Zuckerberg";
-		String tomAndersonCharacter = "Tom Anderson";
-		String jeffTaylorCharacter = "Jeff Taylor";
-		String larryPageCharacter = "Larry Page";
-		String larryEllisonCharacter = "Larry Ellison";
-		String kentBeckCharacter = "Kent Beck";
-		String steveJobsCharacter = "Steve Jobs";
-
-		for (int i = 0; i < this.players.size(); i++) {
-			if (this.players.get(i) != null) {
-				if (i == 0) {
-					this.players.get(i).setRole(managerRole);
-					this.players.get(i).setCharacter(markZuckerbergCharacter);
-				} else if (i == 1) {
-					this.players.get(i).setRole(consultantRole);
-					this.players.get(i).setCharacter(tomAndersonCharacter);
-				} else if (i == 2) {
-					this.players.get(i).setRole(honestDeveloperRole);
-					this.players.get(i).setCharacter(jeffTaylorCharacter);
-				} else if (i == 3) {
-					this.players.get(i).setRole(evilCodeMonkeyRole);
-					this.players.get(i).setCharacter(larryPageCharacter);
-				} else if (i == 4) {
-					this.players.get(i).setRole(honestDeveloperRole);
-					this.players.get(i).setCharacter(larryEllisonCharacter);
-				} else if (i == 5) {
-					this.players.get(i).setRole(evilCodeMonkeyRole);
-					this.players.get(i).setCharacter(kentBeckCharacter);
-				} else if (i == 6) {
-					this.players.get(i).setRole(evilCodeMonkeyRole);
-					this.players.get(i).setCharacter(steveJobsCharacter);
-				}
-				this.players.get(i).setHealth(3);
-				this.players.get(i).setPrestige(1);
-			}
-		}
-	}
-
-
+//	public void generatePlayerAttributes() {
+//
+//		String managerRole = "Manager"; // only 1 card exists
+//		String consultantRole = "Consultant"; // only 1 card exists
+//		String honestDeveloperRole = "Honest Developer"; // 2 cards exist
+//		String evilCodeMonkeyRole = "Evil Code Monkey"; // 3 cards exist
+//
+//		String markZuckerbergCharacter = "Mark Zuckerberg";
+//		String tomAndersonCharacter = "Tom Anderson";
+//		String jeffTaylorCharacter = "Jeff Taylor";
+//		String larryPageCharacter = "Larry Page";
+//		String larryEllisonCharacter = "Larry Ellison";
+//		String kentBeckCharacter = "Kent Beck";
+//		String steveJobsCharacter = "Steve Jobs";
+//
+//		for (int i = 0; i < this.players.size(); i++) {
+//			if (this.players.get(i) != null) {
+//				if (i == 0) {
+//					this.players.get(i).setRole(managerRole);
+//					this.players.get(i).setCharacter(markZuckerbergCharacter);
+//				} else if (i == 1) {
+//					this.players.get(i).setRole(consultantRole);
+//					this.players.get(i).setCharacter(tomAndersonCharacter);
+//				} else if (i == 2) {
+//					this.players.get(i).setRole(honestDeveloperRole);
+//					this.players.get(i).setCharacter(jeffTaylorCharacter);
+//				} else if (i == 3) {
+//					this.players.get(i).setRole(evilCodeMonkeyRole);
+//					this.players.get(i).setCharacter(larryPageCharacter);
+//				} else if (i == 4) {
+//					this.players.get(i).setRole(honestDeveloperRole);
+//					this.players.get(i).setCharacter(larryEllisonCharacter);
+//				} else if (i == 5) {
+//					this.players.get(i).setRole(evilCodeMonkeyRole);
+//					this.players.get(i).setCharacter(kentBeckCharacter);
+//				} else if (i == 6) {
+//					this.players.get(i).setRole(evilCodeMonkeyRole);
+//					this.players.get(i).setCharacter(steveJobsCharacter);
+//				}
+//				this.players.get(i).setHealth(3);
+//				this.players.get(i).setPrestige(1);
+//			}
+//		}
+//	}
 	public void addPlayer(User player) {
 		for (int i = 0; i < this.players.size(); i++) {
 			if (this.players.get(i) == null) {
@@ -232,20 +230,22 @@ public class Game implements Serializable {
 		currentID = players.get(currentPlayer).getId();
 	}
 
-	public void decksShuffled(int cardsInDeck, int cardsInHeap) {
+	public void decksShuffled() {
 		//TODO implementation
-		decksShuffledMessage(cardsInDeck, cardsInHeap);
+		decksShuffledMessage(stack.size(), 0);
 	}
 
 	/**
 	 * sends Shuffle Message
 	 */
-	private void decksShuffledMessage(int cardsInDeck, int cardsInHeap) {
+	protected JSONMessage decksShuffledMessage(int cardsInDeck, int cardsInHeap) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cardsInDeck", cardsInDeck);
 		msgBody.put("cardsInHeap", cardsInHeap);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("Shuffle", msgBody), players);
+		JSONMessage msg = createJSONMessage("Shuffle", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	/**
@@ -262,12 +262,14 @@ public class Game implements Serializable {
 	/**
 	 * sends Health Message
 	 */
-	private void updateHealthMessage(int playerID, int health) {
+	protected JSONMessage updateHealthMessage(int playerID, int health) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", playerID);
 		msgBody.put("health", health);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("Health", msgBody), players);
+		JSONMessage msg = createJSONMessage("Health", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	public void gameWon(int playerID) {
@@ -278,11 +280,13 @@ public class Game implements Serializable {
 	/**
 	 * sends GameWon Message
 	 */
-	private void gameWonMessage(int playerID) {
+	protected JSONMessage gameWonMessage(int playerID) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", playerID);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("GameWon", msgBody), players);
+		JSONMessage msg = createJSONMessage("GameWon", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	public void defendCard(int playerID, Card card) {
@@ -293,29 +297,33 @@ public class Game implements Serializable {
 	/**
 	 * sends CardDefended Message
 	 */
-	private void cardDefendedMessage(int playerID, Card card) {
+	protected JSONMessage cardDefendedMessage(int playerID, Card card) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", playerID);
 		msgBody.put("card", card);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardDefended", msgBody), players);
+		JSONMessage msg = createJSONMessage("CardDefended", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	public void playCard(int from, int to, Card card) {
 		//TODO implementation
-		CardPlayedMessage(from, to, card);
+		cardPlayedMessage(from, to, card);
 	}
 
 	/**
 	 * sends CardPlayed Message
 	 */
-	private void CardPlayedMessage(int from, int to, Card card) {
+	protected JSONMessage cardPlayedMessage(int from, int to, Card card) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("from", from);
 		msgBody.put("to", to);
 		msgBody.put("card", card);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardPlayed", msgBody), players);
+		JSONMessage msg = createJSONMessage("CardPlayed", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 
@@ -327,12 +335,14 @@ public class Game implements Serializable {
 	/**
 	 * sends CardDiscarded Message
 	 */
-	private void discardCardMessage(int playerID, Card card) {
+	protected JSONMessage discardCardMessage(int playerID, Card card) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", playerID);
 		msgBody.put("card", card);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardDiscarded", msgBody), players);
+		JSONMessage msg = createJSONMessage("CardDiscarded", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	public void drawCards(int playerID, int numCards) {
@@ -349,16 +359,22 @@ public class Game implements Serializable {
 	/**
 	 * sends YourCards and CardsDrawn Messages
 	 */
-	private void drawCardsMessage(int playerID, JSONArray array) {
+	protected JSONMessage[] drawCardsMessage(int playerID, JSONArray array) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cards", array);
-		propertyChangeSupport.firePropertyChange("SendPrivateMessage", createJSONMessage("YourCards", msgBody), playerID);
+		JSONMessage[] msg = new JSONMessage[2];
+		msg[0] = createJSONMessage("YourCards", msgBody);
+		propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
 
-		msgBody.put("playerID", playerID);
-		msgBody.put("cards", array.length());
-		msgBody.put("cardsInDeck", stack.size());
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CardsDrawn", msgBody), players);
+		JSONObject msgBodyBroadcast = new JSONObject();
+		msgBodyBroadcast.put("gameID", id);
+		msgBodyBroadcast.put("playerID", playerID);
+		msgBodyBroadcast.put("cards", array.length());
+		msgBodyBroadcast.put("cardsInDeck", stack.size());
+		msg[1] = createJSONMessage("CardsDrawn", msgBodyBroadcast);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
+		return msg;
 	}
 
 	/**
@@ -380,33 +396,39 @@ public class Game implements Serializable {
 	 * sends the CurrentPlayer Message
 	 * the playerID is the ID saved in currentID
 	 */
-	public void currentPlayerMessage() {
+	protected JSONMessage currentPlayerMessage() {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", currentID);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("CurrentPlayer", msgBody), players);
+		JSONMessage msg = createJSONMessage("CurrentPlayer", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 
 	}
 
 	/**
 	 * sends the Roles and Characters Messages
 	 */
-	private void rolesAndCharactersMessage(String type, JSONArray array) {
+	protected JSONMessage rolesAndCharactersMessage(String type, JSONArray array) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put(type.toLowerCase(), array);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage(type, msgBody), players);
+		JSONMessage msg = createJSONMessage(type, msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	/**
 	 * sends the gameStarted Message
 	 */
-	private void gameStartedMessage() {
+	protected JSONMessage gameStartedMessage() {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cardsInDeck", stack.size());
 		msgBody.put("numPlayers", numPlayers);
-		propertyChangeSupport.firePropertyChange("SendMessage", createJSONMessage("GameStarted", msgBody), players);
+		JSONMessage msg = createJSONMessage("GameStarted", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	private JSONMessage createJSONMessage(String type, JSONObject body) {

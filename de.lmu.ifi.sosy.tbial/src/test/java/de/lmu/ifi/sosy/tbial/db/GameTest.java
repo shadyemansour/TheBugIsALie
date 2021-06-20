@@ -3,12 +3,18 @@ package de.lmu.ifi.sosy.tbial.db;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 public class GameTest {
 
@@ -47,6 +53,7 @@ public class GameTest {
     game.setHost(host);
     game.addPlayer(host);
     game.addPlayer(user1);
+    game.startGame();
   }
 
   @Test(expected = NullPointerException.class)
@@ -184,4 +191,166 @@ public class GameTest {
     game.addPlayer(user3);
     assertEquals(game.getActivePlayers(), expected);
   }
+
+  @Test
+  public void decksShuffledMessageTest() {
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("cardsInDeck", game.getStack().size());
+    body.put("cardsInHeap", 0);
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "Shuffle");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.decksShuffledMessage(game.getStack().size(), 0).getMessage(), true);
+  }
+
+  @Test
+  public void updateHealthMessageTest() {
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("playerID", 1);
+    body.put("health", 4);
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "Health");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.updateHealthMessage(1, 4).getMessage(), true);
+  }
+
+  @Test
+  public void gameWonMessageTest() {
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("playerID", 1);
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "GameWon");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.gameWonMessage(1).getMessage(), true);
+  }
+
+  @Test
+  public void cardDefendedMessageTest() {
+    Card card = new Card("StumblingBlock", "Fortran \nMaintenance", "BOOM", "Stumbling Block",
+        "Only playable on self. \nTakes 3 health points. \n.85 chance to deflect to \nnext developer",
+        false, false, null);
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("playerID", 1);
+    body.put("card", card);
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "CardDefended");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.cardDefendedMessage(1, card).getMessage(), true);
+  }
+
+  @Test
+  public void cardPlayedMessageTest() {
+    Card card = new Card("StumblingBlock", "Fortran \nMaintenance", "BOOM", "Stumbling Block",
+        "Only playable on self. \nTakes 3 health points. \n.85 chance to deflect to \nnext developer",
+        false, false, null);
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("from", 1);
+    body.put("to", 2);
+    body.put("card", card);
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "CardPlayed");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.cardPlayedMessage(1, 2, card).getMessage(), true);
+  }
+
+  @Test
+  public void discardCardMessageTest() {
+    Card card = new Card("StumblingBlock", "Fortran \nMaintenance", "BOOM", "Stumbling Block",
+        "Only playable on self. \nTakes 3 health points. \n.85 chance to deflect to \nnext developer",
+        false, false, null);
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("playerID", 1);
+    body.put("card", card);
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "CardDiscarded");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.discardCardMessage(1, card).getMessage(), true);
+  }
+
+  @Test
+  public void drawCardsMessageTest() {
+    JSONArray cards = new JSONArray();
+    for (int n = 0; n < 2; n++) {
+      //TODO Draw cards from stack and save in Array
+      cards.put(game.getStack().get(n));
+    }
+
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("cards", cards);
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "YourCards");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONMessage[] actual = game.drawCardsMessage(1, cards);
+    JSONAssert.assertEquals(expected.getMessage(), actual[0].getMessage(), true);
+    body.put("playerID", 1);
+    body.put("cards", 2);
+    body.put("cardsInDeck", game.getStack().size());
+    msg.put("msgType", "CardsDrawn");
+    JSONAssert.assertEquals(expected.getMessage(), actual[1].getMessage(), true);
+  }
+
+  @Test
+  public void currentPlayerMessageTest() {
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("playerID", host.getId());
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "CurrentPlayer");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.currentPlayerMessage().getMessage(), true);
+  }
+
+  @Test
+  public void gameStartedMessageTest() {
+    JSONObject body = new JSONObject();
+    body.put("gameID", id);
+    body.put("cardsInDeck", game.getStack().size());
+    body.put("numPlayers", game.getNumPlayers());
+
+    JSONObject msg = new JSONObject();
+    msg.put("msgType", "GameStarted");
+    msg.put("msgBody", body);
+    JSONMessage expected = new JSONMessage(msg);
+    JSONAssert.assertEquals(expected.getMessage(), game.gameStartedMessage().getMessage(), true);
+  }
+
+  @Test
+  public void playersHaveRolesAndCharactersTest() {
+    boolean actual = true;
+    List<User> players = game.getPlayers();
+    for (User player : players) {
+      if (player == null)
+        continue;
+      if (player.getCharacterCard() == null || player.getRoleCard() == null) {
+        actual = false;
+        break;
+      }
+    }
+    assertTrue(actual);
+  }
+
+
 }

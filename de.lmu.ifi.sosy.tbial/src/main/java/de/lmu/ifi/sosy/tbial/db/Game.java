@@ -73,6 +73,11 @@ public class Game implements Serializable {
 		//	this.generatePlayerAttributes();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
 		this.addedPlayers = false;
+
+		roleCards = new ArrayList<Card>();
+		characterCards = new ArrayList<Card>();
+		stack = new ArrayList<Card>();
+
 	}
 
 	/**
@@ -147,24 +152,23 @@ public class Game implements Serializable {
 	}
 
 	public void startGame() {
-		System.out.println("game " + this);
 		gameStarted = true;
-		roleCards = new ArrayList<Card>();
-		characterCards = new ArrayList<Card>();
-		stack = new ArrayList<Card>();
 		//	playableStack = new ArrayList<Card>();
 
 
 		setRoleCards();
 		Collections.shuffle(roleCards);
+
 		setCharacterCards();
 		Collections.shuffle(characterCards);
+
 		setStack();
 		Collections.shuffle(stack);
+
 		//	setPlayableStack(stack);
 		//Collections.shuffle(playableStack);
-		gameStartedMessage();
 
+		gameStartedMessage();
 
 		JSONArray rolesArray = new JSONArray();
 		JSONArray charactersArray = new JSONArray();
@@ -880,6 +884,10 @@ public class Game implements Serializable {
 
 	public List<Card> getRoleCards() {
 		return roleCards;
+	}
+
+	public void unsetRoleCards() {
+		roleCards = new ArrayList<>();
 	}
 
 	public List<Card> getCharacterCards() {

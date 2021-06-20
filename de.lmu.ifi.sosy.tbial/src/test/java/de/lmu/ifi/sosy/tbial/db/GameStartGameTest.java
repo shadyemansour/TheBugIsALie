@@ -197,6 +197,7 @@ public class GameStartGameTest {
 		    }
 		  }
 	 
+	 /*
 	 @Test
 	 public void startGame_getsStackSize() {
 		    int expected = 80;
@@ -204,23 +205,6 @@ public class GameStartGameTest {
 		  
 		  }
 	 
-	 
-	 
-	 
-
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
+*/
 	 
 }

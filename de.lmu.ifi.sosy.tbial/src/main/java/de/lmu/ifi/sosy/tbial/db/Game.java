@@ -42,7 +42,7 @@ public class Game implements Serializable {
 	private List<Card> roleCards;
 	private List<Card> characterCards;
 	private List<Card> stack; // all action, ability, and stumbling blocks cards
-	private List<Card> playableStack; // only bugs, exuses, solutions playable
+//	private List<Card> playableStack; // only bugs, exuses, solutions playable
 
 
 	//    private  List<Card> heap = new  ArrayList<Card>(); TODO later
@@ -152,7 +152,7 @@ public class Game implements Serializable {
 		roleCards = new ArrayList<Card>();
 		characterCards = new ArrayList<Card>();
 		stack = new ArrayList<Card>();
-		playableStack = new ArrayList<Card>();
+		//	playableStack = new ArrayList<Card>();
 
 
 		setRoleCards();
@@ -161,8 +161,8 @@ public class Game implements Serializable {
 		Collections.shuffle(characterCards);
 		setStack();
 		Collections.shuffle(stack);
-		setPlayableStack(stack);
-		Collections.shuffle(playableStack);
+		//	setPlayableStack(stack);
+		//Collections.shuffle(playableStack);
 		gameStartedMessage();
 
 
@@ -774,7 +774,7 @@ public class Game implements Serializable {
 
 	public void setStack() {
 
-		for (int i = 1; i <= 4; i++) {
+		for (int i = 0; i < 4; i++) {
 
 			stack.add(new Card("Action", "Nullpointer!", "--bug--", null,
 					"-1 mental health", true, false, null));
@@ -800,15 +800,17 @@ public class Game implements Serializable {
 					"Ignors prestige. \nDrop one card", false, false, null));
 			stack.add(new Card("Action", "Pwnd.", null, null,
 					"Cede one card. Same or \nlower prestige required", false, false, null));
-			stack.add(new Card("Action", "System Integration", null, null,
-					"My code is better than \nyours!", false, false, null));
-			stack.add(new Card("Ability", "Microsoft", "(Previous Job)", null,
-					"1 prestige", false, false, null));
-			stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
-					"Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
 		}
 
-		for (int i = 1; i <= 3; i++) {
+		for (int i = 0; i < 3; i++) {
+			stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
+					"Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
+			stack.add(new Card("Ability", "Microsoft", "(Previous Job)", null,
+					"1 prestige", false, false, null));
+			stack.add(new Card("Action", "System Integration", null, null,
+					"My code is better than \nyours!", false, false, null));  //should be 9?
+		}
+		for (int i = 0; i < 2; i++) {
 			stack.add(new Card("Action", "Coffee", "--Solution--", null,
 					"+1 mental health", true, false, null));
 			stack.add(new Card("Action", "Code+Fix \nSession", "--Solution--", null,
@@ -859,22 +861,22 @@ public class Game implements Serializable {
 
 	}
 
-	public void setPlayableStack(List<Card> stack) {
-		for (Card card : this.stack) {
-			if (card.isPlayable())
-				this.playableStack.add(card);
-
-		}
-
-	}
+//	public void setPlayableStack(List<Card> stack) {
+//		for (Card card : this.stack) {
+//			if (card.isPlayable())
+//				this.playableStack.add(card);
+//
+//		}
+//
+//	}
 
 	public List<Card> getStack() {
 		return stack;
 	}
 
-	public List<Card> getPlayableStack() {
-		return playableStack;
-	}
+//	public List<Card> getPlayableStack() {
+//		return playableStack;
+//	}
 
 	public List<Card> getRoleCards() {
 		return roleCards;

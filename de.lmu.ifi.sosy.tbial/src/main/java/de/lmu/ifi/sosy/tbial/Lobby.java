@@ -638,7 +638,9 @@ public class Lobby extends BasePage {
                         setResponsePage(SevenBoard.class);
                     }
                 }
-
+                break;
+            case "YourCards":
+                System.out.println("host");
         }
     }
 

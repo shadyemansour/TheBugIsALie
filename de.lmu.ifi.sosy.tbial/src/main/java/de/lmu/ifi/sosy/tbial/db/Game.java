@@ -172,6 +172,7 @@ public class Game implements Serializable {
 
 		JSONArray rolesArray = new JSONArray();
 		JSONArray charactersArray = new JSONArray();
+		JSONArray handArray = new JSONArray();
 		Card roleCard;
 		Card characterCard;
 		for (User player : this.players) {
@@ -218,6 +219,7 @@ public class Game implements Serializable {
 
 				for (int i = 0; i < player.getHealth(); i++) {
 					hand.add(stack.get(i));
+					handArray.put(stack.get(i));
 				}
 
 				player.setHand(hand);
@@ -225,10 +227,12 @@ public class Game implements Serializable {
 					stack.remove(i);
 
 				}
+				drawCardsMessage(player.getId(), handArray);
 			}
 		}
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
+
 
 		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();

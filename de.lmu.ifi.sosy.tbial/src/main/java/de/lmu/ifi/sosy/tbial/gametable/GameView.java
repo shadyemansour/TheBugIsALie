@@ -138,27 +138,24 @@ public abstract class GameView extends WebPage {
           break;
         case "Roles":
           JSONArray roles = (JSONArray) body.get("roles");
-          iterator = roles.iterator();
-          while (iterator.hasNext()) {
-            JSONObject container = (JSONObject) iterator.next();
+          for (int i = 0; i < roles.length(); i++) {
+            JSONObject container = (JSONObject) roles.get(i);
             int playerID = container.getInt("playerID");
             String role = container.getString("role");
-
             //TODO USE THE DATA
           }
+
           break;
         case "Characters":
           JSONArray characters = (JSONArray) body.get("characters");
-          iterator = characters.iterator();
-          while (iterator.hasNext()) {
-            JSONObject container = (JSONObject) iterator.next();
+          for (int i = 0; i < characters.length(); i++) {
+            JSONObject container = (JSONObject) characters.get(i);
             int playerID = container.getInt("playerID");
             String character = container.getString("character");
             int health = container.getInt("health");
-
             //TODO USE THE DATA
-
           }
+
           break;
         case "CurrentPlayer":
           int currentPlayerID = (int) body.get("playerID");
@@ -176,12 +173,11 @@ public abstract class GameView extends WebPage {
 
         case "YourCards":
           JSONArray cardsJSON = (JSONArray) body.get("cards");
-          iterator = cardsJSON.iterator();
           List<Card> cards = new ArrayList<>();
-          while (iterator.hasNext()) {
-            cards.add((Card) iterator.next());
+          for (int i = 0; i < cardsJSON.length(); i++) {
+            cards.add((Card) cardsJSON.get(i));
           }
-          //TODO USE THE DATA
+          //TODO USE THE DATA]
           break;
         case "CardsDrawn":
           int playerId = body.getInt("playerID");

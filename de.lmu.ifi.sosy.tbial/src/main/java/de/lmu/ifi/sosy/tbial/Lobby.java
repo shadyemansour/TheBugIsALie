@@ -472,7 +472,7 @@ public class Lobby extends BasePage {
                             } else if (numplayers == 7) {
                                 setResponsePage(SevenBoard.class);
                             }
-                             game.startGame();
+//                             game.startGame();
 
                         }
                     } else {
@@ -638,7 +638,9 @@ public class Lobby extends BasePage {
                         setResponsePage(SevenBoard.class);
                     }
                 }
-
+                break;
+            case "YourCards":
+                System.out.println("host");
         }
     }
 

@@ -8,6 +8,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
 import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
@@ -34,6 +36,14 @@ public abstract class GameView extends WebPage {
   protected Game game = user.getGame();
   List<Card> stackTest = game.getStack();
   protected List<User> playerList = game.getPlayers();
+  
+  List<IModel<Card>> p1handModel = new ArrayList<IModel<Card>>();
+  List<IModel<Card>> p2handModel = new ArrayList<IModel<Card>>();
+  List<IModel<Card>> p3handModel = new ArrayList<IModel<Card>>();
+  List<IModel<Card>> p4handModel = new ArrayList<IModel<Card>>();
+  
+  List<Card> p3hand = new ArrayList<Card>();
+  
   //  ModalWindow modalWindow;
   Form<?> form;
   private GameView instance;
@@ -42,6 +52,9 @@ public abstract class GameView extends WebPage {
     this.game.addPropertyChangeListener(new GameViewListener());
 
     System.out.println("GameView init" + game + " " + user);
+    Card testCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
+		p3handModel.add(Model.of(testCard));
+		p3hand.add(testCard);
     setupGame();
 
 
@@ -101,7 +114,7 @@ public abstract class GameView extends WebPage {
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
-//      game.startGame();
+      game.startGame();
     }
   }
   
@@ -114,6 +127,7 @@ public abstract class GameView extends WebPage {
     String msgType = (String) jsonMsg.get("msgType");
     Iterator<Object> iterator;
     JSONObject body = jsonMsg.getJSONObject("msgBody");
+    System.out.println("-m to: " + user + " " + msgType);
     System.out.println(body);
     int gameID = (int) body.get("gameID");
     int userID;
@@ -148,27 +162,24 @@ public abstract class GameView extends WebPage {
           break;
         case "Roles":
           JSONArray roles = (JSONArray) body.get("roles");
-          iterator = roles.iterator();
-          while (iterator.hasNext()) {
-            JSONObject container = (JSONObject) iterator.next();
+          for (int i = 0; i < roles.length(); i++) {
+            JSONObject container = (JSONObject) roles.get(i);
             int playerID = container.getInt("playerID");
             String role = container.getString("role");
-
             //TODO USE THE DATA
           }
+
           break;
         case "Characters":
           JSONArray characters = (JSONArray) body.get("characters");
-          iterator = characters.iterator();
-          while (iterator.hasNext()) {
-            JSONObject container = (JSONObject) iterator.next();
+          for (int i = 0; i < characters.length(); i++) {
+            JSONObject container = (JSONObject) characters.get(i);
             int playerID = container.getInt("playerID");
             String character = container.getString("character");
             int health = container.getInt("health");
-
             //TODO USE THE DATA
-
           }
+
           break;
         case "CurrentPlayer":
           int currentPlayerID = (int) body.get("playerID");
@@ -185,13 +196,21 @@ public abstract class GameView extends WebPage {
           break;
 
         case "YourCards":
-          JSONArray cardsJSON = (JSONArray) body.get("cards");
-          iterator = cardsJSON.iterator();
-          List<Card> cards = new ArrayList<>();
-          while (iterator.hasNext()) {
-            cards.add((Card) iterator.next());
+        	JSONArray cardsJSON = (JSONArray) body.get("cards");
+        	
+          List<IModel<Card>> cardsModel = new ArrayList<IModel<Card>>();
+          for (int i = 0; i < cardsJSON.length(); i++) {
+          	Card card = (Card) cardsJSON.get(i);
+            p3handModel.add(Model.of(card));
+            p3hand.add(card);
           }
-          //TODO USE THE DATA
+        	for (IModel<Card> cardModel : p3handModel) {
+        		cardModel.getObject().setVisible(true);
+        	}
+        	
+          //TODO USE THE DATA]
+//          p3handModel = cardsModel;
+          System.out.println("update p3Model" + p3handModel);
           break;
         case "CardsDrawn":
           int playerId = body.getInt("playerID");

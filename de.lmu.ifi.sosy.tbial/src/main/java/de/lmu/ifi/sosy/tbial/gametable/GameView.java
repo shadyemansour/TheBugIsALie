@@ -29,15 +29,20 @@ public abstract class GameView extends WebPage {
    * UID for serialization.
    */
   private static final long serialVersionUID = 1L;
-  User user = ((TBIALSession) getSession()).getUser();
+  protected User user = ((TBIALSession) getSession()).getUser();
   AjaxButton leaveButton;
-  Game game = user.getGame();
+  protected Game game = user.getGame();
+  List<Card> stackTest = game.getStack();
+  protected List<User> playerList = game.getPlayers();
   //  ModalWindow modalWindow;
   Form<?> form;
   private GameView instance;
 
   public GameView() {
     this.game.addPropertyChangeListener(new GameViewListener());
+
+    System.out.println("GameView init" + game + " " + user);
+    setupGame();
 
 
     add(new WebSocketBehavior() {
@@ -96,8 +101,12 @@ public abstract class GameView extends WebPage {
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
-      game.startGame();
+//      game.startGame();
     }
+  }
+  
+  private void setupGame() {
+  	orderPlayers();
   }
 
   private void handleMessage(JSONMessage message) {
@@ -132,6 +141,7 @@ public abstract class GameView extends WebPage {
           }
           break;
         case "GameStarted":
+        	System.out.println("---XXX---game started message received in game view");
           int cardsInDeck = (int) body.get("cardsInDeck");
           int numPlayers = (int) body.get("numPlayers");
           //TODO USE THE DATA
@@ -290,5 +300,30 @@ public abstract class GameView extends WebPage {
       }
     }
   }
+  
+	/*
+	 * rotates players in List, so that own player is displayed at the bottom
+	 */
+	private void orderPlayers() {
+		int size = playerList.size();
+		int bottomPos = 2;
+		if (size == 5 || size == 6) {
+			bottomPos = 3;
+		} else if (size == 7) {
+			bottomPos = 4;
+		}
+		for (int i = 0; i < size; i++) {
+			// break loop, if own player is in correct position
+			if (playerList.get(bottomPos).equals(user)) {
+				break;
+			}
+			// move players
+			User tempUser = playerList.get(size - 1);
+			for (int j = size - 1; j > 0; j--) {
+				playerList.set(j, playerList.get(j - 1));
+			}
+			playerList.set(0, tempUser);
+		}
+	}
 
 }

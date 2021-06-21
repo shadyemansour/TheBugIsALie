@@ -472,7 +472,7 @@ public class Lobby extends BasePage {
                             } else if (numplayers == 7) {
                                 setResponsePage(SevenBoard.class);
                             }
-                            // game.startGame();
+                             game.startGame();
 
                         }
                     } else {

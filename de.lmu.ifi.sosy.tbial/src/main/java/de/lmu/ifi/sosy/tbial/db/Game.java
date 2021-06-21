@@ -163,7 +163,6 @@ public class Game implements Serializable {
 		Collections.shuffle(stack);
 		setPlayableStack(stack);
 		Collections.shuffle(playableStack);
-		gameStartedMessage();
 
 
 		JSONArray rolesArray = new JSONArray();
@@ -224,6 +223,9 @@ public class Game implements Serializable {
 
 		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();
+
+		gameStartedMessage();
+		System.out.println("---game Started message sent!---");
 	}
 
 	public void decksShuffled() {
@@ -342,6 +344,7 @@ public class Game implements Serializable {
 	}
 
 	public void drawCards(int playerID, int numCards) {
+		System.out.println("drawCards");
 		JSONArray cards = new JSONArray();
 
 		for (int n = 0; n < numCards; n++) {
@@ -803,7 +806,7 @@ public class Game implements Serializable {
 			stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
 					"Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
 		}
-		System.out.println(stack);
+//		System.out.println(stack);
 
 		for (int i = 1; i <= 3; i++) {
 			stack.add(new Card("Action", "Coffee", "--Solution--", null,

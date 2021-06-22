@@ -42,7 +42,10 @@ public abstract class GameView extends WebPage {
   List<IModel<Card>> p3handModel = new ArrayList<IModel<Card>>();
   List<IModel<Card>> p4handModel = new ArrayList<IModel<Card>>();
   
+  List<Card> p1hand = new ArrayList<Card>();
+  List<Card> p2hand = new ArrayList<Card>();
   List<Card> p3hand = new ArrayList<Card>();
+  List<Card> p4hand = new ArrayList<Card>();
   
   //  ModalWindow modalWindow;
   Form<?> form;
@@ -52,9 +55,9 @@ public abstract class GameView extends WebPage {
     this.game.addPropertyChangeListener(new GameViewListener());
 
     System.out.println("GameView init" + game + " " + user);
-    Card testCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
-		p3handModel.add(Model.of(testCard));
-		p3hand.add(testCard);
+//    Card testCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
+//		p3handModel.add(Model.of(testCard));
+//		p3hand.add(testCard);
     setupGame();
 
 
@@ -217,6 +220,36 @@ public abstract class GameView extends WebPage {
           int numCards = body.getInt("cards");
           int numDeckCards = body.getInt("cardsInDeck");
           //TODO USE THE DATA
+          for (int i = 0; i < playerList.size(); i++) {
+          	if (playerList.get(i).getId() == playerId) {
+          		switch (i) {
+          		case 0:
+          			for (int j = 0; j < numCards; j++) {
+                	Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
+                	p1hand.add(hiddenCard);
+                }
+          			break;
+          		case 1:
+          			for (int j = 0; j < numCards; j++) {
+                	Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
+                	p2hand.add(hiddenCard);
+                }
+          			break;
+          		case 2:
+          			for (int j = 0; j < numCards; j++) {
+                	Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
+                	p3hand.add(hiddenCard);
+                }
+          			break;
+          		case 3:
+          			for (int j = 0; j < numCards; j++) {
+                	Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
+                	p4hand.add(hiddenCard);
+                }
+          			break;
+          		}
+          	}
+          }
           break;
         case "CardPlayed":
           int from = body.getInt("from");
@@ -293,7 +326,8 @@ public abstract class GameView extends WebPage {
       } else if (event.getPropertyName().equals("SendPrivateMessage")) {
         JSONMessage message = (JSONMessage) event.getOldValue();
         int playerID = (int) event.getNewValue();
-        sendPrivateMessage(message, playerID);
+        if (user.getId() == playerID)
+          sendPrivateMessage(message, playerID);
       }
     }
   }
@@ -324,6 +358,7 @@ public abstract class GameView extends WebPage {
 	 * rotates players in List, so that own player is displayed at the bottom
 	 */
 	private void orderPlayers() {
+		System.out.println("order for player " + user);
 		int size = playerList.size();
 		int bottomPos = 2;
 		if (size == 5 || size == 6) {

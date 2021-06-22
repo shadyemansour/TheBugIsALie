@@ -379,6 +379,8 @@ public class FourBoard extends GameView {
 		 * player-card-container
 		 */
 		WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container1");
+		playerCardContainer.setOutputMarkupId(true);
+		playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
 		add(playerCardContainer);
 
 		/*
@@ -416,33 +418,43 @@ public class FourBoard extends GameView {
 		/*
 		 * card hand
 		 */
-		List<IModel<Card>> p1CardHandModelList = new ArrayList<IModel<Card>>();
-		System.out.println("first get Hand");
-		System.out.println(super.playerList.get(0).getHand());
-//		for (Card card : super.playerList.get(0).getHand()) {
-//			p1CardHandModelList.add(Model.of(card));
-//		}
-		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand1") {
+//		List<IModel<Card>> p1CardHandModelList = new ArrayList<IModel<Card>>();
+//		System.out.println("first get Hand");
+//		System.out.println(super.playerList.get(0).getHand());
+////		for (Card card : super.playerList.get(0).getHand()) {
+////			p1CardHandModelList.add(Model.of(card));
+////		}
+//		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand1") {
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected Iterator<IModel<Card>> getItemModels() {
+//				return p1CardHandModelList.iterator();
+//			}
+//
+//			int width = 300;
+//
+//			int posLeft = (width - p1CardHandModelList.size() * 50) / (p1CardHandModelList.size() + 1);
+//			int stepSize = posLeft + 50;
+//
+//			@Override
+//			protected void populateItem(Item<Card> item) {
+//				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+//				posLeft += stepSize;
+////				posTop += 2;
+//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+//			}
+//
+//		};
+		ListView<Card> cardHand = new ListView<Card>("card-hand1", p1hand) {
 			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return p1CardHandModelList.iterator();
-			}
-
 			int width = 300;
-
-			int posLeft = (width - p1CardHandModelList.size() * 50) / (p1CardHandModelList.size() + 1);
-			int stepSize = posLeft + 50;
-
 			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
-//				posTop += 2;
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p1hand.size() * 50) / (p1hand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
 				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
 			}
-
 		};
 		cardHand.setOutputMarkupId(true);
 		playableCardsContainer.add(cardHand);
@@ -490,6 +502,8 @@ public class FourBoard extends GameView {
 		 * player-card-container
 		 */
 		WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container2");
+		playerCardContainer.setOutputMarkupId(true);
+		playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
 		add(playerCardContainer);
 
 		/*
@@ -527,31 +541,41 @@ public class FourBoard extends GameView {
 		/*
 		 * card hand
 		 */
-		List<IModel<Card>> p2CardHandModelList = new ArrayList<IModel<Card>>();
-//		for (Card card : super.playerList.get(1).getHand()) {
-//			p2CardHandModelList.add(Model.of(card));
-//		}
-		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand2") {
+//		List<IModel<Card>> p2CardHandModelList = new ArrayList<IModel<Card>>();
+////		for (Card card : super.playerList.get(1).getHand()) {
+////			p2CardHandModelList.add(Model.of(card));
+////		}
+//		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand2") {
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected Iterator<IModel<Card>> getItemModels() {
+//				return p2CardHandModelList.iterator();
+//			}
+//
+//			int width = 300;
+//
+//			int posLeft = (width - p2CardHandModelList.size() * 50) / (p2CardHandModelList.size() + 1);
+//			int stepSize = posLeft + 50;
+//
+//			@Override
+//			protected void populateItem(Item<Card> item) {
+//				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+//				posLeft += stepSize;
+////				posTop += 2;
+//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+//			}
+//
+//		};
+		ListView<Card> cardHand = new ListView<Card>("card-hand2", p2hand) {
 			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return p2CardHandModelList.iterator();
-			}
-
 			int width = 300;
-
-			int posLeft = (width - p2CardHandModelList.size() * 50) / (p2CardHandModelList.size() + 1);
-			int stepSize = posLeft + 50;
-
 			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
-//				posTop += 2;
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p2hand.size() * 50) / (p2hand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
 				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
 			}
-
 		};
 		cardHand.setOutputMarkupId(true);
 		playableCardsContainer.add(cardHand);
@@ -664,16 +688,11 @@ public class FourBoard extends GameView {
 //		};
 		ListView<Card> cardHand = new ListView<Card>("card-hand3", p3hand) {
 			private static final long serialVersionUID = 1L;
-
 			int width = 300;
-
-			int posLeft = (width - p3hand.size() * 50) / (p3hand.size() + 1);
-			int stepSize = posLeft + 50;
-
 			@Override
 			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p3hand.size() * 50) / (p3hand.size() + 1);
 				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
-//				posLeft += stepSize;
 				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
 			}
 		};
@@ -718,6 +737,8 @@ public class FourBoard extends GameView {
 		 * player-card-container
 		 */
 		WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container4");
+		playerCardContainer.setOutputMarkupId(true);
+		playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
 		add(playerCardContainer);
 
 		/*
@@ -755,31 +776,41 @@ public class FourBoard extends GameView {
 		/*
 		 * card hand
 		 */
-		List<IModel<Card>> pCardHandModelList = new ArrayList<IModel<Card>>();
-//		for (Card card : super.playerList.get(3).getHand()) {
-//			pCardHandModelList.add(Model.of(card));
-//		}
-		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand4") {
+//		List<IModel<Card>> pCardHandModelList = new ArrayList<IModel<Card>>();
+////		for (Card card : super.playerList.get(3).getHand()) {
+////			pCardHandModelList.add(Model.of(card));
+////		}
+//		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand4") {
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected Iterator<IModel<Card>> getItemModels() {
+//				return pCardHandModelList.iterator();
+//			}
+//
+//			int width = 300;
+//
+//			int posLeft = (width - pCardHandModelList.size() * 50) / (pCardHandModelList.size() + 1);
+//			int stepSize = posLeft + 50;
+//
+//			@Override
+//			protected void populateItem(Item<Card> item) {
+//				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+//				posLeft += stepSize;
+////				posTop += 2;
+//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+//			}
+//
+//		};
+		ListView<Card> cardHand = new ListView<Card>("card-hand4", p4hand) {
 			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return pCardHandModelList.iterator();
-			}
-
 			int width = 300;
-
-			int posLeft = (width - pCardHandModelList.size() * 50) / (pCardHandModelList.size() + 1);
-			int stepSize = posLeft + 50;
-
 			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
-//				posTop += 2;
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p4hand.size() * 50) / (p4hand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
 				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
 			}
-
 		};
 		cardHand.setOutputMarkupId(true);
 		playableCardsContainer.add(cardHand);

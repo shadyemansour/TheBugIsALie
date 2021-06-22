@@ -18,4 +18,7 @@ public class JSONMessage implements IWebSocketPushMessage, Serializable {
     return this.message;
   }
 
+  public JSONMessage copy() {
+    return new JSONMessage(message);
+  }
 }

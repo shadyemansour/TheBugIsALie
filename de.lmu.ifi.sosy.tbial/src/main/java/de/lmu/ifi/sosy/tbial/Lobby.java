@@ -639,8 +639,6 @@ public class Lobby extends BasePage {
                     }
                 }
                 break;
-            case "YourCards":
-                System.out.println("host");
         }
     }
 

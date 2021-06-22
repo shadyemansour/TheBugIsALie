@@ -105,6 +105,7 @@ public abstract class GameView extends WebPage {
     String msgType = (String) jsonMsg.get("msgType");
     Iterator<Object> iterator;
     JSONObject body = jsonMsg.getJSONObject("msgBody");
+    System.out.print(user.getId() + ": ");
     System.out.println(body);
     int gameID = (int) body.get("gameID");
     int userID;
@@ -260,7 +261,8 @@ public abstract class GameView extends WebPage {
       } else if (event.getPropertyName().equals("SendPrivateMessage")) {
         JSONMessage message = (JSONMessage) event.getOldValue();
         int playerID = (int) event.getNewValue();
-        sendPrivateMessage(message, playerID);
+        if (user.getId() == playerID)
+          sendPrivateMessage(message, playerID);
       }
     }
   }

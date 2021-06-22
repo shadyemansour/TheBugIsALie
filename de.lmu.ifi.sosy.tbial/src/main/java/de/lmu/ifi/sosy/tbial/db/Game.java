@@ -35,6 +35,8 @@ public class Game implements Serializable {
 	private boolean addedPlayers;
 	private int currentPlayer;
 	private int currentID;
+	private transient Timer timer;
+	private boolean gameInitiated;
 
 
 	//   private  ArrayList<Card> charakterCards = new  ArrayList<Card>(); TODO later (US37)
@@ -42,7 +44,11 @@ public class Game implements Serializable {
 	private List<Card> roleCards;
 	private List<Card> characterCards;
 	private List<Card> stack; // all action, ability, and stumbling blocks cards
-//	private List<Card> playableStack; // only bugs, exuses, solutions playable
+	//	private List<Card> playableStack; // only bugs, exuses, solutions playable
+	private transient JSONMessage roleCardsHostMessage;
+	private transient JSONMessage characterCardsHostMessage;
+	private transient JSONMessage gameStartedMessageHost;
+	private transient List<JSONMessage> cardsHostMessages;
 
 
 	//    private  List<Card> heap = new  ArrayList<Card>(); TODO later
@@ -74,9 +80,12 @@ public class Game implements Serializable {
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
 		this.addedPlayers = false;
 
-		roleCards = new ArrayList<Card>();
-		characterCards = new ArrayList<Card>();
-		stack = new ArrayList<Card>();
+		this.roleCards = new ArrayList<Card>();
+		this.characterCards = new ArrayList<Card>();
+		this.stack = new ArrayList<Card>();
+		this.timer = new Timer();
+		this.cardsHostMessages = new ArrayList<>();
+		this.gameInitiated = false;
 
 	}
 
@@ -236,6 +245,9 @@ public class Game implements Serializable {
 
 		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();
+
+		timer.schedule(new RemindTask(), 1000);
+		this.gameInitiated = true;
 	}
 
 	public void decksShuffled() {
@@ -373,7 +385,12 @@ public class Game implements Serializable {
 		msgBody.put("cards", array);
 		JSONMessage[] msg = new JSONMessage[2];
 		msg[0] = createJSONMessage("YourCards", msgBody);
-		propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
+		if (gameInitiated) {
+			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
+		} else {
+			if (playerID == host.getId())
+				cardsHostMessages.add(msg[0].copy());
+		}
 
 		JSONObject msgBodyBroadcast = new JSONObject();
 		msgBodyBroadcast.put("gameID", id);
@@ -381,7 +398,12 @@ public class Game implements Serializable {
 		msgBodyBroadcast.put("cards", array.length());
 		msgBodyBroadcast.put("cardsInDeck", stack.size());
 		msg[1] = createJSONMessage("CardsDrawn", msgBodyBroadcast);
-		propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
+		if (gameInitiated) {
+			propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
+		} else {
+			if (playerID != host.getId())
+				cardsHostMessages.add(msg[1].copy());
+		}
 		return msg;
 	}
 
@@ -422,6 +444,11 @@ public class Game implements Serializable {
 		msgBody.put("gameID", id);
 		msgBody.put(type.toLowerCase(), array);
 		JSONMessage msg = createJSONMessage(type, msgBody);
+		if (type.equals("Roles")) {
+			roleCardsHostMessage = msg.copy();
+		} else {
+			characterCardsHostMessage = msg.copy();
+		}
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;
 	}
@@ -435,6 +462,7 @@ public class Game implements Serializable {
 		msgBody.put("cardsInDeck", stack.size());
 		msgBody.put("numPlayers", numPlayers);
 		JSONMessage msg = createJSONMessage("GameStarted", msgBody);
+		gameStartedMessageHost = msg;
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;
 	}
@@ -444,6 +472,15 @@ public class Game implements Serializable {
 		msg.put("msgType", type);
 		msg.put("msgBody", body);
 		return new JSONMessage(msg);
+	}
+
+	public void sendMessagesToHostOnStart() {
+		propertyChangeSupport.firePropertyChange("SendPrivateMessage", gameStartedMessageHost, host.getId());
+		propertyChangeSupport.firePropertyChange("SendPrivateMessage", roleCardsHostMessage, host.getId());
+		propertyChangeSupport.firePropertyChange("SendPrivateMessage", characterCardsHostMessage, host.getId());
+		for (JSONMessage msg : cardsHostMessages) {
+			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg, host.getId());
+		}
 	}
 
 
@@ -898,6 +935,13 @@ public class Game implements Serializable {
 		return characterCards;
 	}
 
+
+	class RemindTask extends TimerTask {
+
+		public void run() {
+			sendMessagesToHostOnStart();
+		}
+	}
 
 //
 //	public List<Card> getHeap() {

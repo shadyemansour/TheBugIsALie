@@ -387,9 +387,10 @@ public class Game implements Serializable {
 		msg[0] = createJSONMessage("YourCards", msgBody);
 		if (gameInitiated) {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
+		} else if (playerID == host.getId()) {
+			cardsHostMessages.add(msg[0].copy());
 		} else {
-			if (playerID == host.getId())
-				cardsHostMessages.add(msg[0].copy());
+			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
 		}
 
 		JSONObject msgBodyBroadcast = new JSONObject();
@@ -398,11 +399,9 @@ public class Game implements Serializable {
 		msgBodyBroadcast.put("cards", array.length());
 		msgBodyBroadcast.put("cardsInDeck", stack.size());
 		msg[1] = createJSONMessage("CardsDrawn", msgBodyBroadcast);
-		if (gameInitiated) {
-			propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
-		} else {
-			if (playerID != host.getId())
-				cardsHostMessages.add(msg[1].copy());
+		propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
+		if (!gameInitiated && playerID != host.getId()) {
+			cardsHostMessages.add(msg[1].copy());
 		}
 		return msg;
 	}

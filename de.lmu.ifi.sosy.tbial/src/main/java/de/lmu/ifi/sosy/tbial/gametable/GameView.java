@@ -235,12 +235,6 @@ public abstract class GameView extends WebPage {
                 	p2hand.add(hiddenCard);
                 }
           			break;
-          		case 2:
-          			for (int j = 0; j < numCards; j++) {
-                	Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
-                	p3hand.add(hiddenCard);
-                }
-          			break;
           		case 3:
           			for (int j = 0; j < numCards; j++) {
                 	Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);

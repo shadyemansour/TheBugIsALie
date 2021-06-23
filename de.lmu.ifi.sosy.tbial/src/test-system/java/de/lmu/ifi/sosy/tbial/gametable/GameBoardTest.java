@@ -171,7 +171,6 @@ public class GameBoardTest extends PageTestBase {
     FormTester form = tester.newFormTester("tabs:panel:create");
     form.setValue("name", "testGame");
     form.submit("submitgame");
-
     form = tester.newFormTester("tabs:panel:boxedGameLobby:form");
     form.submit("startbutton");
   }

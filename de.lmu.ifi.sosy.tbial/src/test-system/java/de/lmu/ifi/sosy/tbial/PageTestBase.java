@@ -3,7 +3,6 @@ package de.lmu.ifi.sosy.tbial;
 import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.InMemoryDatabase;
 import de.lmu.ifi.sosy.tbial.gametable.FourBoard;
-import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -34,15 +33,23 @@ public abstract class PageTestBase {
 
   }
 
-  protected void joinGame() {
+  protected void joinGame(int rowNum, boolean confirmPanel, boolean isProtected, String confirm, String password) {
     tester.assertRenderedPage(Lobby.class);
     WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("1");
     AjaxFallbackLink sitesTabLink = (AjaxFallbackLink) siteTab.get("link");
 
     tester.clickLink(sitesTabLink.getPageRelativePath(), true);
-    tester.clickLink("tabs:panel:gamelist:availableGames:0:joinGame");
-
+    tester.clickLink(String.format("tabs:panel:gamelist:availableGames:%s:joinGame", rowNum));
+    if (confirmPanel) {
+      tester.clickLink(String.format("tabs:panel:yesNoForm:%s", confirm));
+    }
+    if (isProtected) {
+      FormTester form = tester.newFormTester("tabs:panel:passwordForm");
+      form.setValue("password2", password);
+      form.submit("confirm");
+    }
   }
+
 
   protected void attemptLogin(String name, String password) {
     tester.startPage(Login.class);
@@ -78,17 +85,17 @@ public abstract class PageTestBase {
     createGame("startGame");
     attemptLogout();
     attemptLogin("user1", "user1");
-    joinGame();
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
 
     attemptLogin("user2", "user2");
-    joinGame();
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
 
     attemptLogin("user3", "user3");
-    joinGame();
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
 

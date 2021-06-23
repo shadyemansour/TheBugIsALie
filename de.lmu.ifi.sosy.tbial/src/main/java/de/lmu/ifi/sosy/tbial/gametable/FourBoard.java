@@ -17,11 +17,8 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.util.time.Duration;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.PropertyModel;
 
 @AuthenticationRequired
@@ -40,8 +37,6 @@ public class FourBoard extends GameView {
   private Label p1health, p2health, p3health, p4health;
   private Label p1name, p2name, p3name, p4name;
   int currenthealth1, currenthealth2, currenthealth3, currenthealth4;
-
-  private AjaxButton testsethealth;
 
 
   /*
@@ -87,46 +82,15 @@ public class FourBoard extends GameView {
     currenthealth2 = players.get(1).getHealth();
     currenthealth3 = players.get(2).getHealth();
     currenthealth4 = players.get(3).getHealth();
+    System.out.println("user - " + user.getName() + " h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
   }
 
   protected void createPlayerAttributes() {
-    // button to test health adjustment
-    testsethealth = new AjaxButton("button1") {
-      /** UID for serialization. */
-      private static final long serialVersionUID = 1;
 
-      @Override
-      public void onSubmit(AjaxRequestTarget target) {
-        System.out.println("sethealth");
-        players.get(2).setHealth(players.get(2).getHealth() - 1);
-        currenthealth3 = players.get(2).getHealth();
-        p3health = new Label("p3heal", new PropertyModel<>(this, "currenthealth3"));
-        p3health.setOutputMarkupId(true);
-        //target.add(p3health);
-      }
-    };
-    Form<?> formbutton = new Form<>("testbutton");
-    formbutton.add(testsethealth);
-    add(formbutton);
-
-//  	for (Game g : appGames) {
-//      if (g.equals(user.getGame())) {
-//        game = g;
-//  //      user.setGame(game);
-//        break;
-//      }
-//    };
-
-    //game.startGame(); // this is temporary since game is not initialized before starting a game
     players = game.getPlayers();
-    // temporary untill game is get with wbesocket
-//    players.get(0).setHealth(4);
 //    players.get(0).setPrestige(0);
-//    players.get(1).setHealth(4);
 //    players.get(1).setPrestige(0);
-//    players.get(2).setHealth(4);
 //    players.get(2).setPrestige(0);
-//    players.get(3).setHealth(4);
 //    players.get(3).setPrestige(0);
 
     currenthealth1 = players.get(0).getHealth();

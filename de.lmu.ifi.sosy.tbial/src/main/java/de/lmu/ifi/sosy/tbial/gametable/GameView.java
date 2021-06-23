@@ -52,10 +52,7 @@ public abstract class GameView extends WebPage {
   List<Card> p3role = new ArrayList<Card>();
   List<Card> p4role = new ArrayList<Card>();
   
-  Card p1roleCard = new Card("Role", "Placeholder Role Card", null, null, null, false, true, null);
-  Card p2roleCard = new Card("Role", "Placeholder Role Card", null, null, null, false, true, null);
-  Card p3roleCard = new Card("Role", "Placeholder Role Card", null, null, null, false, true, null);
-  Card p4roleCard = new Card("Role", "Placeholder Role Card", null, null, null, false, true, null);
+  List<Card> stackList = new ArrayList<Card>();
   
   //  ModalWindow modalWindow;
   Form<?> form;
@@ -355,6 +352,13 @@ public abstract class GameView extends WebPage {
           		}
           	}
           }
+          stackList.clear();
+          for (int j = 0; j < numDeckCards; j++) {
+          	Card stackCard = new Card("", "Stack Card", null, null, null, false, false, null);
+          	stackList.add(stackCard);
+          }
+          System.out.println("numDeckCards: " + numDeckCards);
+          System.out.println("--added to stackList: " + stackList.size());
           break;
         case "CardPlayed":
           int from = body.getInt("from");

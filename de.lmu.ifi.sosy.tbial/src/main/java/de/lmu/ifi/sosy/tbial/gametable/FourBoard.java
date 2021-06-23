@@ -41,7 +41,7 @@ public class FourBoard extends GameView {
 	User user;
 //	List<User> playerList;
 //	Game game;
-	List<Card> stackList;
+//	List<Card> stackList;
 
 	/*
 	 * dummy cards
@@ -57,9 +57,9 @@ public class FourBoard extends GameView {
 	Card otherCard1, otherCard2, otherCard3;
 	List<IModel<Card>> otherCardModel;
 
-	Card stackCard1, stackCard2, stackCard3, stackCard4, stackCard5, stackCard6, stackCard7, stackCard8, stackCard9,
-			stackCard10, stackCard11, stackCard12;
-	List<IModel<Card>> stackModel;
+//	Card stackCard1, stackCard2, stackCard3, stackCard4, stackCard5, stackCard6, stackCard7, stackCard8, stackCard9,
+//			stackCard10, stackCard11, stackCard12;
+//	List<IModel<Card>> stackModel;
 
 	Card heapCard1, heapCard2, heapCard3, heapCard4, heapCard5, heapCard6, heapCard7, heapCard8, heapCard9, heapCard10,
 			heapCard11, heapCard12;
@@ -80,8 +80,7 @@ public class FourBoard extends GameView {
 //		orderPlayers();
 		assignLabels();
 
-		createStack();
-		createHeap();
+		createStackAndHeap();
 
 		createPlayer1Area();
 		createPlayer2Area();
@@ -308,42 +307,50 @@ public class FourBoard extends GameView {
 	/*
 	 * creates stack
 	 */
-	private void createStack() {
-		stackModel = new ArrayList<IModel<Card>>();
+	private void createStackAndHeap() {
+//		stackModel = new ArrayList<IModel<Card>>();
 //		for (Card card : super.game.getStack()) {
 //			stackModel.add(Model.of(card));
 //		}
 		
-		RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
+//		RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected Iterator<IModel<Card>> getItemModels() {
+//				return stackModel.iterator();
+//			}
+//
+//			int posLeft = 85 - stackModel.size();
+//			int posTop = 90 - stackModel.size();
+//
+//			@Override
+//			protected void populateItem(Item<Card> item) {
+//				item.add(new AttributeAppender("style", "left: " + posLeft + "px; top: " + posTop + "px;"));
+//				posLeft += 2;
+//				posTop += 2;
+//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+//			}
+//
+//		};
+		WebMarkupContainer middleTableContainer = new WebMarkupContainer("middle-table-container");
+		middleTableContainer.setOutputMarkupId(true);
+		middleTableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+		add(middleTableContainer);
+		
+		ListView<Card> stack = new ListView<Card>("stack", stackList) {
 			private static final long serialVersionUID = 1L;
-
 			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return stackModel.iterator();
-			}
-
-			int posLeft = 85 - stackModel.size();
-			int posTop = 90 - stackModel.size();
-
-			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px; top: " + posTop + "px;"));
-				posLeft += 2;
-				posTop += 2;
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = 85 - stackList.size();
+				int posTop = 90 - stackList.size();
+				item.add(new AttributeAppender("style", "left: " + (posLeft + 2 * item.getIndex()) + "px; top: " + (posTop + 2 * item.getIndex()) + "px;"));
 				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
 			}
-
 		};
 		stack.setOutputMarkupId(true);
-		add(stack);
-	}
-
-	/*
-	 * creates heap TODO: fill with real cards later, not dummy cards => adjust
-	 * Iterator make sure, that all cards show front side => will be automatic
-	 * with real cards
-	 */
-	private void createHeap() {
+		middleTableContainer.add(stack);
+		
 		RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
 			private static final long serialVersionUID = 1L;
 
@@ -362,7 +369,7 @@ public class FourBoard extends GameView {
 
 		};
 		heap.setOutputMarkupId(true);
-		add(heap);
+		middleTableContainer.add(heap);
 	}
 
 	/*

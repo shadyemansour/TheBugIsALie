@@ -27,10 +27,9 @@ public class GameViewTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    user1 = new User("user1", "user1", null);
+    user1 = database.register("user1", "user1");
     host = new User("testhost", "testpassword", null);
     database.register("testhost", "testpassword");
-    database.register("user1", "user1");
     database.register("user2", "user2");
     database.register("user3", "user3");
     attemptLogin("testhost", "testpassword");

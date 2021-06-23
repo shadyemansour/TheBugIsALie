@@ -33,8 +33,8 @@ public abstract class GameView extends WebPage {
   AjaxButton leaveButton;
   Game game = user.getGame();
   //  ModalWindow modalWindow;
+  private static GameView instance;
   Form<?> form;
-  private GameView instance;
 
   public GameView() {
     this.game.addPropertyChangeListener(new GameViewListener());
@@ -152,9 +152,16 @@ public abstract class GameView extends WebPage {
           for (int i = 0; i < characters.length(); i++) {
             JSONObject container = (JSONObject) characters.get(i);
             int playerID = container.getInt("playerID");
-            String character = container.getString("character");
-            int health = container.getInt("health");
-            //TODO USE THE DATA
+            if (playerID == user.getId()) {
+              String character = container.getString("character");
+              int health = container.getInt("health");
+              user.setHealth(health);
+              user.setCharacter(character);
+              if (allUsersHaveHealth()) {
+                updatePlayerAttributes();
+              }
+              //TODO USE THE DATA
+            }
           }
 
           break;
@@ -214,6 +221,19 @@ public abstract class GameView extends WebPage {
     }
   }
 
+  private boolean allUsersHaveHealth() {
+    for (User user : game.getPlayers()) {
+      if (user.getHealth() == -1) {
+        System.out.println(((TBIALSession) getSession()).getUser().getId() + ": false");
+        return false;
+      }
+    }
+    System.out.println(((TBIALSession) getSession()).getUser().getId() + ": true");
+    return true;
+  }
+
+  protected abstract void updatePlayerAttributes();
+
   public void drawCards() {
     game.drawCards(((TBIALSession) getSession()).getUser().getId(), 2 /*TODO CHANGE TO VARIABLE*/);
   }
@@ -263,9 +283,14 @@ public abstract class GameView extends WebPage {
         int playerID = (int) event.getNewValue();
         if (user.getId() == playerID)
           sendPrivateMessage(message, playerID);
+      } else if (event.getPropertyName().equals("UpdatePlayerAttributes")) {
+        int gameId = (int) event.getOldValue();
+        if (user.getGame().getId() == gameId && user.getId() != game.getHost().getId())
+          updatePlayerAttributes();
       }
     }
   }
+
 
   private JSONMessage continueGameJSONMessage(int userId, int gameId) {
     JSONObject msgBody = new JSONObject();

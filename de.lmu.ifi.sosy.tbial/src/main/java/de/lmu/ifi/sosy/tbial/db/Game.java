@@ -141,9 +141,9 @@ public class Game implements Serializable {
 //		}
 //	}
 	public void addPlayer(User player) {
-		for (int i = 0; i < this.players.size(); i++) {
+		for (int i = 0; i < players.size(); i++) {
 			if (this.players.get(i) == null) {
-				this.players.set(i, player);
+				players.set(i, player);
 				if (!player.getName().equals(hostName)) {
 					if (!gameStarted) {
 						propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
@@ -185,7 +185,7 @@ public class Game implements Serializable {
 		JSONArray handArray = new JSONArray();
 		Card roleCard;
 		Card characterCard;
-		for (User player : this.players) {
+		for (User player : players) {
 			if (player != null) {
 				roleCard = roleCards.get(0);
 
@@ -247,6 +247,7 @@ public class Game implements Serializable {
 		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();
 
+		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
 	}
@@ -578,6 +579,10 @@ public class Game implements Serializable {
 		this.name = requireNonNull(name);
 	}
 
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return propertyChangeSupport;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -753,70 +758,68 @@ public class Game implements Serializable {
 				"If you lose mental health, \ntake one card from the causer",
 				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Tom Anderson","Founder of MySpace","(Mental Health 4)",
-		            "If you lose mental health, \nyou may take a card from the stack" ,
-		            false ,true,null));
+		characterCards.add(new Card("Character",
+				"Tom Anderson", "Founder of MySpace", "(Mental Health 4)",
+				"If you lose mental health, \nyou may take a card from the stack",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Jeff Taylor","Founder of \nmonster.com","(Mental Health 4)",
-		            "No cards left? \nTake one from the stack" ,
-		            false,true, null ));
+		characterCards.add(new Card("Character",
+				"Jeff Taylor", "Founder of \nmonster.com", "(Mental Health 4)",
+				"No cards left? \nTake one from the stack",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Larry Page","Founder of Google","(Mental Health 4)",
-		            "When somebody gets fired, \nyou take the cards" ,
-		            false ,true,null));
+		characterCards.add(new Card("Character",
+				"Larry Page", "Founder of Google", "(Mental Health 4)",
+				"When somebody gets fired, \nyou take the cards",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Larry Ellison", "Founder of Oracle","(Mental Health 4)",
-		            "May take three instead of \ntwo cards from the stack, \nbut has to put one back" ,
-		            false,true,null ));
+		characterCards.add(new Card("Character",
+				"Larry Ellison", "Founder of Oracle", "(Mental Health 4)",
+				"May take three instead of \ntwo cards from the stack, \nbut has to put one back",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Kent Beck","Inventor of Extreme \nProgramming","(Mental Health 4)",
-		            "Drop two cards and \ngain mental health" ,
-		            false ,true,null));
+		characterCards.add(new Card("Character",
+				"Kent Beck", "Inventor of Extreme \nProgramming", "(Mental Health 4)",
+				"Drop two cards and \ngain mental health",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Steve Jobs","Founder of Apple","(Mental Health 4)",
-		            "Gets a second chance" ,
-		            false,true,null ));
+		characterCards.add(new Card("Character",
+				"Steve Jobs", "Founder of Apple", "(Mental Health 4)",
+				"Gets a second chance",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Steve Ballmer", "Chief Executive Officer \nof Microsoft","(Mental Health 4)",
-		            "May use bugs as exuses \nand the other way round" ,
-		            false,true,null ));
+		characterCards.add(new Card("Character",
+				"Steve Ballmer", "Chief Executive Officer \nof Microsoft", "(Mental Health 4)",
+				"May use bugs as exuses \nand the other way round",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Linus Torvalds","Linus Inventor","(Mental Health 4)",
-		            "Bugs found can only be \ndeflected with two exuses" ,
-		            false ,true, null));
+		characterCards.add(new Card("Character",
+				"Linus Torvalds", "Linus Inventor", "(Mental Health 4)",
+				"Bugs found can only be \ndeflected with two exuses",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Holier than Thou","Found Everywhere","(Mental Health 4)",
-		            "Sees everyone with -1 prestige" ,
-		            false ,true,null));
+		characterCards.add(new Card("Character",
+				"Holier than Thou", "Found Everywhere", "(Mental Health 4)",
+				"Sees everyone with -1 prestige",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Konrad Zuse","Built first programmable \ncomputer","(Mental Health 3)",
-		            "Is seen with +1 prestige by everybody" ,
-		            false,true,null ));
+		characterCards.add(new Card("Character",
+				"Konrad Zuse", "Built first programmable \ncomputer", "(Mental Health 3)",
+				"Is seen with +1 prestige by everybody",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Bruce Schneier", "Security guru","(Mental Health 4)",
-		            "May report an arbitrary \nnumber of bugs" ,
-		            false ,true,null));
+		characterCards.add(new Card("Character",
+				"Bruce Schneier", "Security guru", "(Mental Health 4)",
+				"May report an arbitrary \nnumber of bugs",
+				false, true, null));
 
-		    characterCards.add(new Card( "Character",
-		            "Terry Weissman","Founder of Bugzilla", "(Mental Health 4)",
-		            "Got a bug? .25 percent \nchance for delegation" ,
-		            false , true, null));
+		characterCards.add(new Card("Character",
+				"Terry Weissman", "Founder of Bugzilla", "(Mental Health 4)",
+				"Got a bug? .25 percent \nchance for delegation",
+				false, true, null));
 
 
-		}
- 
-     
+	}
 
 
 	public void setStack() {

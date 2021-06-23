@@ -37,12 +37,10 @@ public class LobbyTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    user1 = new User("user1", "user1", null);
-    host = new User("testhost", "testpassword", null);
-    database.register("testhost", "testpassword");
-    database.register("user1", "user1");
+    user1 = database.register("user1", "user1");
     database.register("user2", "user2");
     database.register("user3", "user3");
+    host = database.register("testhost", "testpassword");
     attemptLogin("testhost", "testpassword");
     game = database.createGame("testGame", host.getName(), "", "new", 4);
     tester.assertRenderedPage(Lobby.class);
@@ -50,16 +48,12 @@ public class LobbyTest extends PageTestBase {
         tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer)
         tabbedPanel.get("tabs-container:tabs");
-    player2 = new User("test2", "test2pw", null);
-    database.register("test2", "test2pw");
-    player3 = new User("test3", "test3pw", null);
-    database.register("test3", "test3pw");
-    player4 = new User("test4", "test4pw", null);
-    database.register("test4", "test4pw");
-    player5 = new User("test5", "test5pw", null);
-    database.register("test5", "test5pw");
-    player6 = new User("test6", "test6pw", null);
-    database.register("test6", "test6pw");
+    player2 = database.register("test2", "test2pw");
+    player3 = database.register("test3", "test3pw");
+    player4 = database.register("test4", "test4pw");
+    player5 = database.register("test5", "test5pw");
+    player6 = database.register("test6", "test6pw");
+
     game2 = database.createGame("testGame1", player5.getName(), "", "new", 4);
 
   }

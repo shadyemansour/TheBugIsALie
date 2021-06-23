@@ -42,25 +42,21 @@ public class GameBoardTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    host = new User("testhost", "testpassword", null);
-    database.register("testhost", "testpassword");
+    host = database.register("testhost", "testpassword");
+
     loginUser();
 
     AjaxTabbedPanel tabbedPanel = (AjaxTabbedPanel) tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer) tabbedPanel.get("tabs-container:tabs");
 
-    player2 = new User("test2", "test2pw", null);
-    database.register("test2", "test2pw");
-    player3 = new User("test3", "test3pw", null);
-    database.register("test3", "test3pw");
-    player4 = new User("test4", "test4pw", null);
-    database.register("test4", "test4pw");
-    player5 = new User("test5", "test5pw", null);
-    database.register("test5", "test5pw");
-    player6 = new User("test6", "test6pw", null);
-    database.register("test6", "test6pw");
-    player7 = new User("test7", "test7pw", null);
-    database.register("test7", "test7pw");
+
+    player2 = database.register("test2", "test2pw");
+    player3 = database.register("test3", "test3pw");
+    player4 = database.register("test4", "test4pw");
+    player5 = database.register("test5", "test5pw");
+    player6 = database.register("test6", "test6pw");
+    player7 = database.register("test7", "test7pw");
+
   }
 
   @Test
@@ -93,35 +89,35 @@ public class GameBoardTest extends PageTestBase {
     tester.startPage(FourBoard.class);
     tester.assertRenderedPage(FourBoard.class);
 
-    tester.assertLabel("p1", "test");
-    tester.assertLabel("p1heal", "4");
+    tester.assertLabel("p1", "testhost");
+    tester.assertLabel("p1heal", Integer.toString(host.getHealth()));
     tester.assertLabel("p1pres", "0");
 
     tester.assertLabel("p2", "test2");
-    tester.assertLabel("p2heal", "4");
+    tester.assertLabel("p2heal", Integer.toString(player2.getHealth()));
     tester.assertLabel("p2pres", "0");
 
     tester.assertLabel("p3", "test3");
-    tester.assertLabel("p3heal", "4");
+    tester.assertLabel("p3heal", Integer.toString(player3.getHealth()));
     tester.assertLabel("p3pres", "0");
 
     tester.assertLabel("p4", "test4");
-    tester.assertLabel("p4heal", "4");
+    tester.assertLabel("p4heal", Integer.toString(player4.getHealth()));
     tester.assertLabel("p4pres", "0");
   }
 
-  //@Test
+  @Test
   public void renderFiveBoard() {
-    game = database.createGame("testGame", host.getName(), "", "new", 5);
+    game = database.createGame("five", host.getName(), "", "new", 5);
     game.addPlayer(player2);
     game.addPlayer(player3);
     game.addPlayer(player4);
     game.addPlayer(host);
     game.addPlayer(player5);
 
-    creatingGame("testGame", 1);
+    creatingGame("five", 1);
     attemptLogout();
-    attemptLogin("test2", "play2");
+    attemptLogin("test2", "test2pw");
     joiningGame();
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
@@ -137,31 +133,33 @@ public class GameBoardTest extends PageTestBase {
     joiningGame();
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
-    attemptLogin("testhost", "password");
+    attemptLogin("testhost", "testpassword");
 
     assertTrue(game.getActivePlayers() == game.getNumPlayers());
     startingGame();
 
     tester.startPage(FiveBoard.class);
     tester.assertRenderedPage(FiveBoard.class);
+
     tester.assertLabel("p1", "testhost");
-    tester.assertLabel("p1heal", "4");
+    tester.assertLabel("p1heal", Integer.toString(host.getHealth()));
     tester.assertLabel("p1pres", "0");
 
     tester.assertLabel("p2", "test2");
-    tester.assertLabel("p2heal", "4");
+    tester.assertLabel("p2heal", Integer.toString(player2.getHealth()));
     tester.assertLabel("p2pres", "0");
 
     tester.assertLabel("p3", "test3");
-    tester.assertLabel("p3heal", "4");
+    tester.assertLabel("p3heal", Integer.toString(player3.getHealth()));
     tester.assertLabel("p3pres", "0");
 
     tester.assertLabel("p4", "test4");
-    tester.assertLabel("p4heal", "4");
+    tester.assertLabel("p4heal", Integer.toString(player4.getHealth()));
     tester.assertLabel("p4pres", "0");
 
     tester.assertLabel("p5", "test5");
-    tester.assertLabel("p5heal", "4");
+
+    tester.assertLabel("p5heal", Integer.toString(player5.getHealth()));
     tester.assertLabel("p5pres", "0");
   }
 
@@ -177,7 +175,7 @@ public class GameBoardTest extends PageTestBase {
 
     creatingGame("six", 2);
     attemptLogout();
-    attemptLogin("test2", "play2");
+    attemptLogin("test2", "test2pw");
     joiningGame();
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
@@ -193,11 +191,11 @@ public class GameBoardTest extends PageTestBase {
     joiningGame();
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
-    attemptLogin("test2", "play2");
+    attemptLogin("test6", "test6pw");
     joiningGame();
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
-    attemptLogin("testhost", "password");
+    attemptLogin("testhost", "testpassword");
     joiningGame();
 
     assertTrue(game.getActivePlayers() == game.getNumPlayers());
@@ -206,27 +204,27 @@ public class GameBoardTest extends PageTestBase {
     tester.startPage(SixBoard.class);
     tester.assertRenderedPage(SixBoard.class);
     tester.assertLabel("p1", "testhost");
-    tester.assertLabel("p1heal", "4");
+    tester.assertLabel("p1heal", Integer.toString(host.getHealth()));
     tester.assertLabel("p1pres", "0");
 
     tester.assertLabel("p2", "test2");
-    tester.assertLabel("p2heal", "4");
+    tester.assertLabel("p2heal", Integer.toString(player2.getHealth()));
     tester.assertLabel("p2pres", "0");
 
     tester.assertLabel("p3", "test3");
-    tester.assertLabel("p3heal", "4");
+    tester.assertLabel("p3heal", Integer.toString(player3.getHealth()));
     tester.assertLabel("p3pres", "0");
 
     tester.assertLabel("p4", "test4");
-    tester.assertLabel("p4heal", "4");
+    tester.assertLabel("p4heal", Integer.toString(player4.getHealth()));
     tester.assertLabel("p4pres", "0");
 
     tester.assertLabel("p5", "test5");
-    tester.assertLabel("p5heal", "4");
+    tester.assertLabel("p5heal", Integer.toString(player5.getHealth()));
     tester.assertLabel("p5pres", "0");
 
     tester.assertLabel("p6", "test6");
-    tester.assertLabel("p6heal", "4");
+    tester.assertLabel("p6heal", Integer.toString(player6.getHealth()));
     tester.assertLabel("p6pres", "0");
   }
 
@@ -275,31 +273,31 @@ public class GameBoardTest extends PageTestBase {
     tester.startPage(SevenBoard.class);
     tester.assertRenderedPage(SevenBoard.class);
     tester.assertLabel("p1", "testhost");
-    tester.assertLabel("p1heal", "4");
+    tester.assertLabel("p1heal", Integer.toString(host.getHealth()));
     tester.assertLabel("p1pres", "0");
 
     tester.assertLabel("p2", "test2");
-    tester.assertLabel("p2heal", "4");
+    tester.assertLabel("p2heal", Integer.toString(player2.getHealth()));
     tester.assertLabel("p2pres", "0");
 
     tester.assertLabel("p3", "test3");
-    tester.assertLabel("p3heal", "4");
+    tester.assertLabel("p3heal", Integer.toString(player3.getHealth()));
     tester.assertLabel("p3pres", "0");
 
     tester.assertLabel("p4", "test4");
-    tester.assertLabel("p4heal", "4");
+    tester.assertLabel("p4heal", Integer.toString(player4.getHealth()));
     tester.assertLabel("p4pres", "0");
 
     tester.assertLabel("p5", "test5");
-    tester.assertLabel("p5heal", "4");
+    tester.assertLabel("p5heal", Integer.toString(player5.getHealth()));
     tester.assertLabel("p5pres", "0");
 
     tester.assertLabel("p6", "test6");
-    tester.assertLabel("p6heal", "4");
+    tester.assertLabel("p6heal", Integer.toString(player6.getHealth()));
     tester.assertLabel("p6pres", "0");
 
     tester.assertLabel("p7", "test7");
-    tester.assertLabel("p7heal", "4");
+    tester.assertLabel("p7heal", Integer.toString(player7.getHealth()));
     tester.assertLabel("p7pres", "0");
   }
 

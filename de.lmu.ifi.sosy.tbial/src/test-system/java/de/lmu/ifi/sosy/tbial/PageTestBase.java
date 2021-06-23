@@ -50,6 +50,7 @@ public abstract class PageTestBase {
     }
   }
 
+
   protected void attemptLogin(String name, String password) {
     tester.startPage(Login.class);
     tester.assertRenderedPage(Login.class);

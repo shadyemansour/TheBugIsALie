@@ -3,18 +3,15 @@ package de.lmu.ifi.sosy.tbial.networking;
 import java.util.HashMap;
 
 import org.apache.wicket.protocol.ws.WebSocketSettings;
-import org.apache.wicket.protocol.ws.api.WebSocketPushBroadcaster;
-import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
-import org.apache.wicket.protocol.ws.api.message.TextMessage;
 import org.apache.wicket.protocol.ws.api.registry.IWebSocketConnectionRegistry;
 
 
 public class WebSocketManager {
 
   private HashMap<Integer, ConnectedMessage> connections = new HashMap<>();
-  private WebSocketPushBroadcaster broadcaster;
-
+  private MyWebSocketPushBroadcaster broadcaster;
+  private IWebSocketConnectionRegistry webSocketConnectionRegistry;
   private static WebSocketManager instance;
 
   private WebSocketManager() {
@@ -33,8 +30,19 @@ public class WebSocketManager {
 
     if (null == broadcaster) {
       WebSocketSettings webSocketSettings = WebSocketSettings.Holder.get(msg.getApplication());
-      IWebSocketConnectionRegistry webSocketConnectionRegistry = webSocketSettings.getConnectionRegistry();
-      broadcaster = new WebSocketPushBroadcaster(webSocketConnectionRegistry);
+      webSocketConnectionRegistry = webSocketSettings.getConnectionRegistry();
+      broadcaster = new MyWebSocketPushBroadcaster(webSocketConnectionRegistry);
+
+    }
+  }
+
+  public void sendPrivateMessage(JSONMessage msg, int userID) {
+    if (connections.keySet().contains(userID)) {
+      if (null != broadcaster) {
+        broadcaster.broadcast(connections.get(userID), msg);
+      } else {
+        //throw new RuntimeException("Unable to send message");
+      }
     }
   }
 
@@ -45,5 +53,6 @@ public class WebSocketManager {
       //throw new RuntimeException("Unable to send message");
     }
   }
+
 
 }

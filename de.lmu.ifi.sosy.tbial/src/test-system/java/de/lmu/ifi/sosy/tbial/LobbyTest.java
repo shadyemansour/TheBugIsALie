@@ -51,16 +51,13 @@ public class LobbyTest extends PageTestBase {
         tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer)
         tabbedPanel.get("tabs-container:tabs");
-    player2 = new User("test2", "test2pw", null);
-    database.register("test2", "test2pw");
-    player3 = new User("test3", "test3pw", null);
-    database.register("test3", "test3pw");
-    player4 = new User("test4", "test4pw", null);
-    database.register("test4", "test4pw");
-    player5 = new User("test5", "test5pw", null);
-    database.register("test5", "test5pw");
-    player6 = new User("test6", "test6pw", null);
-    database.register("test6", "test6pw");
+
+    player2 = database.register("test2", "test2pw");
+    player3 = database.register("test3", "test3pw");
+    player4 = database.register("test4", "test4pw");
+    player5 = database.register("test5", "test5pw");
+    player6 = database.register("test6", "test6pw");
+
     game2 = database.createGame("testGame1", player5.getName(), "", "new", 4);
     game3 = database.createGame("testProtectedGame", player4.getName(), "testpw", "new", 4);
 
@@ -209,6 +206,7 @@ public class LobbyTest extends PageTestBase {
     assertTrue(game3.getPlayers().contains(player6));
     assertTrue(!game2.getPlayers().contains(player6));
   }
+
 
   @Test
   public void playerLeaveGame() {

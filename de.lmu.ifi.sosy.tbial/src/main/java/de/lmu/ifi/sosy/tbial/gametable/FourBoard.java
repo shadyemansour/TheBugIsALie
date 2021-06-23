@@ -53,7 +53,7 @@ public class FourBoard extends GameView {
   Card heapCard1, heapCard2, heapCard3, heapCard4, heapCard5, heapCard6, heapCard7, heapCard8, heapCard9, heapCard10, heapCard11, heapCard12;
   List<IModel<Card>> heapModel;
   
-  WebMarkupContainer playerCardContainer, playerCardContainer2;
+  WebMarkupContainer playerCardContainer, playerCardContainer2, playerCardContainer3, playerCardContainer4;
   List<Card> cardDropModels, cardDropModels2, cardDropModels3, cardDropModels4;
   ListView<Card> cardDropArea, cardDropArea2, cardDropArea3, cardDropArea4;
   Card selected1;
@@ -314,6 +314,22 @@ public class FourBoard extends GameView {
      */
     playerCardContainer = new WebMarkupContainer("player-card-container1");
     playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer.add(new AjaxEventBehavior("click") {
+    	private static final long serialVersionUID = 1L;
+		@Override
+		protected void onEvent(AjaxRequestTarget target) {
+			System.out.println("droparea2");
+			if (selected1 != null) {
+				cardDropModels.add(selected1);
+				for (int i=0; i < p3CardModel.size(); i++) {
+					if (p3CardModel.get(i) == selected1) {
+						p3CardModel.remove(i);
+					}
+				}
+				selected1 = null;
+			} else {}
+		}
+	});
     add(playerCardContainer);
     
     /*
@@ -398,6 +414,11 @@ public class FourBoard extends GameView {
 			System.out.println("droparea2");
 			if (selected1 != null) {
 				cardDropModels2.add(selected1);
+				for (int i=0; i < p3CardModel.size(); i++) {
+					if (p3CardModel.get(i) == selected1) {
+						p3CardModel.remove(i);
+					}
+				}
 				selected1 = null;
 			} else {}
 		}
@@ -477,15 +498,15 @@ public class FourBoard extends GameView {
     /*
      * player-card-container 
      */
-    playerCardContainer = new WebMarkupContainer("player-card-container3");
-    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-    add(playerCardContainer);
+    playerCardContainer3 = new WebMarkupContainer("player-card-container3");
+    playerCardContainer3.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    add(playerCardContainer3);
     
     /*
      * left side container includes card-drop-area and card-hand 
      */
     WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container3");
-    playerCardContainer.add(playableCardsContainer);
+    playerCardContainer3.add(playableCardsContainer);
     /*
      * drop area
      */
@@ -519,7 +540,6 @@ public class FourBoard extends GameView {
 					protected void onEvent(AjaxRequestTarget target) {
 						System.out.println("card: " + item.getModelObject());
 						selected1 = item.getModelObject();
-						//cardDropModels2.add(selected1);
 					}
 				});
 			}
@@ -532,7 +552,7 @@ public class FourBoard extends GameView {
      * container of right side
      */
     WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container3");
-    playerCardContainer.add(healthRoleContainer);
+    playerCardContainer3.add(healthRoleContainer);
     
     /*
      * mental health
@@ -563,15 +583,31 @@ public class FourBoard extends GameView {
     /*
      * player-card-container 
      */
-    playerCardContainer = new WebMarkupContainer("player-card-container4");
-    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-    add(playerCardContainer);
+    playerCardContainer4 = new WebMarkupContainer("player-card-container4");
+    playerCardContainer4.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer4.add(new AjaxEventBehavior("click") {
+    	private static final long serialVersionUID = 1L;
+		@Override
+		protected void onEvent(AjaxRequestTarget target) {
+			System.out.println("droparea2");
+			if (selected1 != null) {
+				cardDropModels4.add(selected1);
+				for (int i=0; i < p3CardModel.size(); i++) {
+					if (p3CardModel.get(i) == selected1) {
+						p3CardModel.remove(i);
+					}
+				}
+				selected1 = null;
+			} else {}
+		}
+	});
+    add(playerCardContainer4);
     
     /*
      * left side container includes card-drop-area and card-hand 
      */
     WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container4");
-    playerCardContainer.add(playableCardsContainer);
+    playerCardContainer4.add(playableCardsContainer);
     /*
      * drop area
      */
@@ -610,7 +646,7 @@ public class FourBoard extends GameView {
      * container of right side
      */
     WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container4");
-    playerCardContainer.add(healthRoleContainer);
+    playerCardContainer4.add(healthRoleContainer);
     
     /*
      * mental health

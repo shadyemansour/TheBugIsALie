@@ -189,6 +189,7 @@ public class Game implements Serializable {
 				JSONObject role = new JSONObject();
 				role.put("playerID", player.getId());
 				role.put("role", roleCard.getTitle());
+				role.put("roleCard", roleCard);
 				rolesArray.put(role);
 
 				player.setRoleCard(roleCard);
@@ -231,7 +232,6 @@ public class Game implements Serializable {
 					stack.remove(i);
 				}
 				player.setHand(hand);
-				System.out.println("before draw Cards message");
 				drawCardsMessage(player.getId(), handArray);
 			}
 		}
@@ -243,7 +243,6 @@ public class Game implements Serializable {
 		currentID = players.get(currentPlayer).getId();
 
 		gameStartedMessage();
-		System.out.println("---game Started message sent!---");
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
 	}
@@ -364,7 +363,6 @@ public class Game implements Serializable {
 	}
 
 	public void drawCards(int playerID, int numCards) {
-		System.out.println("drawCards");
 		JSONArray cards = new JSONArray();
 
 		for (int n = 0; n < numCards; n++) {
@@ -379,7 +377,6 @@ public class Game implements Serializable {
 	 * sends YourCards and CardsDrawn Messages
 	 */
 	protected JSONMessage[] drawCardsMessage(int playerID, JSONArray array) {
-		System.out.println("drawCardsMessage");
 		
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);

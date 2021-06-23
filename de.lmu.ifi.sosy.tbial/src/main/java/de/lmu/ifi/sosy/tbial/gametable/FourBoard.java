@@ -418,34 +418,6 @@ public class FourBoard extends GameView {
 		/*
 		 * card hand
 		 */
-//		List<IModel<Card>> p1CardHandModelList = new ArrayList<IModel<Card>>();
-//		System.out.println("first get Hand");
-//		System.out.println(super.playerList.get(0).getHand());
-////		for (Card card : super.playerList.get(0).getHand()) {
-////			p1CardHandModelList.add(Model.of(card));
-////		}
-//		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand1") {
-//			private static final long serialVersionUID = 1L;
-//
-//			@Override
-//			protected Iterator<IModel<Card>> getItemModels() {
-//				return p1CardHandModelList.iterator();
-//			}
-//
-//			int width = 300;
-//
-//			int posLeft = (width - p1CardHandModelList.size() * 50) / (p1CardHandModelList.size() + 1);
-//			int stepSize = posLeft + 50;
-//
-//			@Override
-//			protected void populateItem(Item<Card> item) {
-//				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-//				posLeft += stepSize;
-////				posTop += 2;
-//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-//			}
-//
-//		};
 		ListView<Card> cardHand = new ListView<Card>("card-hand1", p1hand) {
 			private static final long serialVersionUID = 1L;
 			int width = 300;
@@ -463,6 +435,7 @@ public class FourBoard extends GameView {
 		 * container of right side
 		 */
 		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container1");
+		healthRoleContainer.setOutputMarkupId(true);
 		playerCardContainer.add(healthRoleContainer);
 
 		/*
@@ -476,13 +449,23 @@ public class FourBoard extends GameView {
 		 * role card TODO: put real role card here TODO: show or hide card depending
 		 * on player and card
 		 */
-		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+//		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 //		Card roleCard = super.playerList.get(0).getRoleCard();
 //		if (super.playerList.get(0).getFired() || super.game.getGameState().equals("gameover")) {
 //			roleCard.setVisible(true);
 //		}
-		CardPanel roleCardPanel = new CardPanel("role-card-panel1", new Model<Card>(roleCard));
-		healthRoleContainer.add(roleCardPanel);
+		ListView<Card> roleCard = new ListView<Card>("role-card-panel1", p1role) {
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+		};
+		roleCard.setOutputMarkupId(true);
+		healthRoleContainer.add(roleCard);
+//		CardPanel roleCardPanel = new CardPanel("role-card-panel1", new CompoundPropertyModel<Card>(Model.of(p1roleCard)));
+//		roleCardPanel.setOutputMarkupId(true);
+//		healthRoleContainer.add(roleCardPanel);
 	}
 
 	/*
@@ -541,32 +524,6 @@ public class FourBoard extends GameView {
 		/*
 		 * card hand
 		 */
-//		List<IModel<Card>> p2CardHandModelList = new ArrayList<IModel<Card>>();
-////		for (Card card : super.playerList.get(1).getHand()) {
-////			p2CardHandModelList.add(Model.of(card));
-////		}
-//		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand2") {
-//			private static final long serialVersionUID = 1L;
-//
-//			@Override
-//			protected Iterator<IModel<Card>> getItemModels() {
-//				return p2CardHandModelList.iterator();
-//			}
-//
-//			int width = 300;
-//
-//			int posLeft = (width - p2CardHandModelList.size() * 50) / (p2CardHandModelList.size() + 1);
-//			int stepSize = posLeft + 50;
-//
-//			@Override
-//			protected void populateItem(Item<Card> item) {
-//				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-//				posLeft += stepSize;
-////				posTop += 2;
-//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-//			}
-//
-//		};
 		ListView<Card> cardHand = new ListView<Card>("card-hand2", p2hand) {
 			private static final long serialVersionUID = 1L;
 			int width = 300;
@@ -584,6 +541,7 @@ public class FourBoard extends GameView {
 		 * container of right side
 		 */
 		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container2");
+		healthRoleContainer.setOutputMarkupId(true);
 		playerCardContainer.add(healthRoleContainer);
 
 		/*
@@ -597,13 +555,23 @@ public class FourBoard extends GameView {
 		 * role card TODO: put real role card here TODO: show or hide card depending
 		 * on player and card
 		 */
-		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+//		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 //		Card roleCard = super.playerList.get(1).getRoleCard();
 //		if (super.playerList.get(1).getFired() || super.game.getGameState().equals("gameover")) {
 //			roleCard.setVisible(true);
 //		}
-		CardPanel roleCardPanel = new CardPanel("role-card-panel2", new Model<Card>(roleCard));
-		healthRoleContainer.add(roleCardPanel);
+		ListView<Card> roleCard = new ListView<Card>("role-card-panel2", p2role) {
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+		};
+		roleCard.setOutputMarkupId(true);
+		healthRoleContainer.add(roleCard);
+//		CardPanel roleCardPanel = new CardPanel("role-card-panel2", new CompoundPropertyModel<Card>(Model.of(p2roleCard)));
+//		roleCardPanel.setOutputMarkupId(true);
+//		healthRoleContainer.add(roleCardPanel);
 	}
 
 	/*
@@ -659,33 +627,6 @@ public class FourBoard extends GameView {
 		/*
 		 * card hand
 		 */
-//		List<IModel<Card>> pCardHandModelList = new ArrayList<IModel<Card>>();
-//		for (Card card : p3hand) {
-//			// set visible true for own cards
-//			card.setVisible(true);
-//			pCardHandModelList.add(Model.of(card));
-//		}
-//		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand3") {
-//			private static final long serialVersionUID = 1L;
-//
-//			@Override
-//			protected Iterator<IModel<Card>> getItemModels() {
-//				return p3handModel.iterator();
-//			}
-//
-//			int width = 300;
-//
-//			int posLeft = (width - p3handModel.size() * 50) / (p3handModel.size() + 1);
-//			int stepSize = posLeft + 50;
-//
-//			@Override
-//			protected void populateItem(Item<Card> item) {
-//				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-//				posLeft += stepSize;
-//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-//			}
-//
-//		};
 		ListView<Card> cardHand = new ListView<Card>("card-hand3", p3hand) {
 			private static final long serialVersionUID = 1L;
 			int width = 300;
@@ -703,6 +644,7 @@ public class FourBoard extends GameView {
 		 * container of right side
 		 */
 		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container3");
+		healthRoleContainer.setOutputMarkupId(true);
 		playerCardContainer.add(healthRoleContainer);
 
 		/*
@@ -718,9 +660,22 @@ public class FourBoard extends GameView {
 		 */
 //		super.playerList.get(2).getRoleCard().setVisible(true);
 //		CardPanel roleCardPanel = new CardPanel("role-card-panel3", new Model<Card>(super.playerList.get(2).getRoleCard()));
-		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
-		CardPanel roleCardPanel = new CardPanel("role-card-panel3", new Model<Card>(roleCard));
-		healthRoleContainer.add(roleCardPanel);
+//		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
+		ListView<Card> roleCard = new ListView<Card>("role-card-panel3", p3role) {
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				Card roleCard = item.getModelObject();
+				roleCard.setVisible(true);
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(Model.of(roleCard))));
+			}
+		};
+		roleCard.setOutputMarkupId(true);
+		healthRoleContainer.add(roleCard);
+		
+//		CardPanel roleCardPanel = new CardPanel("role-card-panel3", new CompoundPropertyModel<Card>(Model.of(p3roleCard)));
+//		roleCardPanel.setOutputMarkupId(true);
+//		healthRoleContainer.add(roleCardPanel);
 	}
 
 	/*
@@ -776,32 +731,6 @@ public class FourBoard extends GameView {
 		/*
 		 * card hand
 		 */
-//		List<IModel<Card>> pCardHandModelList = new ArrayList<IModel<Card>>();
-////		for (Card card : super.playerList.get(3).getHand()) {
-////			pCardHandModelList.add(Model.of(card));
-////		}
-//		RefreshingView<Card> cardHand = new RefreshingView<Card>("card-hand4") {
-//			private static final long serialVersionUID = 1L;
-//
-//			@Override
-//			protected Iterator<IModel<Card>> getItemModels() {
-//				return pCardHandModelList.iterator();
-//			}
-//
-//			int width = 300;
-//
-//			int posLeft = (width - pCardHandModelList.size() * 50) / (pCardHandModelList.size() + 1);
-//			int stepSize = posLeft + 50;
-//
-//			@Override
-//			protected void populateItem(Item<Card> item) {
-//				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-//				posLeft += stepSize;
-////				posTop += 2;
-//				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-//			}
-//
-//		};
 		ListView<Card> cardHand = new ListView<Card>("card-hand4", p4hand) {
 			private static final long serialVersionUID = 1L;
 			int width = 300;
@@ -819,6 +748,7 @@ public class FourBoard extends GameView {
 		 * container of right side
 		 */
 		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container4");
+		healthRoleContainer.setOutputMarkupId(true);
 		playerCardContainer.add(healthRoleContainer);
 
 		/*
@@ -832,12 +762,22 @@ public class FourBoard extends GameView {
 		 * role card TODO: put real role card here TODO: show or hide card depending
 		 * on player and card
 		 */
-		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+//		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 //		Card roleCard = super.playerList.get(3).getRoleCard();
 //		if (super.playerList.get(3).getFired() || super.game.getGameState().equals("gameover")) {
 //			roleCard.setVisible(true);
 //		}
-		CardPanel roleCardPanel = new CardPanel("role-card-panel4", new Model<Card>(roleCard));
-		healthRoleContainer.add(roleCardPanel);
+		ListView<Card> roleCard = new ListView<Card>("role-card-panel4", p4role) {
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+		};
+		roleCard.setOutputMarkupId(true);
+		healthRoleContainer.add(roleCard);
+//		CardPanel roleCardPanel = new CardPanel("role-card-panel4", new CompoundPropertyModel<Card>(Model.of(p4roleCard)));
+//		roleCardPanel.setOutputMarkupId(true);
+//		healthRoleContainer.add(roleCardPanel);
 	}
 }

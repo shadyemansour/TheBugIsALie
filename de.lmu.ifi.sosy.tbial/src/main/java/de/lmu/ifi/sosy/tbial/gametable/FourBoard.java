@@ -14,6 +14,14 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
+import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -23,6 +31,7 @@ public class FourBoard extends GameView {
     /** UID for serialization. */
   private static final long serialVersionUID = 1L;
   private int numPlayer = 4;
+  private AjaxButton testsetcards;
   
   /*
    * dummy cards
@@ -44,7 +53,26 @@ public class FourBoard extends GameView {
   Card heapCard1, heapCard2, heapCard3, heapCard4, heapCard5, heapCard6, heapCard7, heapCard8, heapCard9, heapCard10, heapCard11, heapCard12;
   List<IModel<Card>> heapModel;
   
+  WebMarkupContainer playerCardContainer;
+  List<Card> cardDropModels;
+  ListView<Card> cardDropArea;
+  Card selected1;
+  
   public FourBoard() {
+	testsetcards = new AjaxButton("button1") {
+		/** UID for serialization. */
+	    private static final long serialVersionUID = 1;
+
+	    @Override
+	    public void onSubmit(AjaxRequestTarget target) {
+        System.out.println("sethealth");
+        cardDropModels.add(card5);
+	    cardDropArea.setOutputMarkupId(true);
+	    }
+	};
+	Form<?> formbutton = new Form<>("testbutton");
+	formbutton.add(testsetcards);
+	add(formbutton);
   	
   	Label player1 = new Label("p1", "player1-name");
   	add(player1);
@@ -472,13 +500,15 @@ public class FourBoard extends GameView {
   	/*
      * create dummy card-model for player-card-container4
      */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
-//    cardDropModels.add(Model.of(card5));
+    cardDropModels = new ArrayList<Card>();
+    cardDropModels.add(card5);
+    cardDropModels.add(card5);
     
     /*
      * player-card-container 
      */
-    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container3");
+    playerCardContainer = new WebMarkupContainer("player-card-container3");
+    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
     add(playerCardContainer);
     
     /*
@@ -489,27 +519,18 @@ public class FourBoard extends GameView {
     /*
      * drop area
      */
-    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area3") {
+    cardDropArea = new ListView<Card>("card-drop-area3", cardDropModels) {
 			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return cardDropModels.iterator();
-			}
 			int width = 300;
-			
-			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-			int stepSize = posLeft + 50;
-
 			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
 				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
 			}
-    	
     };
     cardDropArea.setOutputMarkupId(true);
+    cardDropArea.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
     playableCardsContainer.add(cardDropArea);
 
     /*
@@ -536,7 +557,7 @@ public class FourBoard extends GameView {
 			}
     	
     };
-    cardHand.setOutputMarkupId(true);
+	cardHand.setOutputMarkupId(true);
     playableCardsContainer.add(cardHand);
     
     /*

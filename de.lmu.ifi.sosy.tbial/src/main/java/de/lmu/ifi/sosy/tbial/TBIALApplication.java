@@ -185,6 +185,18 @@ public class TBIALApplication extends WebApplication {
     availableGames.remove(game);
   }
 
+  public Game getGame(String gameName) {
+    Game game = null;
+    for (Game g : availableGames) {
+      if (g.getName().equals(gameName)) {
+        game = g;
+        break;
+      }
+    }
+    return game;
+  }
+
+
   public class GameListener implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent event) {

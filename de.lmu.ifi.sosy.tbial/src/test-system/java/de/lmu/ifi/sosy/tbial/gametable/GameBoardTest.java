@@ -59,7 +59,7 @@ public class GameBoardTest extends PageTestBase {
 
   }
 
-  @Test
+  //@Test
   public void renderFourBoard() {
     game = database.createGame("four", host.getName(), "", "new", 4);
     game.addPlayer(player2);

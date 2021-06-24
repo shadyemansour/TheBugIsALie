@@ -55,7 +55,7 @@ public class GameViewTest extends PageTestBase {
   public void playerRejoinGameWhileGameIsRunning() {
     leaveGame();
     tester.assertRenderedPage(Lobby.class);
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(FourBoard.class);
   }
 

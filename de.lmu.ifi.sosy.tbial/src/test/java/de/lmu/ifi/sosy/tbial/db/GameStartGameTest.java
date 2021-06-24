@@ -32,16 +32,16 @@ public class GameStartGameTest {
 	private User user3;
 
 	private User user4;
-
+	  
 	private User user5;
-
+	  
 	private User user6;
-
+	
 	private Game game;
-
-	@Before
-	public void init() {
-
+	
+	 @Before
+	  public void init() {
+		 
 		password = "pass";
 		name = "name";
 		id = 42;

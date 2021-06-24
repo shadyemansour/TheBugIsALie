@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Context path="/tbial" docBase="tbial"
-   crossContext="true" reloadable="true" debug="1">
+         crossContext="true" reloadable="true">
 
-<Resource name="jdbc/tbial"
-            auth="Container"
-            type="javax.sql.DataSource"
-            driverClassName="org.apache.derby.jdbc.ClientDriver"
-            url="jdbc:derby://localhost:1527/tbial_development;create=true"
-            maxActive="8"
-            maxIdle="4"/>
+    <Resource name="jdbc/tbial"
+              auth="Container"
+              type="javax.sql.DataSource"
+              driverClassName="org.apache.derby.jdbc.ClientDriver"
+              url="jdbc:derby://localhost:1527/tbial_development;create=true"
+              maxTotal="50"
+              maxIdle="30"/>
 </Context>

@@ -202,27 +202,32 @@ public class Lobby extends BasePage {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
                                 Game game = listItem.getModelObject();
-                                joinGame(game, user);
-                                if (game.isGameStarted()) {
-                                    int numplayers = game.getNumPlayers();
-                                    if (numplayers == 4) {
-                                        setResponsePage(FourBoard.class);
-                                    } else if (numplayers == 5) {
-                                        setResponsePage(FiveBoard.class);
-                                    } else if (numplayers == 6) {
-                                        setResponsePage(SixBoard.class);
-                                    } else if (numplayers == 7) {
-                                        setResponsePage(SevenBoard.class);
-                                    }
+                                if (game.getPwProtected()) {
+                                    checkPassword(TabPanel2.this, listItem);
+
                                 } else {
-                                    listItem.setOutputMarkupId(true);
-                                    tabs.remove(2);
-                                    tabs.add(tab4);
-                                    tabbedPanel.setSelectedTab(2);
+                                    joinGame(game, user);
+                                    if (game.isGameStarted()) {
+                                        int numplayers = game.getNumPlayers();
+                                        if (numplayers == 4) {
+                                            setResponsePage(FourBoard.class);
+                                        } else if (numplayers == 5) {
+                                            setResponsePage(FiveBoard.class);
+                                        } else if (numplayers == 6) {
+                                            setResponsePage(SixBoard.class);
+                                        } else if (numplayers == 7) {
+                                            setResponsePage(SevenBoard.class);
+                                        }
+
+                                    } else {
+                                        listItem.setOutputMarkupId(true);
+                                        tabs.remove(2);
+                                        tabs.add(tab4);
+                                        tabbedPanel.setSelectedTab(2);
+                                    }
                                 }
+
                             } else {
-
-
                                 TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
                                                                "You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '"
                                                                    + listItem.getModelObject().getName() + "'?") {
@@ -236,21 +241,22 @@ public class Lobby extends BasePage {
 
                                                                @Override
                                                                protected void onConfirm() {
-
-                                                                   User user = ((TBIALSession) getSession()).getUser();
                                                                    Game newGame = listItem.getModelObject();
-                                                                   Game currentGame = user.getGame();
-                                                                   currentGame.removePlayer(user);
-                                                                   user.setGame(newGame);
-                                                                   newGame.addPlayer(user);
-                                                                   user.setJoinedGame(true);
-                                                                   listItem.setOutputMarkupId(true);
-
-
                                                                    this.replaceWith(TabPanel2.this);
+                                                                   if (newGame.getPwProtected()) {
+                                                                       checkPassword(TabPanel2.this, listItem);
+                                                                   } else {
+                                                                       User user = ((TBIALSession) getSession()).getUser();
+                                                                       ((TBIALApplication) getApplication()).getGame(game.getName()).removePlayer(user);
+                                                                       joinGame(newGame, user);
+                                                                       listItem.setOutputMarkupId(true);
+                                                                       tabs.remove(2);
+                                                                       tabs.add(tab4);
+                                                                       tabbedPanel.setSelectedTab(2);
+                                                                   }
+
+
                                                                }
-
-
                                                            }
 
                                 );
@@ -275,6 +281,51 @@ public class Lobby extends BasePage {
             form.add(new PagingNavigator("navigator", gameList));
             add(form);
 
+
+        }
+
+        private void checkPassword(TabPanel2 component, ListItem<Game> listItem) {
+            Game newGame = listItem.getModelObject();
+            User user = ((TBIALSession) getSession()).getUser();
+
+            component.replaceWith(new PasswordPanel(TabPanel2.this.getId(), "This game is private. Please enter the password", newGame) {
+                                      private static final long serialVersionUID = 1L;
+
+                                      @Override
+                                      protected void onCancel() {
+                                          this.replaceWith(TabPanel2.this);
+                                      }
+
+                                      @Override
+                                      protected void onConfirm() {
+                                          if (user.getJoinedGame()) {
+                                              ((TBIALApplication) getApplication()).getGame(user.getGame().getName()).removePlayer(user);
+                                          }
+                                          joinGame(newGame, user);
+                                          listItem.setOutputMarkupId(true);
+                                          this.replaceWith(TabPanel2.this);
+                                          if (newGame.isGameStarted()) {
+                                              int numplayers = game.getNumPlayers();
+                                              if (numplayers == 4) {
+                                                  setResponsePage(FourBoard.class);
+                                              } else if (numplayers == 5) {
+                                                  setResponsePage(FiveBoard.class);
+                                              } else if (numplayers == 6) {
+                                                  setResponsePage(SixBoard.class);
+                                              } else if (numplayers == 7) {
+                                                  setResponsePage(SevenBoard.class);
+                                              }
+
+                                          } else {
+                                              listItem.setOutputMarkupId(true);
+                                              tabs.remove(2);
+                                              tabs.add(tab4);
+                                              tabbedPanel.setSelectedTab(2);
+                                          }
+
+                                      }
+                                  }
+            );
 
         }
     }
@@ -461,7 +512,8 @@ public class Lobby extends BasePage {
                             //game.addPlayer(new User("new Player", "pw", null));
                         } else {
                             game.setGameState("running");
-                            game.setGameStarted(true);
+                            //  game.setGameStarted(true);
+                            WebSocketManager.getInstance().sendMessage(startGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
                             if (numplayers == 4) {
                                 setResponsePage(FourBoard.class);
                             } else if (numplayers == 5) {
@@ -471,7 +523,8 @@ public class Lobby extends BasePage {
                             } else if (numplayers == 7) {
                                 setResponsePage(SevenBoard.class);
                             }
-                            WebSocketManager.getInstance().sendMessage(gameStartedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+                            // game.startGame();
+
                         }
                     } else {
                         info("only the host can start the game");
@@ -582,16 +635,16 @@ public class Lobby extends BasePage {
         JSONObject msg = new JSONObject();
         msg.put("msgType", "PlayerRemoved");
         msg.put("msgBody", msgBody);
-
         JSONMessage message = new JSONMessage(msg);
         return message;
     }
 
-    private JSONMessage gameStartedJSONMessage(int userId, int gameId) {
+    private JSONMessage startGameJSONMessage(int userId, int gameId) {
         JSONObject msgBody = new JSONObject();
         msgBody.put("gameID", gameId);
+        msgBody.put("hostID", userId);
         JSONObject msg = new JSONObject();
-        msg.put("msgType", "GameStarted");
+        msg.put("msgType", "StartGame");
         msg.put("msgBody", msgBody);
 
         JSONMessage message = new JSONMessage(msg);
@@ -606,6 +659,7 @@ public class Lobby extends BasePage {
         switch (msgType) {
             case "PlayerRemoved":
                 body = jsonMsg.getJSONObject("msgBody");
+                System.out.println(body);
                 id = (int) body.get("id");
                 if (getSession().isSignedIn() && id == ((TBIALSession) getSession()).getUser().getId()) {
                     User user = ((TBIALSession) getSession()).getUser();
@@ -619,10 +673,11 @@ public class Lobby extends BasePage {
                     tabbedPanel.setSelectedTab(1);
                 }
                 break;
-            case "GameStarted":
+            case "StartGame":
                 body = jsonMsg.getJSONObject("msgBody");
                 id = (int) body.get("gameID");
-                if (id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
+                int hostID = (int) body.get("hostID");
+                if (hostID != ((TBIALSession) getSession()).getUser().getId() && id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
                     int numplayers = game.getNumPlayers();
                     if (numplayers == 4) {
                         setResponsePage(FourBoard.class);
@@ -634,7 +689,7 @@ public class Lobby extends BasePage {
                         setResponsePage(SevenBoard.class);
                     }
                 }
-
+                break;
         }
     }
 

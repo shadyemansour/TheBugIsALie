@@ -88,15 +88,15 @@ public class FourBoard extends GameView {
   protected void createPlayerAttributes() {
 
     players = game.getPlayers();
-//    players.get(0).setPrestige(0);
-//    players.get(1).setPrestige(0);
-//    players.get(2).setPrestige(0);
-//    players.get(3).setPrestige(0);
+    players.get(0).setPrestige(0);
+    players.get(1).setPrestige(0);
+    players.get(2).setPrestige(0);
+    players.get(3).setPrestige(0);
 
-    //currenthealth1 = players.get(0).getHealth();
-    //currenthealth2 = players.get(1).getHealth();
-    //currenthealth3 = players.get(2).getHealth();
-    //currenthealth4 = players.get(3).getHealth();
+    currenthealth1 = players.get(0).getHealth();
+    currenthealth2 = players.get(1).getHealth();
+    currenthealth3 = players.get(2).getHealth();
+    currenthealth4 = players.get(3).getHealth();
 
     // adjust to playerlist order
     // PLAYER 1  -  ATTRIBUTES

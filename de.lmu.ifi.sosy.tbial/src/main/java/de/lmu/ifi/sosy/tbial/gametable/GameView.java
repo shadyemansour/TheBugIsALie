@@ -157,11 +157,14 @@ public abstract class GameView extends WebPage {
               int health = container.getInt("health");
               user.setHealth(health);
               user.setCharacter(character);
-              if (allUsersHaveHealth()) {
-                updatePlayerAttributes();
-              }
               //TODO USE THE DATA
+            } else if (playerID == game.getPlayers().get(i).getId()){
+                int health = container.getInt("health");
+            	game.getPlayers().get(i).setHealth(health);
             }
+          }
+          if (allUsersHaveHealth()) {
+            updatePlayerAttributes();
           }
 
           break;

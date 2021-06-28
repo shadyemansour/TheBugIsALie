@@ -114,11 +114,11 @@ public class FourBoard extends GameView {
 	 */
 	private void assignLabels() {
 		int size = super.playerList.size();
-		for (int i = 0; i < size; i++) {
-			String labelId = "p" + (i + 1);
-			Label player = new Label(labelId, super.playerList.get(i).getName());
-			add(player);
-		}
+//		for (int i = 0; i < size; i++) {
+//			String labelId = "p" + (i + 1);
+//			Label player = new Label(labelId, super.playerList.get(i).getName());
+//			add(player);
+//		}
 	}
 
 //	private void createDummyGame() {

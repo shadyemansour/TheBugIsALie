@@ -37,11 +37,6 @@ public abstract class GameView extends WebPage {
   List<Card> stackTest = game.getStack();
   protected List<User> playerList = game.getPlayers();
   
-  List<IModel<Card>> p1handModel = new ArrayList<IModel<Card>>();
-  List<IModel<Card>> p2handModel = new ArrayList<IModel<Card>>();
-  List<IModel<Card>> p3handModel = new ArrayList<IModel<Card>>();
-  List<IModel<Card>> p4handModel = new ArrayList<IModel<Card>>();
-  
   List<Card> p1hand = new ArrayList<Card>();
   List<Card> p2hand = new ArrayList<Card>();
   List<Card> p3hand = new ArrayList<Card>();
@@ -132,7 +127,7 @@ public abstract class GameView extends WebPage {
 //  	orderPlayers();
   }
 
-  private void handleMessage(JSONMessage message) {
+  void handleMessage(JSONMessage message) {
     JSONObject jsonMsg = message.getMessage();
     String msgType = (String) jsonMsg.get("msgType");
     Iterator<Object> iterator;
@@ -247,10 +242,6 @@ public abstract class GameView extends WebPage {
           	card.setVisible(true);
             p3hand.add(card);
           }
-        	
-          //TODO USE THE DATA]
-//          p3handModel = cardsModel;
-          System.out.println("update p3Model" + p3handModel);
           break;
         case "CardsDrawn":
           int playerId = body.getInt("playerID");

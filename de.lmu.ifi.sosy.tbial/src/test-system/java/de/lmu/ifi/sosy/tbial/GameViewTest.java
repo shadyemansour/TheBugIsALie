@@ -6,9 +6,13 @@ import de.lmu.ifi.sosy.tbial.gametable.FourBoard;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class GameViewTest extends PageTestBase {
@@ -27,10 +31,8 @@ public class GameViewTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    user1 = new User("user1", "user1", null);
-    host = new User("testhost", "testpassword", null);
-    database.register("testhost", "testpassword");
-    database.register("user1", "user1");
+    user1 = database.register("user1", "user1");
+    host = database.register("testhost", "testpassword");
     database.register("user2", "user2");
     database.register("user3", "user3");
     attemptLogin("testhost", "testpassword");
@@ -61,7 +63,7 @@ public class GameViewTest extends PageTestBase {
   }
 
   //TODO to be changed when player is redirected to gameview on login
-  @Test
+  // @Test
   public void gameViewRenderedAfterLoggingBackIn() {
     leaveGame();
     tester.assertRenderedPage(Lobby.class);
@@ -75,6 +77,15 @@ public class GameViewTest extends PageTestBase {
   protected void leaveGame() {
     FormTester form = tester.newFormTester("form");
     form.submit("leaveButton");
+  }
+
+  @Test
+  public void p1hand_sizeIsZero() {
+    // System.out.println(gameView.playerList);
+    tester.assertComponent("player-card-container1:playable-cards-container1:card-hand1", ListView.class);
+    assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container1:playable-cards-container1:card-hand1")).getViewSize());
+
+    //   assertEquals(gameView.p1hand.size(), 0);
   }
 
 

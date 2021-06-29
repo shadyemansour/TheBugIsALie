@@ -31,7 +31,6 @@ public class GameBoardTest extends PageTestBase {
   User player6;
   User player7;
 
-  WebMarkupContainer tabs;
   private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
 
   static {
@@ -42,40 +41,44 @@ public class GameBoardTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    host = new User("testhost", "testpassword", null);
-    database.register("testhost", "testpassword");
-    loginUser();
+    host = database.register("testhost", "testpassword");
+
+    attemptLogin(host.getName(), host.getPassword());
 
     AjaxTabbedPanel tabbedPanel = (AjaxTabbedPanel) tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer) tabbedPanel.get("tabs-container:tabs");
 
-    player2 = new User("test2", "test2pw", null);
-    database.register("test2", "test2pw");
-    player3 = new User("test3", "test3pw", null);
-    database.register("test3", "test3pw");
-    player4 = new User("test4", "test4pw", null);
-    database.register("test4", "test4pw");
-    player5 = new User("test5", "test5pw", null);
-    database.register("test5", "test5pw");
-    player6 = new User("test6", "test6pw", null);
-    database.register("test6", "test6pw");
-    player7 = new User("test7", "test7pw", null);
-    database.register("test7", "test7pw");
+    player2 = database.register("test2", "test2pw");
+
+    player3 = database.register("test3", "test3pw");
+
+    player4 = database.register("test4", "test4pw");
+
+    player5 = database.register("test5", "test5pw");
+
+    player6 = database.register("test6", "test6pw");
+
+    player7 = database.register("test7", "test7pw");
+
   }
 
   @Test
   public void renderFourBoard() {
     game = database.createGame("testGame", host.getName(), "", "new", 4);
     game.addPlayer(player2);
+    player2.setGame(game);
     game.addPlayer(player3);
+    player3.setGame(game);
     game.addPlayer(player4);
-    game.addPlayer(host);
+    player4.setGame(game);
 
-    assertTrue(game.getActivePlayers() == game.getNumPlayers());
+    joinGame(0, false);
     startingGame();
+    assertTrue(game.getActivePlayers() == game.getNumPlayers());
 
     tester.startPage(FourBoard.class);
     tester.assertRenderedPage(FourBoard.class);
+    //TODO ASSERT LABELS
 //    tester.assertLabel("p1", "player1-name");
 //    tester.assertLabel("p2", "player2-name");
 //    tester.assertLabel("p3", "player3-name");
@@ -86,10 +89,17 @@ public class GameBoardTest extends PageTestBase {
   public void renderFiveBoard() {
     game = database.createGame("testGame", host.getName(), "", "new", 5);
     game.addPlayer(player2);
+    player2.setGame(game);
     game.addPlayer(player3);
+    player3.setGame(game);
     game.addPlayer(player4);
+    player4.setGame(game);
     game.addPlayer(host);
+    host.setGame(game);
     game.addPlayer(player5);
+    player5.setGame(game);
+
+    joinGame(0, false);
 
     assertTrue(game.getActivePlayers() == game.getNumPlayers());
     startingGame();
@@ -107,11 +117,17 @@ public class GameBoardTest extends PageTestBase {
   public void renderSixBoard() {
     game = database.createGame("testGame", host.getName(), "", "new", 6);
     game.addPlayer(player2);
+    player2.setGame(game);
     game.addPlayer(player3);
+    player3.setGame(game);
     game.addPlayer(player4);
-    game.addPlayer(host);
+    player4.setGame(game);
     game.addPlayer(player5);
+    player5.setGame(game);
     game.addPlayer(player6);
+    player6.setGame(game);
+
+    joinGame(0, false);
 
     assertTrue(game.getActivePlayers() == game.getNumPlayers());
     startingGame();
@@ -130,12 +146,19 @@ public class GameBoardTest extends PageTestBase {
   public void renderSevenBoard() {
     game = database.createGame("testGame", host.getName(), "", "new", 7);
     game.addPlayer(player2);
+    player2.setGame(game);
     game.addPlayer(player3);
+    player3.setGame(game);
     game.addPlayer(player4);
-    game.addPlayer(host);
+    player4.setGame(game);
     game.addPlayer(player5);
+    player5.setGame(game);
     game.addPlayer(player6);
+    player6.setGame(game);
     game.addPlayer(player7);
+    player7.setGame(game);
+
+    joinGame(0, false);
 
     assertTrue(game.getActivePlayers() == game.getNumPlayers());
     startingGame();
@@ -163,15 +186,12 @@ public class GameBoardTest extends PageTestBase {
   }
 
   public void startingGame() {
-    tester.assertRenderedPage(Lobby.class);
+    attemptLogout();
+    attemptLogin(host.getName(), host.getPassword());
     WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("2");
     AjaxFallbackLink sitesTabLink = (AjaxFallbackLink) siteTab.get("link");
-
     tester.clickLink(sitesTabLink.getPageRelativePath(), true);
-    FormTester form = tester.newFormTester("tabs:panel:create");
-    form.setValue("name", "testGame");
-    form.submit("submitgame");
-    form = tester.newFormTester("tabs:panel:boxedGameLobby:form");
+    FormTester form = tester.newFormTester("tabs:panel:boxedGameLobby:form");
     form.submit("startbutton");
   }
 }

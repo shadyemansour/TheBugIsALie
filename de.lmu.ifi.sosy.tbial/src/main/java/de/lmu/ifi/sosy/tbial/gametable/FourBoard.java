@@ -29,70 +29,70 @@ import org.apache.wicket.util.time.Duration;
 
 @AuthenticationRequired
 public class FourBoard extends GameView {
-	/**
-	 * UID for serialization.
-	 */
-	private static final long serialVersionUID = 1L;
-	private int numPlayer = 4;
+  /**
+   * UID for serialization.
+   */
+  private static final long serialVersionUID = 1L;
+  private int numPlayer = 4;
 
-	/*
-	 * real props
-	 */
-	User user;
+  /*
+   * real props
+   */
+  User user;
 //	List<User> playerList;
 //	Game game;
 //	List<Card> stackList;
 
-	/*
-	 * dummy cards
-	 */
-	Card card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12;
-	List<IModel<Card>> cardModels;
+  /*
+   * dummy cards
+   */
+  Card card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12;
+  List<IModel<Card>> cardModels;
 
-	Card p1Role, p2Role, p3Role, p4Role;
+  Card p1Role, p2Role, p3Role, p4Role;
 
-	Card p3Card1, p3Card2, p3Card3;
-	List<IModel<Card>> p3CardModel;
+  Card p3Card1, p3Card2, p3Card3;
+  List<IModel<Card>> p3CardModel;
 
-	Card otherCard1, otherCard2, otherCard3;
-	List<IModel<Card>> otherCardModel;
+  Card otherCard1, otherCard2, otherCard3;
+  List<IModel<Card>> otherCardModel;
 
 //	Card stackCard1, stackCard2, stackCard3, stackCard4, stackCard5, stackCard6, stackCard7, stackCard8, stackCard9,
 //			stackCard10, stackCard11, stackCard12;
 //	List<IModel<Card>> stackModel;
 
-	Card heapCard1, heapCard2, heapCard3, heapCard4, heapCard5, heapCard6, heapCard7, heapCard8, heapCard9, heapCard10,
-			heapCard11, heapCard12;
-	List<IModel<Card>> heapModel = new ArrayList<IModel<Card>>();
+  Card heapCard1, heapCard2, heapCard3, heapCard4, heapCard5, heapCard6, heapCard7, heapCard8, heapCard9, heapCard10,
+      heapCard11, heapCard12;
+  List<IModel<Card>> heapModel = new ArrayList<IModel<Card>>();
 
-	public FourBoard() {
-		super();
-		/*
-		 * dummy cards serve as example
-		 */
+  public FourBoard() {
+    super();
+    /*
+     * dummy cards serve as example
+     */
 //		createDummyCards();
 
-		user = ((TBIALSession) getSession()).getUser();
+    user = ((TBIALSession) getSession()).getUser();
 //		createDummyGame();
 //		playerList = super.playerList;
 //		game.startGame();
 
 //		orderPlayers();
-		assignLabels();
+    assignLabels();
 
-		createStackAndHeap();
+    createStackAndHeap();
 
-		createPlayer1Area();
-		createPlayer2Area();
-		createPlayer3Area();
-		createPlayer4Area();
+    createPlayer1Area();
+    createPlayer2Area();
+    createPlayer3Area();
+    createPlayer4Area();
 
-	}
+  }
 
-	/*
-	 * rotates players in List, so that own player is displayed at the bottom
-	 * (player 3 in this case)
-	 */
+  /*
+   * rotates players in List, so that own player is displayed at the bottom
+   * (player 3 in this case)
+   */
 //	private void orderPlayers() {
 //		int size = playerList.size();
 //		for (int i = 0; i < size; i++) {
@@ -107,19 +107,21 @@ public class FourBoard extends GameView {
 //			}
 //			playerList.set(0, tempUser);
 //		}
-//	}
+//	}s
 
-	/*
-	 * assign labels for player names
-	 */
-	private void assignLabels() {
-		int size = super.playerList.size();
-//		for (int i = 0; i < size; i++) {
-//			String labelId = "p" + (i + 1);
-//			Label player = new Label(labelId, super.playerList.get(i).getName());
-//			add(player);
-//		}
-	}
+  /*
+   * assign labels for player names
+   */
+  private void assignLabels() {
+    int size = playerList.size();
+    for (int i = 0; i < size; i++) {
+      if (playerList.get(i) != null) {
+        String labelId = "p" + (i + 1);
+        Label player = new Label(labelId, playerList.get(i).getName());
+        add(player);
+      }
+    }
+  }
 
 //	private void createDummyGame() {
 //		game = new Game(1234, "dummyGame", "", 4, "game created", user.getName());
@@ -134,78 +136,78 @@ public class FourBoard extends GameView {
 //		game.addPlayer(player4);
 //	}
 
-	/*
-	 * creates dummy cards, can be removed later
-	 */
-	private void createDummyCards() {
-		card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
-				"Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-		card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false,
-				true, null);
-		card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-		card3.setVisible(!card3.isVisible());
-		card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true,
-				null);
-		card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-		card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-		card7 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
-				"Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-		card8 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false,
-				true, null);
-		card9 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-		card9.setVisible(!card9.isVisible());
-		card10 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true,
-				null);
-		card11 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-		card12 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+  /*
+   * creates dummy cards, can be removed later
+   */
+  private void createDummyCards() {
+    card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
+        "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
+    card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false,
+        true, null);
+    card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+    card3.setVisible(!card3.isVisible());
+    card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true,
+        null);
+    card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    card7 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
+        "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
+    card8 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false,
+        true, null);
+    card9 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+    card9.setVisible(!card9.isVisible());
+    card10 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true,
+        null);
+    card11 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    card12 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
 
-		cardModels = new ArrayList<IModel<Card>>();
-		cardModels.add(Model.of(card1));
-		cardModels.add(Model.of(card2));
-		cardModels.add(Model.of(card3));
-		cardModels.add(Model.of(card4));
-		cardModels.add(Model.of(card5));
-		cardModels.add(Model.of(card6));
-		cardModels.add(Model.of(card7));
-		cardModels.add(Model.of(card8));
-		cardModels.add(Model.of(card9));
-		cardModels.add(Model.of(card10));
-		cardModels.add(Model.of(card11));
-		cardModels.add(Model.of(card12));
+    cardModels = new ArrayList<IModel<Card>>();
+    cardModels.add(Model.of(card1));
+    cardModels.add(Model.of(card2));
+    cardModels.add(Model.of(card3));
+    cardModels.add(Model.of(card4));
+    cardModels.add(Model.of(card5));
+    cardModels.add(Model.of(card6));
+    cardModels.add(Model.of(card7));
+    cardModels.add(Model.of(card8));
+    cardModels.add(Model.of(card9));
+    cardModels.add(Model.of(card10));
+    cardModels.add(Model.of(card11));
+    cardModels.add(Model.of(card12));
 
-		p1Role = new Card("Role", "Manager", null, "Aim: Remove evil code \nmonkies and consultant",
-				"Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-		p2Role = new Card("Role", "Consultant", null, "Aim: Get everyone else \nfired; Manager last!",
-				"Tries to take over the \ncompany", false, false, null);
-		p3Role = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.",
-				"Has no skills in \ncoding, testing, \nand design.", false, true, null);
-		p4Role = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.",
-				"Has no skills in \ncoding, testing, \nand design.", false, false, null);
+    p1Role = new Card("Role", "Manager", null, "Aim: Remove evil code \nmonkies and consultant",
+        "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
+    p2Role = new Card("Role", "Consultant", null, "Aim: Get everyone else \nfired; Manager last!",
+        "Tries to take over the \ncompany", false, false, null);
+    p3Role = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.",
+        "Has no skills in \ncoding, testing, \nand design.", false, true, null);
+    p4Role = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.",
+        "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 
-		p3Card1 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-		p3Card2 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true,
-				null);
-		p3Card3 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-		p3CardModel = new ArrayList<IModel<Card>>();
-		p3CardModel.add(Model.of(p3Card1));
-		p3CardModel.add(Model.of(p3Card2));
-		p3CardModel.add(Model.of(p3Card3));
+    p3Card1 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+    p3Card2 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true,
+        null);
+    p3Card3 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    p3CardModel = new ArrayList<IModel<Card>>();
+    p3CardModel.add(Model.of(p3Card1));
+    p3CardModel.add(Model.of(p3Card2));
+    p3CardModel.add(Model.of(p3Card3));
 
-		otherCard1 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, false,
-				null);
-		otherCard2 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true,
-				false, null);
-		otherCard3 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, false, null);
-		otherCardModel = new ArrayList<IModel<Card>>();
-		otherCardModel.add(Model.of(otherCard1));
-		otherCardModel.add(Model.of(otherCard2));
-		otherCardModel.add(Model.of(otherCard3));
+    otherCard1 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, false,
+        null);
+    otherCard2 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true,
+        false, null);
+    otherCard3 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, false, null);
+    otherCardModel = new ArrayList<IModel<Card>>();
+    otherCardModel.add(Model.of(otherCard1));
+    otherCardModel.add(Model.of(otherCard2));
+    otherCardModel.add(Model.of(otherCard3));
 
 //    stackCard1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
 //    stackCard2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
@@ -250,69 +252,69 @@ public class FourBoard extends GameView {
 //  		cardModel.getObject().setVisible(false);
 //  	}
 
-		heapCard1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
-				"Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-		heapCard2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance",
-				false, true, null);
-		heapCard3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-		heapCard4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true,
-				true, null);
-		heapCard5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-		heapCard6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-		heapCard7 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
-				"Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-		heapCard8 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance",
-				false, true, null);
-		heapCard9 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
-		heapCard10 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true,
-				true, null);
-		heapCard11 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-		heapCard12 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
-				"Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    heapCard1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
+        "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
+    heapCard2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance",
+        false, true, null);
+    heapCard3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+    heapCard4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true,
+        true, null);
+    heapCard5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    heapCard6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    heapCard7 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant",
+        "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
+    heapCard8 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance",
+        false, true, null);
+    heapCard9 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+    heapCard10 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true,
+        true, null);
+    heapCard11 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    heapCard12 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block",
+        "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
 
-		heapModel = new ArrayList<IModel<Card>>();
-		heapModel.add(Model.of(heapCard1));
-		heapModel.add(Model.of(heapCard2));
-		heapModel.add(Model.of(heapCard3));
-		heapModel.add(Model.of(heapCard4));
-		heapModel.add(Model.of(heapCard5));
-		heapModel.add(Model.of(heapCard6));
-		heapModel.add(Model.of(heapCard7));
-		heapModel.add(Model.of(heapCard8));
-		heapModel.add(Model.of(heapCard9));
-		heapModel.add(Model.of(heapCard10));
-		heapModel.add(Model.of(heapCard11));
-		heapModel.add(Model.of(heapCard12));
-		heapModel.add(Model.of(heapCard1));
-		heapModel.add(Model.of(heapCard2));
-		heapModel.add(Model.of(heapCard3));
-		heapModel.add(Model.of(heapCard4));
-		heapModel.add(Model.of(heapCard5));
-		heapModel.add(Model.of(heapCard6));
-		heapModel.add(Model.of(heapCard7));
-		heapModel.add(Model.of(heapCard8));
-		heapModel.add(Model.of(heapCard9));
-		heapModel.add(Model.of(heapCard10));
-		heapModel.add(Model.of(heapCard11));
-		heapModel.add(Model.of(heapCard12));
+    heapModel = new ArrayList<IModel<Card>>();
+    heapModel.add(Model.of(heapCard1));
+    heapModel.add(Model.of(heapCard2));
+    heapModel.add(Model.of(heapCard3));
+    heapModel.add(Model.of(heapCard4));
+    heapModel.add(Model.of(heapCard5));
+    heapModel.add(Model.of(heapCard6));
+    heapModel.add(Model.of(heapCard7));
+    heapModel.add(Model.of(heapCard8));
+    heapModel.add(Model.of(heapCard9));
+    heapModel.add(Model.of(heapCard10));
+    heapModel.add(Model.of(heapCard11));
+    heapModel.add(Model.of(heapCard12));
+    heapModel.add(Model.of(heapCard1));
+    heapModel.add(Model.of(heapCard2));
+    heapModel.add(Model.of(heapCard3));
+    heapModel.add(Model.of(heapCard4));
+    heapModel.add(Model.of(heapCard5));
+    heapModel.add(Model.of(heapCard6));
+    heapModel.add(Model.of(heapCard7));
+    heapModel.add(Model.of(heapCard8));
+    heapModel.add(Model.of(heapCard9));
+    heapModel.add(Model.of(heapCard10));
+    heapModel.add(Model.of(heapCard11));
+    heapModel.add(Model.of(heapCard12));
 
-		for (IModel<Card> cardModel : this.heapModel) {
-			cardModel.getObject().setVisible(true);
-		}
-	}
+    for (IModel<Card> cardModel : this.heapModel) {
+      cardModel.getObject().setVisible(true);
+    }
+  }
 
-	/*
-	 * creates stack
-	 */
-	private void createStackAndHeap() {
+  /*
+   * creates stack
+   */
+  private void createStackAndHeap() {
 //		stackModel = new ArrayList<IModel<Card>>();
 //		for (Card card : super.game.getStack()) {
 //			stackModel.add(Model.of(card));
 //		}
-		
+
 //		RefreshingView<Card> stack = new RefreshingView<Card>("stack") {
 //			private static final long serialVersionUID = 1L;
 //
@@ -333,458 +335,467 @@ public class FourBoard extends GameView {
 //			}
 //
 //		};
-		WebMarkupContainer middleTableContainer = new WebMarkupContainer("middle-table-container");
-		middleTableContainer.setOutputMarkupId(true);
-		middleTableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-		add(middleTableContainer);
-		
-		ListView<Card> stack = new ListView<Card>("stack", stackList) {
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				int posLeft = 85 - stackList.size();
-				int posTop = 90 - stackList.size();
-				item.add(new AttributeAppender("style", "left: " + (posLeft + 2 * item.getIndex()) + "px; top: " + (posTop + 2 * item.getIndex()) + "px;"));
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		stack.setOutputMarkupId(true);
-		middleTableContainer.add(stack);
-		
-		RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
-			private static final long serialVersionUID = 1L;
+    WebMarkupContainer middleTableContainer = new WebMarkupContainer("middle-table-container");
+    middleTableContainer.setOutputMarkupId(true);
+    middleTableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    add(middleTableContainer);
 
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return heapModel.iterator();
-			}
+    ListView<Card> stack = new ListView<Card>("stack", stackList) {
+      private static final long serialVersionUID = 1L;
 
-			@Override
-			protected void populateItem(Item<Card> item) {
-				double rotation = Math.random() * 30 + 1;
-				double direction = Math.random() > 0.5 ? 1 : -1;
-				item.add(new AttributeAppender("style", "transform: rotate(" + (direction * rotation) + "deg);"));
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        int posLeft = 85 - stackList.size();
+        int posTop = 90 - stackList.size();
+        item.add(new AttributeAppender("style", "left: " + (posLeft + 2 * item.getIndex()) + "px; top: " + (posTop + 2 * item.getIndex()) + "px;"));
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    stack.setOutputMarkupId(true);
+    middleTableContainer.add(stack);
 
-		};
-		heap.setOutputMarkupId(true);
-		middleTableContainer.add(heap);
-	}
+    RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
+      private static final long serialVersionUID = 1L;
 
-	/*
-	 * creates player area for top player
-	 */
-	private void createPlayer1Area() {
-		/*
-		 * create dummy card-model for player-card-container4
-		 */
-		List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+      @Override
+      protected Iterator<IModel<Card>> getItemModels() {
+        return heapModel.iterator();
+      }
+
+      @Override
+      protected void populateItem(Item<Card> item) {
+        double rotation = Math.random() * 30 + 1;
+        double direction = Math.random() > 0.5 ? 1 : -1;
+        item.add(new AttributeAppender("style", "transform: rotate(" + (direction * rotation) + "deg);"));
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+
+    };
+    heap.setOutputMarkupId(true);
+    middleTableContainer.add(heap);
+  }
+
+  /*
+   * creates player area for top player
+   */
+  private void createPlayer1Area() {
+    /*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
 //    cardDropModels.add(Model.of(card5));
 
-		/*
-		 * player-card-container
-		 */
-		WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container1");
-		playerCardContainer.setOutputMarkupId(true);
-		playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-		add(playerCardContainer);
+    /*
+     * player-card-container
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container1");
+    playerCardContainer.setOutputMarkupId(true);
+    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    add(playerCardContainer);
 
-		/*
-		 * left side container includes card-drop-area and card-hand
-		 */
-		WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container1");
-		playerCardContainer.add(playableCardsContainer);
-		/*
-		 * drop area
-		 */
-		RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area1") {
-			private static final long serialVersionUID = 1L;
+    /*
+     * left side container includes card-drop-area and card-hand
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container1");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area1") {
+      private static final long serialVersionUID = 1L;
 
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return cardDropModels.iterator();
-			}
+      @Override
+      protected Iterator<IModel<Card>> getItemModels() {
+        return cardDropModels.iterator();
+      }
 
-			int width = 300;
+      int width = 300;
 
-			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-			int stepSize = posLeft + 50;
+      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+      int stepSize = posLeft + 50;
 
-			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
+      @Override
+      protected void populateItem(Item<Card> item) {
+        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+        posLeft += stepSize;
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
 
-		};
-		cardDropArea.setOutputMarkupId(true);
-		playableCardsContainer.add(cardDropArea);
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
 
-		/*
-		 * card hand
-		 */
-		ListView<Card> cardHand = new ListView<Card>("card-hand1", p1hand) {
-			private static final long serialVersionUID = 1L;
-			int width = 300;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				int posLeft = (width - p1hand.size() * 50) / (p1hand.size() + 1);
-				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		cardHand.setOutputMarkupId(true);
-		playableCardsContainer.add(cardHand);
+    /*
+     * card hand
+     */
+    ListView<Card> cardHand = new ListView<Card>("card-hand1", p1hand) {
+      private static final long serialVersionUID = 1L;
+      int width = 300;
 
-		/*
-		 * container of right side
-		 */
-		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container1");
-		healthRoleContainer.setOutputMarkupId(true);
-		playerCardContainer.add(healthRoleContainer);
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        int posLeft = (width - p1hand.size() * 50) / (p1hand.size() + 1);
+        item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
 
-		/*
-		 * mental health TODO: how do we want to display the mental health? TODO:
-		 * show current mental health
-		 */
-		Label health = new Label("health-player1", "mental health of player 1");
-		healthRoleContainer.add(health);
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container1");
+    healthRoleContainer.setOutputMarkupId(true);
+    playerCardContainer.add(healthRoleContainer);
 
-		/*
-		 * role card TODO: put real role card here TODO: show or hide card depending
-		 * on player and card
-		 */
+    /*
+     * mental health TODO: how do we want to display the mental health? TODO:
+     * show current mental health
+     */
+    Label health = new Label("health-player1", "mental health of player 1");
+    healthRoleContainer.add(health);
+
+    /*
+     * role card TODO: put real role card here TODO: show or hide card depending
+     * on player and card
+     */
 //		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 //		Card roleCard = super.playerList.get(0).getRoleCard();
 //		if (super.playerList.get(0).getFired() || super.game.getGameState().equals("gameover")) {
 //			roleCard.setVisible(true);
 //		}
-		ListView<Card> roleCard = new ListView<Card>("role-card-panel1", p1role) {
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		roleCard.setOutputMarkupId(true);
-		healthRoleContainer.add(roleCard);
+    ListView<Card> roleCard = new ListView<Card>("role-card-panel1", p1role) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    roleCard.setOutputMarkupId(true);
+    healthRoleContainer.add(roleCard);
 //		CardPanel roleCardPanel = new CardPanel("role-card-panel1", new CompoundPropertyModel<Card>(Model.of(p1roleCard)));
 //		roleCardPanel.setOutputMarkupId(true);
 //		healthRoleContainer.add(roleCardPanel);
-	}
+  }
 
-	/*
-	 * creates player area for right player
-	 */
-	private void createPlayer2Area() {
-		/*
-		 * create dummy card-model for player-card-container4
-		 */
-		List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+  /*
+   * creates player area for right player
+   */
+  private void createPlayer2Area() {
+    /*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
 //    cardDropModels.add(Model.of(card4));
 //    cardDropModels.add(Model.of(card4));
 //    cardDropModels.add(Model.of(card4));
 //    cardDropModels.add(Model.of(card5));
 
-		/*
-		 * player-card-container
-		 */
-		WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container2");
-		playerCardContainer.setOutputMarkupId(true);
-		playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-		add(playerCardContainer);
+    /*
+     * player-card-container
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container2");
+    playerCardContainer.setOutputMarkupId(true);
+    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    add(playerCardContainer);
 
-		/*
-		 * left side container includes card-drop-area and card-hand
-		 */
-		WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container2");
-		playerCardContainer.add(playableCardsContainer);
-		/*
-		 * drop area
-		 */
-		RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area2") {
-			private static final long serialVersionUID = 1L;
+    /*
+     * left side container includes card-drop-area and card-hand
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container2");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area2") {
+      private static final long serialVersionUID = 1L;
 
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return cardDropModels.iterator();
-			}
+      @Override
+      protected Iterator<IModel<Card>> getItemModels() {
+        return cardDropModels.iterator();
+      }
 
-			int width = 300;
+      int width = 300;
 
-			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-			int stepSize = posLeft + 50;
+      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+      int stepSize = posLeft + 50;
 
-			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
+      @Override
+      protected void populateItem(Item<Card> item) {
+        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+        posLeft += stepSize;
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
 
-		};
-		cardDropArea.setOutputMarkupId(true);
-		playableCardsContainer.add(cardDropArea);
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
 
-		/*
-		 * card hand
-		 */
-		ListView<Card> cardHand = new ListView<Card>("card-hand2", p2hand) {
-			private static final long serialVersionUID = 1L;
-			int width = 300;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				int posLeft = (width - p2hand.size() * 50) / (p2hand.size() + 1);
-				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		cardHand.setOutputMarkupId(true);
-		playableCardsContainer.add(cardHand);
+    /*
+     * card hand
+     */
+    ListView<Card> cardHand = new ListView<Card>("card-hand2", p2hand) {
+      private static final long serialVersionUID = 1L;
+      int width = 300;
 
-		/*
-		 * container of right side
-		 */
-		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container2");
-		healthRoleContainer.setOutputMarkupId(true);
-		playerCardContainer.add(healthRoleContainer);
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        int posLeft = (width - p2hand.size() * 50) / (p2hand.size() + 1);
+        item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
 
-		/*
-		 * mental health TODO: how do we want to display the mental health? TODO:
-		 * show current mental health
-		 */
-		Label health = new Label("health-player2", "mental health of player 2");
-		healthRoleContainer.add(health);
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container2");
+    healthRoleContainer.setOutputMarkupId(true);
+    playerCardContainer.add(healthRoleContainer);
 
-		/*
-		 * role card TODO: put real role card here TODO: show or hide card depending
-		 * on player and card
-		 */
+    /*
+     * mental health TODO: how do we want to display the mental health? TODO:
+     * show current mental health
+     */
+    Label health = new Label("health-player2", "mental health of player 2");
+    healthRoleContainer.add(health);
+
+    /*
+     * role card TODO: put real role card here TODO: show or hide card depending
+     * on player and card
+     */
 //		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 //		Card roleCard = super.playerList.get(1).getRoleCard();
 //		if (super.playerList.get(1).getFired() || super.game.getGameState().equals("gameover")) {
 //			roleCard.setVisible(true);
 //		}
-		ListView<Card> roleCard = new ListView<Card>("role-card-panel2", p2role) {
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		roleCard.setOutputMarkupId(true);
-		healthRoleContainer.add(roleCard);
+    ListView<Card> roleCard = new ListView<Card>("role-card-panel2", p2role) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    roleCard.setOutputMarkupId(true);
+    healthRoleContainer.add(roleCard);
 //		CardPanel roleCardPanel = new CardPanel("role-card-panel2", new CompoundPropertyModel<Card>(Model.of(p2roleCard)));
 //		roleCardPanel.setOutputMarkupId(true);
 //		healthRoleContainer.add(roleCardPanel);
-	}
+  }
 
-	/*
-	 * creates player area for bottom player
-	 */
-	private void createPlayer3Area() {
-		/*
-		 * create dummy card-model for player-card-container4
-		 */
-		List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+  /*
+   * creates player area for bottom player
+   */
+  private void createPlayer3Area() {
+    /*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
 //    cardDropModels.add(Model.of(card5));
 
-		/*
-		 * player-card-container
-		 */
-		WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container3");
-		playerCardContainer.setOutputMarkupId(true);
-		playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-		add(playerCardContainer);
+    /*
+     * player-card-container
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container3");
+    playerCardContainer.setOutputMarkupId(true);
+    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    add(playerCardContainer);
 
-		/*
-		 * left side container includes card-drop-area and card-hand
-		 */
-		WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container3");
-		playerCardContainer.add(playableCardsContainer);
-		/*
-		 * drop area
-		 */
-		RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area3") {
-			private static final long serialVersionUID = 1L;
+    /*
+     * left side container includes card-drop-area and card-hand
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container3");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area3") {
+      private static final long serialVersionUID = 1L;
 
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return cardDropModels.iterator();
-			}
+      @Override
+      protected Iterator<IModel<Card>> getItemModels() {
+        return cardDropModels.iterator();
+      }
 
-			int width = 300;
+      int width = 300;
 
-			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-			int stepSize = posLeft + 50;
+      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+      int stepSize = posLeft + 50;
 
-			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
+      @Override
+      protected void populateItem(Item<Card> item) {
+        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+        posLeft += stepSize;
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
 
-		};
-		cardDropArea.setOutputMarkupId(true);
-		playableCardsContainer.add(cardDropArea);
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
 
-		/*
-		 * card hand
-		 */
-		ListView<Card> cardHand = new ListView<Card>("card-hand3", p3hand) {
-			private static final long serialVersionUID = 1L;
-			int width = 300;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				int posLeft = (width - p3hand.size() * 50) / (p3hand.size() + 1);
-				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		cardHand.setOutputMarkupId(true);
-		playableCardsContainer.add(cardHand);
+    /*
+     * card hand
+     */
+    ListView<Card> cardHand = new ListView<Card>("card-hand3", p3hand) {
+      private static final long serialVersionUID = 1L;
+      int width = 300;
 
-		/*
-		 * container of right side
-		 */
-		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container3");
-		healthRoleContainer.setOutputMarkupId(true);
-		playerCardContainer.add(healthRoleContainer);
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        int posLeft = (width - p3hand.size() * 50) / (p3hand.size() + 1);
+        item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
 
-		/*
-		 * mental health TODO: how do we want to display the mental health? TODO:
-		 * show current mental health
-		 */
-		Label health = new Label("health-player3", "mental health of player 3");
-		healthRoleContainer.add(health);
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container3");
+    healthRoleContainer.setOutputMarkupId(true);
+    playerCardContainer.add(healthRoleContainer);
 
-		/*
-		 * role card TODO: put real role card here TODO: show or hide card depending
-		 * on player and card
-		 */
+    /*
+     * mental health TODO: how do we want to display the mental health? TODO:
+     * show current mental health
+     */
+    Label health = new Label("health-player3", "mental health of player 3");
+    healthRoleContainer.add(health);
+
+    /*
+     * role card TODO: put real role card here TODO: show or hide card depending
+     * on player and card
+     */
 //		super.playerList.get(2).getRoleCard().setVisible(true);
 //		CardPanel roleCardPanel = new CardPanel("role-card-panel3", new Model<Card>(super.playerList.get(2).getRoleCard()));
 //		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
-		ListView<Card> roleCard = new ListView<Card>("role-card-panel3", p3role) {
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				Card roleCard = item.getModelObject();
-				roleCard.setVisible(true);
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(Model.of(roleCard))));
-			}
-		};
-		roleCard.setOutputMarkupId(true);
-		healthRoleContainer.add(roleCard);
-		
+    ListView<Card> roleCard = new ListView<Card>("role-card-panel3", p3role) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        Card roleCard = item.getModelObject();
+        roleCard.setVisible(true);
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(Model.of(roleCard))));
+      }
+    };
+    roleCard.setOutputMarkupId(true);
+    healthRoleContainer.add(roleCard);
+
 //		CardPanel roleCardPanel = new CardPanel("role-card-panel3", new CompoundPropertyModel<Card>(Model.of(p3roleCard)));
 //		roleCardPanel.setOutputMarkupId(true);
 //		healthRoleContainer.add(roleCardPanel);
-	}
+  }
 
-	/*
-	 * creates player area for left player
-	 */
-	private void createPlayer4Area() {
-		/*
-		 * create dummy card-model for player-card-container4
-		 */
-		List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
+  /*
+   * creates player area for left player
+   */
+  private void createPlayer4Area() {
+    /*
+     * create dummy card-model for player-card-container4
+     */
+    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
 //    cardDropModels.add(Model.of(card5));
 
-		/*
-		 * player-card-container
-		 */
-		WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container4");
-		playerCardContainer.setOutputMarkupId(true);
-		playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-		add(playerCardContainer);
+    /*
+     * player-card-container
+     */
+    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container4");
+    playerCardContainer.setOutputMarkupId(true);
+    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    add(playerCardContainer);
 
-		/*
-		 * left side container includes card-drop-area and card-hand
-		 */
-		WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container4");
-		playerCardContainer.add(playableCardsContainer);
-		/*
-		 * drop area
-		 */
-		RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area4") {
-			private static final long serialVersionUID = 1L;
+    /*
+     * left side container includes card-drop-area and card-hand
+     */
+    WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container4");
+    playerCardContainer.add(playableCardsContainer);
+    /*
+     * drop area
+     */
+    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area4") {
+      private static final long serialVersionUID = 1L;
 
-			@Override
-			protected Iterator<IModel<Card>> getItemModels() {
-				return cardDropModels.iterator();
-			}
+      @Override
+      protected Iterator<IModel<Card>> getItemModels() {
+        return cardDropModels.iterator();
+      }
 
-			int width = 300;
+      int width = 300;
 
-			int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-			int stepSize = posLeft + 50;
+      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
+      int stepSize = posLeft + 50;
 
-			@Override
-			protected void populateItem(Item<Card> item) {
-				item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-				posLeft += stepSize;
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
+      @Override
+      protected void populateItem(Item<Card> item) {
+        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
+        posLeft += stepSize;
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
 
-		};
-		cardDropArea.setOutputMarkupId(true);
-		playableCardsContainer.add(cardDropArea);
+    };
+    cardDropArea.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea);
 
-		/*
-		 * card hand
-		 */
-		ListView<Card> cardHand = new ListView<Card>("card-hand4", p4hand) {
-			private static final long serialVersionUID = 1L;
-			int width = 300;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				int posLeft = (width - p4hand.size() * 50) / (p4hand.size() + 1);
-				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		cardHand.setOutputMarkupId(true);
-		playableCardsContainer.add(cardHand);
+    /*
+     * card hand
+     */
+    ListView<Card> cardHand = new ListView<Card>("card-hand4", p4hand) {
+      private static final long serialVersionUID = 1L;
+      int width = 300;
 
-		/*
-		 * container of right side
-		 */
-		WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container4");
-		healthRoleContainer.setOutputMarkupId(true);
-		playerCardContainer.add(healthRoleContainer);
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        int posLeft = (width - p4hand.size() * 50) / (p4hand.size() + 1);
+        item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    cardHand.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand);
 
-		/*
-		 * mental health TODO: how do we want to display the mental health? TODO:
-		 * show current mental health
-		 */
-		Label health = new Label("health-player4", "mental health of player 4");
-		healthRoleContainer.add(health);
+    /*
+     * container of right side
+     */
+    WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container4");
+    healthRoleContainer.setOutputMarkupId(true);
+    playerCardContainer.add(healthRoleContainer);
 
-		/*
-		 * role card TODO: put real role card here TODO: show or hide card depending
-		 * on player and card
-		 */
+    /*
+     * mental health TODO: how do we want to display the mental health? TODO:
+     * show current mental health
+     */
+    Label health = new Label("health-player4", "mental health of player 4");
+    healthRoleContainer.add(health);
+
+    /*
+     * role card TODO: put real role card here TODO: show or hide card depending
+     * on player and card
+     */
 //		Card roleCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 //		Card roleCard = super.playerList.get(3).getRoleCard();
 //		if (super.playerList.get(3).getFired() || super.game.getGameState().equals("gameover")) {
 //			roleCard.setVisible(true);
 //		}
-		ListView<Card> roleCard = new ListView<Card>("role-card-panel4", p4role) {
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void populateItem(ListItem<Card> item) {
-				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-			}
-		};
-		roleCard.setOutputMarkupId(true);
-		healthRoleContainer.add(roleCard);
+    ListView<Card> roleCard = new ListView<Card>("role-card-panel4", p4role) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void populateItem(ListItem<Card> item) {
+        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+      }
+    };
+    roleCard.setOutputMarkupId(true);
+    healthRoleContainer.add(roleCard);
 //		CardPanel roleCardPanel = new CardPanel("role-card-panel4", new CompoundPropertyModel<Card>(Model.of(p4roleCard)));
 //		roleCardPanel.setOutputMarkupId(true);
 //		healthRoleContainer.add(roleCardPanel);
-	}
+  }
 }

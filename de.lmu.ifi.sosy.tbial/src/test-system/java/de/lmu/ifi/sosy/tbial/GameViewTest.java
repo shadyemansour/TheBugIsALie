@@ -3,6 +3,7 @@ package de.lmu.ifi.sosy.tbial;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.User;
 import de.lmu.ifi.sosy.tbial.gametable.FourBoard;
+import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -41,6 +42,7 @@ public class GameViewTest extends PageTestBase {
     AjaxTabbedPanel tabbedPanel = (AjaxTabbedPanel)
         tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer) tabbedPanel.get("tabs-container:tabs");
+
     startGame();
     tester.startPage(FourBoard.class);
     tester.assertRenderedPage(FourBoard.class);
@@ -84,8 +86,8 @@ public class GameViewTest extends PageTestBase {
     // System.out.println(gameView.playerList);
     tester.assertComponent("player-card-container1:playable-cards-container1:card-hand1", ListView.class);
     assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container1:playable-cards-container1:card-hand1")).getViewSize());
-
-    //   assertEquals(gameView.p1hand.size(), 0);
+    GameView gameView = (GameView) tester.getLastRenderedPage();
+    gameView.handleMessage(gameView.getGame().getRoleCardsHostMessage());
   }
 
 

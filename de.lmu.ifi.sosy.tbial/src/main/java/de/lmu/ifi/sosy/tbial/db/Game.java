@@ -377,7 +377,7 @@ public class Game implements Serializable {
 	 * sends YourCards and CardsDrawn Messages
 	 */
 	protected JSONMessage[] drawCardsMessage(int playerID, JSONArray array) {
-		
+
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cards", array);
@@ -639,6 +639,16 @@ public class Game implements Serializable {
 	public void setPlayersTurn(int playersTurn) {
 		this.playersTurn = playersTurn;
 	}
+
+	public JSONMessage getRoleCardsHostMessage() {
+		return roleCardsHostMessage;
+	}
+
+
+	public JSONMessage getCharacterCardsHostMessage() {
+		return characterCardsHostMessage;
+	}
+
 
 	public List<User> getPlayers() {
 		if (host == null) {

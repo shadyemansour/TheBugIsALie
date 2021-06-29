@@ -31,16 +31,16 @@ public abstract class GameView extends WebPage {
    * UID for serialization.
    */
   private static final long serialVersionUID = 1L;
-  protected User user = ((TBIALSession) getSession()).getUser();
+  public User user = ((TBIALSession) getSession()).getUser();
   AjaxButton leaveButton;
   protected Game game = user.getGame();
   List<Card> stackTest = game.getStack();
-  protected List<User> playerList = game.getPlayers();
+  public List<User> playerList = game.getPlayers();
 
-  List<Card> p1hand = new ArrayList<Card>();
-  List<Card> p2hand = new ArrayList<Card>();
-  List<Card> p3hand = new ArrayList<Card>();
-  List<Card> p4hand = new ArrayList<Card>();
+  public List<Card> p1hand = new ArrayList<Card>();
+  public List<Card> p2hand = new ArrayList<Card>();
+  public List<Card> p3hand = new ArrayList<Card>();
+  public List<Card> p4hand = new ArrayList<Card>();
 
   List<Card> p1role = new ArrayList<Card>();
   List<Card> p2role = new ArrayList<Card>();
@@ -132,11 +132,12 @@ public abstract class GameView extends WebPage {
     String msgType = (String) jsonMsg.get("msgType");
     Iterator<Object> iterator;
     JSONObject body = jsonMsg.getJSONObject("msgBody");
-    System.out.println("-m to: " + user + " " + msgType);
 //    System.out.println(body);
 //    System.out.println("playerList: " + playerList);
     int gameID = (int) body.get("gameID");
     int userID;
+    System.out.println("-m to: " + user + " " + msgType + " with gameId: " + gameID);
+    System.out.println(game.getId());
 
     if (gameID == game.getId()) {
       switch (msgType) {
@@ -244,6 +245,7 @@ public abstract class GameView extends WebPage {
           }
           break;
         case "CardsDrawn":
+        	System.out.println("here");
           int playerId = body.getInt("playerID");
           int numCards = body.getInt("cards");
           int numDeckCards = body.getInt("cardsInDeck");

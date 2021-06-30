@@ -235,8 +235,8 @@ public class GameViewTest extends PageTestBase {
   	JSONMessage msg = new JSONMessage(msgObject);
 		gameView.handleMessage(msg);
 		
-		assertEquals(role3card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0));
-		assertEquals(role4card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0));
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0)).getTitle());
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0)).getTitle());
 		assertEquals(role1card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container3:health-role-container3:role-card-panel3")).getModelObject().get(0));
 		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
   }

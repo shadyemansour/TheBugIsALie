@@ -182,28 +182,28 @@ public abstract class GameView extends WebPage {
               System.out.println("assign roles for: " + user);
               switch (i) {
                 case 0:
-                  p1role.add(roleCards.get(2));
-                  p2role.add(roleCards.get(3));
+                  p1role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   p3role.add(roleCards.get(0));
-                  p4role.add(roleCards.get(1));
+                  p4role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   break;
                 case 1:
-                  p1role.add(roleCards.get(3));
-                  p2role.add(roleCards.get(0));
+                  p1role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   p3role.add(roleCards.get(1));
-                  p4role.add(roleCards.get(2));
+                  p4role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   break;
                 case 2:
-                  p1role.add(roleCards.get(0));
-                  p2role.add(roleCards.get(1));
+                  p1role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   p3role.add(roleCards.get(2));
-                  p4role.add(roleCards.get(3));
+                  p4role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   break;
                 case 3:
-                  p1role.add(roleCards.get(1));
-                  p2role.add(roleCards.get(2));
+                  p1role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   p3role.add(roleCards.get(3));
-                  p4role.add(roleCards.get(0));
+                  p4role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
                   break;
               }
             }
@@ -245,7 +245,6 @@ public abstract class GameView extends WebPage {
           }
           break;
         case "CardsDrawn":
-        	System.out.println("here");
           int playerId = body.getInt("playerID");
           int numCards = body.getInt("cards");
           int numDeckCards = body.getInt("cardsInDeck");
@@ -350,8 +349,6 @@ public abstract class GameView extends WebPage {
             Card stackCard = new Card("", "Stack Card", null, null, null, false, false, null);
             stackList.add(stackCard);
           }
-          System.out.println("numDeckCards: " + numDeckCards);
-          System.out.println("--added to stackList: " + stackList.size());
           break;
         case "CardPlayed":
           int from = body.getInt("from");

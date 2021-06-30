@@ -48,6 +48,7 @@ public abstract class GameView extends WebPage {
   List<Card> p4role = new ArrayList<Card>();
 
   List<Card> stackList = new ArrayList<Card>();
+  List<Card> heapList = new ArrayList<Card>();
 
   //  ModalWindow modalWindow;
   Form<?> form;
@@ -359,7 +360,8 @@ public abstract class GameView extends WebPage {
         case "CardDiscarded":
           int player = body.getInt("playerID");
           Card card = (Card) body.get("card");
-          //TODO USE THE DATA
+          //TODO handle card removed from card hand
+          heapList.add(card);
           break;
 
         case "CardDefended":

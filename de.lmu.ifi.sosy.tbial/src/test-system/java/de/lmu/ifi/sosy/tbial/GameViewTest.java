@@ -193,6 +193,22 @@ public class GameViewTest extends PageTestBase {
 
     assertEquals(30, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:stack")).getViewSize());
   }
+  
+  @Test
+  public void heapList_containsCorrectCard_afterDiscardCard() {
+  	Card card = new Card("Action", "Nullpointer!", "--bug--", null, "-1 mental health", true, false, null);
+  	JSONObject msgBody = new JSONObject();
+  	msgBody.put("gameID", 1);
+  	msgBody.put("playerID", user1.getId());
+  	msgBody.put("card", card);
+  	JSONObject msgObject = new JSONObject();
+  	msgObject.put("msgType", "CardDiscarded");
+  	msgObject.put("msgBody", msgBody);
+  	JSONMessage msg = new JSONMessage(msgObject);
+		gameView.handleMessage(msg);
+		
+		assertEquals(card, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:heap")).getModelObject().get(0));
+  }
 
   @Test
   public void roles_assignedCorrect() {

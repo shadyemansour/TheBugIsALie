@@ -237,6 +237,8 @@ public class Game implements Serializable {
 		}
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
+		
+		
 
 
 		currentPlayer = 0;

@@ -354,22 +354,16 @@ public class FourBoard extends GameView {
     stack.setOutputMarkupId(true);
     middleTableContainer.add(stack);
 
-    RefreshingView<Card> heap = new RefreshingView<Card>("heap") {
+    ListView<Card> heap = new ListView<Card>("heap", heapList) {
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected Iterator<IModel<Card>> getItemModels() {
-        return heapModel.iterator();
-      }
-
-      @Override
-      protected void populateItem(Item<Card> item) {
-        double rotation = Math.random() * 30 + 1;
-        double direction = Math.random() > 0.5 ? 1 : -1;
+      protected void populateItem(ListItem<Card> item) {
+      	double rotation = 30 - 3 * item.getIndex();
+        double direction = item.getIndex() % 2 == 0 ? 1 : -1;
         item.add(new AttributeAppender("style", "transform: rotate(" + (direction * rotation) + "deg);"));
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
-
     };
     heap.setOutputMarkupId(true);
     middleTableContainer.add(heap);

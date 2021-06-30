@@ -59,10 +59,6 @@ public abstract class GameView extends WebPage {
 
     System.out.println("GameView init" + game + " " + user);
 //    Card testCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
-//		p3handModel.add(Model.of(testCard));
-//		p3hand.add(testCard);
-    setupGame();
-
 
     add(new WebSocketBehavior() {
       private static final long serialVersionUID = 1L;
@@ -122,10 +118,6 @@ public abstract class GameView extends WebPage {
       }
       game.startGame();
     }
-  }
-
-  private void setupGame() {
-//  	orderPlayers();
   }
 
   public void handleMessage(JSONMessage message) {
@@ -453,32 +445,6 @@ public abstract class GameView extends WebPage {
         WebSocketManager.getInstance().sendPrivateMessage(message, user.getId());
       }
     }
-  }
-
-  /*
-   * rotates players in List, so that own player is displayed at the bottom
-   */
-  private void orderPlayers() {
-    int size = playerList.size();
-    int bottomPos = 2;
-    if (size == 5 || size == 6) {
-      bottomPos = 3;
-    } else if (size == 7) {
-      bottomPos = 4;
-    }
-    for (int i = 0; i < size; i++) {
-      // break loop, if own player is in correct position
-      if (playerList.get(bottomPos).equals(user)) {
-        break;
-      }
-      // move players
-      User tempUser = playerList.get(size - 1);
-      for (int j = size - 1; j > 0; j--) {
-        playerList.set(j, playerList.get(j - 1));
-      }
-      playerList.set(0, tempUser);
-    }
-    System.out.println("ordered: " + user + " --- " + playerList);
   }
 
   public Game getGame() {

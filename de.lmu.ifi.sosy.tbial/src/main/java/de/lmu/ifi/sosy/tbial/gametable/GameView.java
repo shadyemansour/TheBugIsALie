@@ -36,7 +36,7 @@ public abstract class GameView extends WebPage {
   protected Game game = user.getGame();
   List<Card> stackTest = game.getStack();
   public List<User> playerList = game.getPlayers();
-
+   
   public List<Card> p1hand = new ArrayList<Card>();
   public List<Card> p2hand = new ArrayList<Card>();
   public List<Card> p3hand = new ArrayList<Card>();

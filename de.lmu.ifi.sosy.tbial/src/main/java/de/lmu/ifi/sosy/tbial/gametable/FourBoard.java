@@ -52,12 +52,40 @@ public class FourBoard extends GameView {
    * assign labels for player names
    */
   private void assignLabels() {
+  	
     int size = playerList.size();
     for (int i = 0; i < size; i++) {
-      if (playerList.get(i) != null) {
-        String labelId = "p" + (i + 1);
-        Label player = new Label(labelId, playerList.get(i).getName());
-        add(player);
+      if (playerList.get(i).getId() == user.getId()) {
+        switch(i) {
+        case 0:
+        	for (int j = 0; j < size; j++) {
+        		String labelId = "p" + (j + 1);
+            Label player = new Label(labelId, playerList.get((j + 2) % 4).getName());
+            add(player);
+        	}
+        	break;
+        case 1:
+        	for (int j = 0; j < size; j++) {
+        		String labelId = "p" + (j + 1);
+            Label player = new Label(labelId, playerList.get((j + 3) % 4).getName());
+            add(player);
+        	}
+        	break;
+        case 2:
+        	for (int j = 0; j < size; j++) {
+        		String labelId = "p" + (j + 1);
+            Label player = new Label(labelId, playerList.get(j % 4).getName());
+            add(player);
+        	}
+        	break;
+        case 3:
+        	for (int j = 0; j < size; j++) {
+        		String labelId = "p" + (j + 1);
+            Label player = new Label(labelId, playerList.get((j + 1) % 4).getName());
+            add(player);
+        	}
+        	break;
+        }
       }
     }
   }

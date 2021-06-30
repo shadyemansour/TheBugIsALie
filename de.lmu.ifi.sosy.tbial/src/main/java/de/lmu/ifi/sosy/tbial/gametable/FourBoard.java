@@ -42,12 +42,11 @@ public class FourBoard extends GameView {
   int currenthealth1, currenthealth2, currenthealth3, currenthealth4;
 
 
-
   public FourBoard() {
     super();
 
     createPlayerAttributes();
-    assignLabels();
+    //assignLabels();
 
     createStackAndHeap();
 
@@ -159,7 +158,7 @@ public class FourBoard extends GameView {
 
       @Override
       protected void populateItem(ListItem<Card> item) {
-      	double rotation = 30 - 3 * item.getIndex();
+        double rotation = 30 - 3 * item.getIndex();
         double direction = item.getIndex() % 2 == 0 ? 1 : -1;
         item.add(new AttributeAppender("style", "transform: rotate(" + (direction * rotation) + "deg);"));
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));

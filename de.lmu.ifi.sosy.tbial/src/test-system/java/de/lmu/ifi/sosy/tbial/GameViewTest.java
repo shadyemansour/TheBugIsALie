@@ -250,4 +250,12 @@ public class GameViewTest extends PageTestBase {
 		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
 	}
 
+	@Test
+	public void playerNameLabel_assignedCorrect() {
+		tester.assertLabel("p1", "user2");
+		tester.assertLabel("p2", "user3");
+		tester.assertLabel("p3", "testhost");
+		tester.assertLabel("p4", "user1");
+	}
+
 }

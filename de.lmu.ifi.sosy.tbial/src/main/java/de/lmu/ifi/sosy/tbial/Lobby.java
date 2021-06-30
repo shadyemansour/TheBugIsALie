@@ -202,27 +202,32 @@ public class Lobby extends BasePage {
                             User user = ((TBIALSession) getSession()).getUser();
                             if (!user.getJoinedGame()) {
                                 Game game = listItem.getModelObject();
-                                joinGame(game, user);
-                                if (game.isGameStarted()) {
-                                    int numplayers = game.getNumPlayers();
-                                    if (numplayers == 4) {
-                                        setResponsePage(FourBoard.class);
-                                    } else if (numplayers == 5) {
-                                        setResponsePage(FiveBoard.class);
-                                    } else if (numplayers == 6) {
-                                        setResponsePage(SixBoard.class);
-                                    } else if (numplayers == 7) {
-                                        setResponsePage(SevenBoard.class);
-                                    }
+                                if (game.getPwProtected()) {
+                                    checkPassword(TabPanel2.this, listItem);
+
                                 } else {
-                                    listItem.setOutputMarkupId(true);
-                                    tabs.remove(2);
-                                    tabs.add(tab4);
-                                    tabbedPanel.setSelectedTab(2);
+                                    joinGame(game, user);
+                                    if (game.isGameStarted()) {
+                                        int numplayers = game.getNumPlayers();
+                                        if (numplayers == 4) {
+                                            setResponsePage(FourBoard.class);
+                                        } else if (numplayers == 5) {
+                                            setResponsePage(FiveBoard.class);
+                                        } else if (numplayers == 6) {
+                                            setResponsePage(SixBoard.class);
+                                        } else if (numplayers == 7) {
+                                            setResponsePage(SevenBoard.class);
+                                        }
+
+                                    } else {
+                                        listItem.setOutputMarkupId(true);
+                                        tabs.remove(2);
+                                        tabs.add(tab4);
+                                        tabbedPanel.setSelectedTab(2);
+                                    }
                                 }
+
                             } else {
-
-
                                 TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
                                                                "You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '"
                                                                    + listItem.getModelObject().getName() + "'?") {
@@ -236,21 +241,22 @@ public class Lobby extends BasePage {
 
                                                                @Override
                                                                protected void onConfirm() {
-
-                                                                   User user = ((TBIALSession) getSession()).getUser();
                                                                    Game newGame = listItem.getModelObject();
-                                                                   Game currentGame = user.getGame();
-                                                                   currentGame.removePlayer(user);
-                                                                   user.setGame(newGame);
-                                                                   newGame.addPlayer(user);
-                                                                   user.setJoinedGame(true);
-                                                                   listItem.setOutputMarkupId(true);
-
-
                                                                    this.replaceWith(TabPanel2.this);
+                                                                   if (newGame.getPwProtected()) {
+                                                                       checkPassword(TabPanel2.this, listItem);
+                                                                   } else {
+                                                                       User user = ((TBIALSession) getSession()).getUser();
+                                                                       ((TBIALApplication) getApplication()).getGame(game.getName()).removePlayer(user);
+                                                                       joinGame(newGame, user);
+                                                                       listItem.setOutputMarkupId(true);
+                                                                       tabs.remove(2);
+                                                                       tabs.add(tab4);
+                                                                       tabbedPanel.setSelectedTab(2);
+                                                                   }
+
+
                                                                }
-
-
                                                            }
 
                                 );
@@ -275,6 +281,51 @@ public class Lobby extends BasePage {
             form.add(new PagingNavigator("navigator", gameList));
             add(form);
 
+
+        }
+
+        private void checkPassword(TabPanel2 component, ListItem<Game> listItem) {
+            Game newGame = listItem.getModelObject();
+            User user = ((TBIALSession) getSession()).getUser();
+
+            component.replaceWith(new PasswordPanel(TabPanel2.this.getId(), "This game is private. Please enter the password", newGame) {
+                                      private static final long serialVersionUID = 1L;
+
+                                      @Override
+                                      protected void onCancel() {
+                                          this.replaceWith(TabPanel2.this);
+                                      }
+
+                                      @Override
+                                      protected void onConfirm() {
+                                          if (user.getJoinedGame()) {
+                                              ((TBIALApplication) getApplication()).getGame(user.getGame().getName()).removePlayer(user);
+                                          }
+                                          joinGame(newGame, user);
+                                          listItem.setOutputMarkupId(true);
+                                          this.replaceWith(TabPanel2.this);
+                                          if (newGame.isGameStarted()) {
+                                              int numplayers = game.getNumPlayers();
+                                              if (numplayers == 4) {
+                                                  setResponsePage(FourBoard.class);
+                                              } else if (numplayers == 5) {
+                                                  setResponsePage(FiveBoard.class);
+                                              } else if (numplayers == 6) {
+                                                  setResponsePage(SixBoard.class);
+                                              } else if (numplayers == 7) {
+                                                  setResponsePage(SevenBoard.class);
+                                              }
+
+                                          } else {
+                                              listItem.setOutputMarkupId(true);
+                                              tabs.remove(2);
+                                              tabs.add(tab4);
+                                              tabbedPanel.setSelectedTab(2);
+                                          }
+
+                                      }
+                                  }
+            );
 
         }
     }

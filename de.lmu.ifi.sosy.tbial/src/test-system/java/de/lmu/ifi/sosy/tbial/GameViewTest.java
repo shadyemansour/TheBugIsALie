@@ -29,14 +29,6 @@ public class GameViewTest extends PageTestBase {
   Game game;
   GameView gameView;
 
-
-  private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
-
-  static {
-    dataSource.setDatabaseName("tbial_test");
-    dataSource.setCreateDatabase("create");
-  }
-
   @Before
   public void setUp() {
     setupApplication();
@@ -69,17 +61,18 @@ public class GameViewTest extends PageTestBase {
   public void playerRejoinGameWhileGameIsRunning() {
     leaveGame();
     tester.assertRenderedPage(Lobby.class);
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(FourBoard.class);
   }
 
   //TODO to be changed when player is redirected to gameview on login
-  // @Test
+  //@Test
   public void gameViewRenderedAfterLoggingBackIn() {
     leaveGame();
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
-    attemptLogin("user1", "user1");
+    attemptLogin("testhost", "testpassword");
+    tester.assertRenderedPage(Lobby.class);
     pressStartGameAfterLoggingBackIn();
     tester.assertRenderedPage(FourBoard.class);
   }
@@ -136,7 +129,7 @@ public class GameViewTest extends PageTestBase {
     assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container3:playable-cards-container3:card-hand3")).getViewSize());
     assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container4:playable-cards-container4:card-hand4")).getViewSize());
   }
-  
+
   @Test
   public void p3hand_sizeIsFour_YourCards() {
   	JSONArray jsonArray = new JSONArray();
@@ -193,7 +186,7 @@ public class GameViewTest extends PageTestBase {
 
     assertEquals(30, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:stack")).getViewSize());
   }
-  
+
   @Test
   public void heapList_containsCorrectCard_afterDiscardCard() {
   	Card card = new Card("Action", "Nullpointer!", "--bug--", null, "-1 mental health", true, false, null);
@@ -206,42 +199,42 @@ public class GameViewTest extends PageTestBase {
   	msgObject.put("msgBody", msgBody);
   	JSONMessage msg = new JSONMessage(msgObject);
 		gameView.handleMessage(msg);
-		
+
 		assertEquals(card, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:heap")).getModelObject().get(0));
   }
 
   @Test
   public void roles_assignedCorrect() {
   	JSONArray jsonArray = new JSONArray();
-  	
+
   	JSONObject role1 = new JSONObject();
   	Card role1card = new Card("Role", "Consultant", null, "Aim: Get everyone else \nfired; Manager last!", "Tries to take over the \ncompany", false, false, null);
   	role1.put("playerID", host.getId());
   	role1.put("role", role1card.getTitle());
   	role1.put("roleCard", role1card);
   	jsonArray.put(role1);
-  	
+
   	JSONObject role2 = new JSONObject();
   	Card role2card = new Card("Role", "Manager", null, "Aim: Remove evil code \nmonkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
   	role2.put("playerID", host.getId());
   	role2.put("role", role2card.getTitle());
   	role2.put("roleCard", role2card);
   	jsonArray.put(role2);
-  	
+
   	JSONObject role3 = new JSONObject();
   	Card role3card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
   	role3.put("playerID", host.getId());
   	role3.put("role", role3card.getTitle());
   	role3.put("roleCard", role3card);
   	jsonArray.put(role3);
-  	
+
   	JSONObject role4 = new JSONObject();
   	Card role4card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
   	role4.put("playerID", host.getId());
   	role4.put("role", role4card.getTitle());
   	role4.put("roleCard", role4card);
   	jsonArray.put(role4);
-  	
+
   	JSONObject msgBody = new JSONObject();
   	msgBody.put("gameID", 1);
   	msgBody.put("roles", jsonArray);
@@ -250,11 +243,11 @@ public class GameViewTest extends PageTestBase {
   	msgObject.put("msgBody", msgBody);
   	JSONMessage msg = new JSONMessage(msgObject);
 		gameView.handleMessage(msg);
-		
+
 		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0)).getTitle());
 		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0)).getTitle());
 		assertEquals(role1card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container3:health-role-container3:role-card-panel3")).getModelObject().get(0));
 		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
   }
-  
+
 }

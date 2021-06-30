@@ -21,6 +21,7 @@ public class LobbyTest extends PageTestBase {
   User user1;
   Game game;
   Game game2;
+  Game game3;
   User player2;
   User player3;
   User player4;
@@ -37,12 +38,10 @@ public class LobbyTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    user1 = new User("user1", "user1", null);
-    host = new User("testhost", "testpassword", null);
-    database.register("testhost", "testpassword");
-    database.register("user1", "user1");
+    user1 = database.register("user1", "user1");
     database.register("user2", "user2");
     database.register("user3", "user3");
+    host = database.register("testhost", "testpassword");
     attemptLogin("testhost", "testpassword");
     game = database.createGame("testGame", host.getName(), "", "new", 4);
     tester.assertRenderedPage(Lobby.class);
@@ -50,17 +49,15 @@ public class LobbyTest extends PageTestBase {
         tester.getComponentFromLastRenderedPage("tabs");
     tabs = (WebMarkupContainer)
         tabbedPanel.get("tabs-container:tabs");
-    player2 = new User("test2", "test2pw", null);
-    database.register("test2", "test2pw");
-    player3 = new User("test3", "test3pw", null);
-    database.register("test3", "test3pw");
-    player4 = new User("test4", "test4pw", null);
-    database.register("test4", "test4pw");
-    player5 = new User("test5", "test5pw", null);
-    database.register("test5", "test5pw");
-    player6 = new User("test6", "test6pw", null);
-    database.register("test6", "test6pw");
+
+    player2 = database.register("test2", "test2pw");
+    player3 = database.register("test3", "test3pw");
+    player4 = database.register("test4", "test4pw");
+    player5 = database.register("test5", "test5pw");
+    player6 = database.register("test6", "test6pw");
+
     game2 = database.createGame("testGame1", player5.getName(), "", "new", 4);
+    game3 = database.createGame("testProtectedGame", player4.getName(), "testpw", "new", 4);
 
   }
 
@@ -121,7 +118,7 @@ public class LobbyTest extends PageTestBase {
 
   @Test
   public void playerJoinedGame() {
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     assertTrue(game.getPlayers().contains(host));
   }
 
@@ -129,27 +126,88 @@ public class LobbyTest extends PageTestBase {
   public void playerJoinedGameWhileInGame() {
     attemptLogout();
     attemptLogin("test6", "test6pw");
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     assertTrue(game.getPlayers().contains(player6));
-    joinGame(1, true);
+    joinGame(1, true, false, "confirm", null);
     assertTrue(!game.getPlayers().contains(player6));
     assertTrue(game2.getPlayers().contains(player6));
+  }
+
+  @Test
+  public void playerJoinedProtectedGame() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(2, false, true, null, "testpw");
+    assertTrue(game3.getPlayers().contains(player6));
+  }
+
+  @Test
+  public void playerJoinedProtectedGameWrongPassword() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(2, false, true, null, "wrong");
+    assertTrue(!game3.getPlayers().contains(player6));
   }
 
   @Test
   public void playerJoinedGameWhileInGamePressesNo() {
     attemptLogout();
     attemptLogin("test6", "test6pw");
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     assertTrue(game.getPlayers().contains(player6));
-    joinGame(1, false);
+    joinGame(1, true, false, "cancel", null);
     assertTrue(game.getPlayers().contains(player6));
     assertTrue(!game2.getPlayers().contains(player6));
   }
 
   @Test
+  public void playerJoinedProtectedGameWhileInPublicGame() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(0, false, false, null, null);
+    assertTrue(game.getPlayers().contains(player6));
+    joinGame(2, true, true, "confirm", "testpw");
+    assertTrue(!game.getPlayers().contains(player6));
+    assertTrue(game3.getPlayers().contains(player6));
+  }
+
+  @Test
+  public void playerJoinedProtectedGameWhileInPublicGameWrongPassword() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(0, false, false, null, null);
+    assertTrue(game.getPlayers().contains(player6));
+    joinGame(2, true, true, "confirm", "wrong");
+    assertTrue(game.getPlayers().contains(player6));
+    assertTrue(!game3.getPlayers().contains(player6));
+  }
+
+
+  @Test
+  public void playerJoinedPublicGameWhileInProtectedGame() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(2, false, true, null, "testpw");
+    assertTrue(game3.getPlayers().contains(player6));
+    joinGame(1, true, false, "confirm", null);
+    assertTrue(!game3.getPlayers().contains(player6));
+    assertTrue(game2.getPlayers().contains(player6));
+  }
+
+  @Test
+  public void playerJoinedPublicGameWhileInProtectedGamePressesNo() {
+    attemptLogout();
+    attemptLogin("test6", "test6pw");
+    joinGame(2, false, true, null, "testpw");
+    assertTrue(game3.getPlayers().contains(player6));
+    joinGame(1, true, false, "cancel", null);
+    assertTrue(game3.getPlayers().contains(player6));
+    assertTrue(!game2.getPlayers().contains(player6));
+  }
+
+  @Test
   public void playerLeaveGame() {
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("2");
     AjaxFallbackLink sitesTabLink = (AjaxFallbackLink) siteTab.get("link");
@@ -188,7 +246,7 @@ public class LobbyTest extends PageTestBase {
     createGame("hostRemovesPlayerFromGame");
     attemptLogout();
     attemptLogin("user1", "user1");
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
     attemptLogin("testhost", "testpassword");

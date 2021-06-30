@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial.db;
 
+import org.apache.wicket.model.IModel;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,7 +45,7 @@ public class Game implements Serializable {
 	private List<Card> roleCards;
 	private List<Card> characterCards;
 	private List<Card> stack; // all action, ability, and stumbling blocks cards
-	private List<Card> playableStack; // only bugs, exuses, solutions playable
+	//	private List<Card> playableStack; // only bugs, exuses, solutions playable
 	private transient JSONMessage roleCardsHostMessage;
 	private transient JSONMessage characterCardsHostMessage;
 	private transient JSONMessage gameStartedMessageHost;
@@ -86,6 +87,7 @@ public class Game implements Serializable {
 		this.timer = new Timer();
 		this.cardsHostMessages = new ArrayList<>();
 		this.gameInitiated = false;
+
 	}
 
 	/**
@@ -139,9 +141,9 @@ public class Game implements Serializable {
 //		}
 //	}
 	public void addPlayer(User player) {
-		for (int i = 0; i < this.players.size(); i++) {
+		for (int i = 0; i < players.size(); i++) {
 			if (this.players.get(i) == null) {
-				this.players.set(i, player);
+				players.set(i, player);
 				if (!player.getName().equals(hostName)) {
 					if (!gameStarted) {
 						propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
@@ -160,29 +162,29 @@ public class Game implements Serializable {
 	}
 
 	public void startGame() {
-		System.out.println("game " + this);
 		gameStarted = true;
-		roleCards = new ArrayList<Card>();
-		characterCards = new ArrayList<Card>();
-		stack = new ArrayList<Card>();
-		playableStack = new ArrayList<Card>();
+		//	playableStack = new ArrayList<Card>();
 
 
 		setRoleCards();
 		Collections.shuffle(roleCards);
+
 		setCharacterCards();
 		Collections.shuffle(characterCards);
+
 		setStack();
 		Collections.shuffle(stack);
-		setPlayableStack(stack);
-		Collections.shuffle(playableStack);
 
+		//	setPlayableStack(stack);
+		//Collections.shuffle(playableStack);
+
+		gameStartedMessage();
 
 		JSONArray rolesArray = new JSONArray();
 		JSONArray charactersArray = new JSONArray();
 		Card roleCard;
 		Card characterCard;
-		for (User player : this.players) {
+		for (User player : players) {
 			if (player != null) {
 				roleCard = roleCards.get(0);
 
@@ -227,9 +229,9 @@ public class Game implements Serializable {
 				JSONArray handArray = new JSONArray();
 
 				for (int i = 0; i < player.getHealth(); i++) {
-					hand.add(stack.get(i));
-					handArray.put(stack.get(i));
-					stack.remove(i);
+					hand.add(stack.get(0));
+					handArray.put(stack.get(0));
+					stack.remove(0);
 				}
 				player.setHand(hand);
 				drawCardsMessage(player.getId(), handArray);
@@ -237,14 +239,11 @@ public class Game implements Serializable {
 		}
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
-		
-		
-
 
 		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();
 
-		gameStartedMessage();
+		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
 	}
@@ -379,7 +378,6 @@ public class Game implements Serializable {
 	 * sends YourCards and CardsDrawn Messages
 	 */
 	protected JSONMessage[] drawCardsMessage(int playerID, JSONArray array) {
-
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cards", array);
@@ -575,6 +573,10 @@ public class Game implements Serializable {
 
 	public void setName(String name) {
 		this.name = requireNonNull(name);
+	}
+
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return propertyChangeSupport;
 	}
 
 	public int getId() {
@@ -828,7 +830,7 @@ public class Game implements Serializable {
 
 	public void setStack() {
 
-		for (int i = 1; i <= 4; i++) {
+		for (int i = 0; i < 4; i++) {
 
 			stack.add(new Card("Action", "Nullpointer!", "--bug--", null,
 					"-1 mental health", true, false, null));
@@ -854,16 +856,17 @@ public class Game implements Serializable {
 					"Ignors prestige. \nDrop one card", false, false, null));
 			stack.add(new Card("Action", "Pwnd.", null, null,
 					"Cede one card. Same or \nlower prestige required", false, false, null));
-			stack.add(new Card("Action", "System Integration", null, null,
-					"My code is better than \nyours!", false, false, null));
-			stack.add(new Card("Ability", "Microsoft", "(Previous Job)", null,
-					"1 prestige", false, false, null));
+		}
+
+		for (int i = 0; i < 3; i++) {
 			stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
 					"Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
+			stack.add(new Card("Ability", "Microsoft", "(Previous Job)", null,
+					"1 prestige", false, false, null));
+			stack.add(new Card("Action", "System Integration", null, null,
+					"My code is better than \nyours!", false, false, null));  //should be 9?
 		}
-//		System.out.println(stack);
-
-		for (int i = 1; i <= 3; i++) {
+		for (int i = 0; i < 2; i++) {
 			stack.add(new Card("Action", "Coffee", "--Solution--", null,
 					"+1 mental health", true, false, null));
 			stack.add(new Card("Action", "Code+Fix \nSession", "--Solution--", null,
@@ -914,25 +917,29 @@ public class Game implements Serializable {
 
 	}
 
-	public void setPlayableStack(List<Card> stack) {
-		for (Card card : this.stack) {
-			if (card.isPlayable())
-				this.playableStack.add(card);
-
-		}
-
-	}
+//	public void setPlayableStack(List<Card> stack) {
+//		for (Card card : this.stack) {
+//			if (card.isPlayable())
+//				this.playableStack.add(card);
+//
+//		}
+//
+//	}
 
 	public List<Card> getStack() {
 		return stack;
 	}
 
-	public List<Card> getPlayableStack() {
-		return playableStack;
-	}
+//	public List<Card> getPlayableStack() {
+//		return playableStack;
+//	}
 
 	public List<Card> getRoleCards() {
 		return roleCards;
+	}
+
+	public void unsetRoleCards() {
+		roleCards = new ArrayList<>();
 	}
 
 	public List<Card> getCharacterCards() {

@@ -43,7 +43,7 @@ public class GameTest {
     password = "pass";
     name = "name";
     id = 42;
-    numPlayers = 5;
+    numPlayers = 4;
     host = new User("hostName", "hostPw", null);
     user1 = new User("user1Name", "user1Pw", null);
     user2 = new User("user2Name", "user2Pw", null);
@@ -53,7 +53,6 @@ public class GameTest {
     game.setHost(host);
     game.addPlayer(host);
     game.addPlayer(user1);
-    game.startGame();
   }
 
   @Test(expected = NullPointerException.class)
@@ -111,10 +110,9 @@ public class GameTest {
 
   @Test
   public void getPlayers_returnPlayers() {
-    List<User> expected = new ArrayList<User>(5);
+    List<User> expected = new ArrayList<User>(4);
     expected.add(host);
     expected.add(user1);
-    expected.add(null);
     expected.add(null);
     expected.add(null);
     assertThat(game.getPlayers(), is(expected));
@@ -122,11 +120,10 @@ public class GameTest {
 
   @Test
   public void addPlayer_addsPlayer() {
-    List<User> expected = new ArrayList<User>(5);
+    List<User> expected = new ArrayList<User>(4);
     expected.add(host);
     expected.add(user1);
     expected.add(user2);
-    expected.add(null);
     expected.add(null);
     game.addPlayer(user2);
     assertThat(game.getPlayers(), is(expected));
@@ -134,9 +131,8 @@ public class GameTest {
 
   @Test
   public void removePlayer_removesPlayer() {
-    List<User> expected = new ArrayList<User>(5);
+    List<User> expected = new ArrayList<User>(4);
     expected.add(host);
-    expected.add(null);
     expected.add(null);
     expected.add(null);
     expected.add(null);
@@ -157,7 +153,6 @@ public class GameTest {
   public void getGameState_return1PlayerMissing() {
     String expected = "1 player missing";
     game.addPlayer(user2);
-    game.addPlayer(user3);
     assertThat(game.getGameState(), is(expected));
   }
 
@@ -166,7 +161,6 @@ public class GameTest {
     String expected = "1 player missing";
     game.addPlayer(user2);
     game.addPlayer(user3);
-    game.addPlayer(user4);
     game.removePlayer(user3);
     assertThat(game.getGameState(), is(expected));
   }
@@ -174,7 +168,6 @@ public class GameTest {
   @Test
   public void getGameState_return2PlayersMissing() {
     String expected = "2 players missing";
-    game.addPlayer(user2);
     assertThat(game.getGameState(), is(expected));
   }
 
@@ -194,6 +187,7 @@ public class GameTest {
 
   @Test
   public void decksShuffledMessageTest() {
+    game.startGame();
     JSONObject body = new JSONObject();
     body.put("gameID", id);
     body.put("cardsInDeck", game.getStack().size());
@@ -287,6 +281,7 @@ public class GameTest {
 
   @Test
   public void drawCardsMessageTest() {
+    game.startGame();
     JSONArray cards = new JSONArray();
     for (int n = 0; n < 2; n++) {
       //TODO Draw cards from stack and save in Array
@@ -312,6 +307,7 @@ public class GameTest {
 
   @Test
   public void currentPlayerMessageTest() {
+    game.startGame();
     JSONObject body = new JSONObject();
     body.put("gameID", id);
     body.put("playerID", host.getId());
@@ -325,6 +321,7 @@ public class GameTest {
 
   @Test
   public void gameStartedMessageTest() {
+    game.startGame();
     JSONObject body = new JSONObject();
     body.put("gameID", id);
     body.put("cardsInDeck", game.getStack().size());
@@ -339,6 +336,13 @@ public class GameTest {
 
   @Test
   public void playersHaveRolesAndCharactersTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.setRoleCards();
+    assertEquals(4, game.getRoleCards().size());
+    game.unsetRoleCards();
+    game.startGame();
     boolean actual = true;
     List<User> players = game.getPlayers();
     for (User player : players) {
@@ -350,6 +354,7 @@ public class GameTest {
       }
     }
     assertTrue(actual);
+    assertEquals(0, game.getRoleCards().size());
   }
 
 

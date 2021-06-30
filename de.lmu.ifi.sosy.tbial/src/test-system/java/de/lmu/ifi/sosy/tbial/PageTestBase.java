@@ -33,20 +33,23 @@ public abstract class PageTestBase {
 
   }
 
-  protected void joinGame(int rowNum, boolean confirm) {
+  protected void joinGame(int rowNum, boolean confirmPanel, boolean isProtected, String confirm, String password) {
     tester.assertRenderedPage(Lobby.class);
     WebMarkupContainer siteTab = (WebMarkupContainer) tabs.get("1");
     AjaxFallbackLink sitesTabLink = (AjaxFallbackLink) siteTab.get("link");
 
     tester.clickLink(sitesTabLink.getPageRelativePath(), true);
     tester.clickLink(String.format("tabs:panel:gamelist:availableGames:%s:joinGame", rowNum));
-    if (rowNum == 1) {
-      String link = confirm ? "confirm" : "cancel";
-      tester.clickLink(String.format("tabs:panel:yesNoForm:%s", link));
-
+    if (confirmPanel) {
+      tester.clickLink(String.format("tabs:panel:yesNoForm:%s", confirm));
     }
-
+    if (isProtected) {
+      FormTester form = tester.newFormTester("tabs:panel:passwordForm");
+      form.setValue("password2", password);
+      form.submit("confirm");
+    }
   }
+
 
   protected void attemptLogin(String name, String password) {
     tester.startPage(Login.class);
@@ -82,17 +85,17 @@ public abstract class PageTestBase {
     createGame("startGame");
     attemptLogout();
     attemptLogin("user1", "user1");
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
 
     attemptLogin("user2", "user2");
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
 
     attemptLogin("user3", "user3");
-    joinGame(0, true);
+    joinGame(0, false, false, null, null);
     tester.assertRenderedPage(Lobby.class);
     attemptLogout();
 

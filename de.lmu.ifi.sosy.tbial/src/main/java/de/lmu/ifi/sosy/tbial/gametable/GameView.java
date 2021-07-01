@@ -8,6 +8,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
 import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
@@ -29,16 +31,33 @@ public abstract class GameView extends WebPage {
    * UID for serialization.
    */
   private static final long serialVersionUID = 1L;
-  User user = ((TBIALSession) getSession()).getUser();
+  public User user = ((TBIALSession) getSession()).getUser();
   AjaxButton leaveButton;
-  Game game = user.getGame();
+  protected Game game = user.getGame();
+  List<Card> stackTest = game.getStack();
+  public List<User> playerList = game.getPlayers();
+
+  public List<Card> p1hand = new ArrayList<Card>();
+  public List<Card> p2hand = new ArrayList<Card>();
+  public List<Card> p3hand = new ArrayList<Card>();
+  public List<Card> p4hand = new ArrayList<Card>();
+
+  List<Card> p1role = new ArrayList<Card>();
+  List<Card> p2role = new ArrayList<Card>();
+  List<Card> p3role = new ArrayList<Card>();
+  List<Card> p4role = new ArrayList<Card>();
+
+  List<Card> stackList = new ArrayList<Card>();
+  List<Card> heapList = new ArrayList<Card>();
+
   //  ModalWindow modalWindow;
   Form<?> form;
-  private GameView instance;
 
   public GameView() {
     this.game.addPropertyChangeListener(new GameViewListener());
 
+    System.out.println("GameView init" + game + " " + user);
+//    Card testCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
 
     add(new WebSocketBehavior() {
       private static final long serialVersionUID = 1L;
@@ -100,15 +119,17 @@ public abstract class GameView extends WebPage {
     }
   }
 
-  private void handleMessage(JSONMessage message) {
+  public void handleMessage(JSONMessage message) {
     JSONObject jsonMsg = message.getMessage();
     String msgType = (String) jsonMsg.get("msgType");
     Iterator<Object> iterator;
     JSONObject body = jsonMsg.getJSONObject("msgBody");
-    System.out.print(user.getId() + ": ");
-    System.out.println(body);
+//    System.out.println(body);
+//    System.out.println("playerList: " + playerList);
     int gameID = (int) body.get("gameID");
     int userID;
+    System.out.println("-m to: " + user + " " + msgType + " with gameId: " + gameID);
+    System.out.println(game.getId());
 
     if (gameID == game.getId()) {
       switch (msgType) {
@@ -133,30 +154,72 @@ public abstract class GameView extends WebPage {
           }
           break;
         case "GameStarted":
+//        	System.out.println("---XXX---game started message received in game view");
           int cardsInDeck = (int) body.get("cardsInDeck");
           int numPlayers = (int) body.get("numPlayers");
           //TODO USE THE DATA
           break;
         case "Roles":
+          System.out.println("roles: " + body);
+          System.out.println("playerList: " + playerList);
           JSONArray roles = (JSONArray) body.get("roles");
+          List<Card> roleCards = new ArrayList<Card>();
           for (int i = 0; i < roles.length(); i++) {
             JSONObject container = (JSONObject) roles.get(i);
-            int playerID = container.getInt("playerID");
-            String role = container.getString("role");
-            //TODO USE THE DATA
+            Card roleCard = (Card) container.get("roleCard");
+            roleCards.add(roleCard);
           }
-
+          for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getId() == user.getId()) {
+              System.out.println("assign roles for: " + user);
+              switch (i) {
+                case 0:
+                  p1role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p3role.add(roleCards.get(0));
+                  p4role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  break;
+                case 1:
+                  p1role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p3role.add(roleCards.get(1));
+                  p4role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  break;
+                case 2:
+                  p1role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p3role.add(roleCards.get(2));
+                  p4role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  break;
+                case 3:
+                  p1role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p2role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p3role.add(roleCards.get(3));
+                  p4role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  break;
+              }
+            }
+          }
           break;
         case "Characters":
           JSONArray characters = (JSONArray) body.get("characters");
           for (int i = 0; i < characters.length(); i++) {
             JSONObject container = (JSONObject) characters.get(i);
             int playerID = container.getInt("playerID");
-            String character = container.getString("character");
-            int health = container.getInt("health");
-            //TODO USE THE DATA
+            if (playerID == user.getId()) {
+              String character = container.getString("character");
+              int health = container.getInt("health");
+              user.setHealth(health);
+              user.setCharacter(character);
+              //TODO USE THE DATA
+            } else if (playerID == game.getPlayers().get(i).getId()){
+                int health = container.getInt("health");
+            	game.getPlayers().get(i).setHealth(health);
+            }
           }
-
+          if (allUsersHaveHealth()) {
+            updatePlayerAttributes();
+          }
           break;
         case "CurrentPlayer":
           int currentPlayerID = (int) body.get("playerID");
@@ -174,17 +237,118 @@ public abstract class GameView extends WebPage {
 
         case "YourCards":
           JSONArray cardsJSON = (JSONArray) body.get("cards");
-          List<Card> cards = new ArrayList<>();
+
           for (int i = 0; i < cardsJSON.length(); i++) {
-            cards.add((Card) cardsJSON.get(i));
+            Card card = (Card) cardsJSON.get(i);
+            card.setVisible(true);
+            p3hand.add(card);
           }
-          //TODO USE THE DATA]
           break;
         case "CardsDrawn":
           int playerId = body.getInt("playerID");
           int numCards = body.getInt("cards");
           int numDeckCards = body.getInt("cardsInDeck");
           //TODO USE THE DATA
+          List<Card> cardsDrawn = new ArrayList<Card>();
+          for (int j = 0; j < numCards; j++) {
+            Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
+            cardsDrawn.add(hiddenCard);
+          }
+          int playerPos = 0;
+          for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getId() == playerId) {
+              playerPos = i;
+            }
+          }
+          for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getId() == user.getId()) {
+              System.out.println("assign drawn cards for: " + user);
+              System.out.println("assign: i=" + i + " playerPos=" + playerPos);
+              switch (i) {
+                case 0:
+                  switch (playerPos) {
+                    case 1:
+                      for (Card card : cardsDrawn) {
+                        p4hand.add(card);
+                      }
+                      break;
+                    case 2:
+                      for (Card card : cardsDrawn) {
+                        p1hand.add(card);
+                      }
+                      break;
+                    case 3:
+                      for (Card card : cardsDrawn) {
+                        p2hand.add(card);
+                      }
+                      break;
+                  }
+                  break;
+                case 1:
+                  switch (playerPos) {
+                    case 0:
+                      for (Card card : cardsDrawn) {
+                        p2hand.add(card);
+                      }
+                      break;
+                    case 2:
+                      for (Card card : cardsDrawn) {
+                        p4hand.add(card);
+                      }
+                      break;
+                    case 3:
+                      for (Card card : cardsDrawn) {
+                        p1hand.add(card);
+                      }
+                      break;
+                  }
+                  break;
+                case 2:
+                  switch (playerPos) {
+                    case 0:
+                      for (Card card : cardsDrawn) {
+                        p1hand.add(card);
+                      }
+                      break;
+                    case 1:
+                      for (Card card : cardsDrawn) {
+                        p2hand.add(card);
+                      }
+                      break;
+                    case 3:
+                      for (Card card : cardsDrawn) {
+                        p4hand.add(card);
+                      }
+                      break;
+                  }
+                  break;
+                case 3:
+                  switch (playerPos) {
+                    case 0:
+                      for (Card card : cardsDrawn) {
+                        p4hand.add(card);
+                      }
+                      break;
+                    case 1:
+                      for (Card card : cardsDrawn) {
+                        p1hand.add(card);
+                      }
+                      break;
+                    case 2:
+                      for (Card card : cardsDrawn) {
+                        p2hand.add(card);
+                      }
+                      break;
+                  }
+                  break;
+              }
+            }
+          }
+          stackList.clear();
+          for (int j = 0; j < numDeckCards; j++) {
+            Card stackCard = new Card("", "Stack Card", null, null, null, false, false, null);
+            stackList.add(stackCard);
+          }
           break;
         case "CardPlayed":
           int from = body.getInt("from");
@@ -195,7 +359,8 @@ public abstract class GameView extends WebPage {
         case "CardDiscarded":
           int player = body.getInt("playerID");
           Card card = (Card) body.get("card");
-          //TODO USE THE DATA
+          //TODO handle card removed from card hand
+          heapList.add(card);
           break;
 
         case "CardDefended":
@@ -213,6 +378,19 @@ public abstract class GameView extends WebPage {
 
     }
   }
+
+  private boolean allUsersHaveHealth() {
+    for (User user : game.getPlayers()) {
+      if (user.getHealth() == -1) {
+        System.out.println(((TBIALSession) getSession()).getUser().getId() + ": false");
+        return false;
+      }
+    }
+    System.out.println(((TBIALSession) getSession()).getUser().getId() + ": true");
+    return true;
+  }
+
+  protected abstract void updatePlayerAttributes();
 
   public void drawCards() {
     game.drawCards(((TBIALSession) getSession()).getUser().getId(), 2 /*TODO CHANGE TO VARIABLE*/);
@@ -263,6 +441,10 @@ public abstract class GameView extends WebPage {
         int playerID = (int) event.getNewValue();
         if (user.getId() == playerID)
           sendPrivateMessage(message, playerID);
+      } else if (event.getPropertyName().equals("UpdatePlayerAttributes")) {
+        int gameId = (int) event.getOldValue();
+        if (user.getGame().getId() == gameId && user.getId() != game.getHost().getId())
+          updatePlayerAttributes();
       }
     }
   }
@@ -289,4 +471,7 @@ public abstract class GameView extends WebPage {
     }
   }
 
+  public Game getGame() {
+    return game;
+  }
 }

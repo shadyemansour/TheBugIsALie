@@ -281,7 +281,7 @@ div.playerBottom2 {
   	bottom: 10px;
   	border: 1px solid white;
 }
-div.cards{
+div.cards {
 	position: absolute;
 	display: flex;
 	justify-content: space-evenly;
@@ -803,6 +803,11 @@ pre.boxed {
     float: right;
     font-size: 0px;
     font-weight: bold;
+}
+
+.middle-table-container {
+	display: flex;
+	justify-content: space-evenly;
 }
 
 .heap {

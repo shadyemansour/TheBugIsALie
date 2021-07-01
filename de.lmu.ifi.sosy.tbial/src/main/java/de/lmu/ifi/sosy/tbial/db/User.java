@@ -44,6 +44,7 @@ public class User implements Serializable {
   private Boolean joinedGame;
 
   private Game game;
+  private Boolean fired;
 
   protected PropertyChangeSupport propertyChangeSupport;
 
@@ -64,6 +65,7 @@ public class User implements Serializable {
     this.character = null;
     this.hand = null;
     this.joinedGame = game != null;
+    this.fired = false;
     this.propertyChangeSupport = new PropertyChangeSupport(this);
 
 
@@ -219,7 +221,15 @@ public class User implements Serializable {
   public void setGame(Game game) {
     this.game = game;
   }
-
+  
+  public void setFired(Boolean fired) {
+  	this.fired = fired;
+  }
+  
+  public Boolean getFired() {
+  	return fired;
+  }
+  
   public void addPropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.addPropertyChangeListener(listener);
   }

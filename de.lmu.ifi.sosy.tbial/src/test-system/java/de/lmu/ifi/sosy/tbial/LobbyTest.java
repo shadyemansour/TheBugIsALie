@@ -38,12 +38,10 @@ public class LobbyTest extends PageTestBase {
   @Before
   public void setUp() {
     setupApplication();
-    user1 = new User("user1", "user1", null);
-    host = new User("testhost", "testpassword", null);
-    database.register("testhost", "testpassword");
-    database.register("user1", "user1");
+    user1 = database.register("user1", "user1");
     database.register("user2", "user2");
     database.register("user3", "user3");
+    host = database.register("testhost", "testpassword");
     attemptLogin("testhost", "testpassword");
     game = database.createGame("testGame", host.getName(), "", "new", 4);
     tester.assertRenderedPage(Lobby.class);
@@ -206,7 +204,6 @@ public class LobbyTest extends PageTestBase {
     assertTrue(game3.getPlayers().contains(player6));
     assertTrue(!game2.getPlayers().contains(player6));
   }
-
 
   @Test
   public void playerLeaveGame() {

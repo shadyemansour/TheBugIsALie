@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial.db;
 
+import org.apache.wicket.model.IModel;
 
 import static java.util.Objects.requireNonNull;
 
@@ -140,9 +141,9 @@ public class Game implements Serializable {
 //		}
 //	}
 	public void addPlayer(User player) {
-		for (int i = 0; i < this.players.size(); i++) {
+		for (int i = 0; i < players.size(); i++) {
 			if (this.players.get(i) == null) {
-				this.players.set(i, player);
+				players.set(i, player);
 				if (!player.getName().equals(hostName)) {
 					if (!gameStarted) {
 						propertyChangeSupport.firePropertyChange("PlayerAdded", this, this.players.get(i).getName());
@@ -181,16 +182,16 @@ public class Game implements Serializable {
 
 		JSONArray rolesArray = new JSONArray();
 		JSONArray charactersArray = new JSONArray();
-		JSONArray handArray = new JSONArray();
 		Card roleCard;
 		Card characterCard;
-		for (User player : this.players) {
+		for (User player : players) {
 			if (player != null) {
 				roleCard = roleCards.get(0);
 
 				JSONObject role = new JSONObject();
 				role.put("playerID", player.getId());
 				role.put("role", roleCard.getTitle());
+				role.put("roleCard", roleCard);
 				rolesArray.put(role);
 
 				player.setRoleCard(roleCard);
@@ -225,27 +226,24 @@ public class Game implements Serializable {
 
 
 				List<Card> hand = new ArrayList<Card>();
+				JSONArray handArray = new JSONArray();
 
 				for (int i = 0; i < player.getHealth(); i++) {
-					hand.add(stack.get(i));
-					handArray.put(stack.get(i));
+					hand.add(stack.get(0));
+					handArray.put(stack.get(0));
+					stack.remove(0);
 				}
-
 				player.setHand(hand);
-				for (int i = 0; i < player.getHealth(); i++) {
-					stack.remove(i);
-
-				}
 				drawCardsMessage(player.getId(), handArray);
 			}
 		}
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
 
-
 		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();
 
+		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
 	}
@@ -577,6 +575,10 @@ public class Game implements Serializable {
 		this.name = requireNonNull(name);
 	}
 
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return propertyChangeSupport;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -641,6 +643,16 @@ public class Game implements Serializable {
 	public void setPlayersTurn(int playersTurn) {
 		this.playersTurn = playersTurn;
 	}
+
+	public JSONMessage getRoleCardsHostMessage() {
+		return roleCardsHostMessage;
+	}
+
+
+	public JSONMessage getCharacterCardsHostMessage() {
+		return characterCardsHostMessage;
+	}
+
 
 	public List<User> getPlayers() {
 		if (host == null) {

@@ -8,8 +8,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
 import org.apache.wicket.markup.html.form.*;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
@@ -94,7 +92,7 @@ public abstract class GameView extends WebPage {
         user.setGame(null);
         user.setJoinedGame(false);
         ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
-        WebSocketManager.getInstance().sendMessage(gamePausedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+        WebSocketManager.getInstance().sendMessage(gamePausedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getGameId()));
         setResponsePage(Lobby.class);
       }
 
@@ -116,6 +114,7 @@ public abstract class GameView extends WebPage {
         Thread.currentThread().interrupt();
       }
       game.startGame();
+      game.start();
     }
   }
 
@@ -129,9 +128,9 @@ public abstract class GameView extends WebPage {
     int gameID = (int) body.get("gameID");
     int userID;
     System.out.println("-m to: " + user + " " + msgType + " with gameId: " + gameID);
-    System.out.println(game.getId());
+    System.out.println(game.getGameId());
 
-    if (gameID == game.getId()) {
+    if (gameID == game.getGameId()) {
       switch (msgType) {
         case "GamePaused":
           userID = (int) body.get("userID");
@@ -212,9 +211,9 @@ public abstract class GameView extends WebPage {
               user.setHealth(health);
               user.setCharacter(character);
               //TODO USE THE DATA
-            } else if (playerID == game.getPlayers().get(i).getId()){
-                int health = container.getInt("health");
-            	game.getPlayers().get(i).setHealth(health);
+            } else if (playerID == game.getPlayers().get(i).getId()) {
+              int health = container.getInt("health");
+              game.getPlayers().get(i).setHealth(health);
             }
           }
           if (allUsersHaveHealth()) {
@@ -374,6 +373,12 @@ public abstract class GameView extends WebPage {
           //TODO USE THE DATA
           break;
 
+        case "PlayerFired":
+          int playID = (int) body.get("playerID");
+          Card role = (Card) body.get("role");
+          //TODO USE THE DATA
+          break;
+
       }
 
     }
@@ -397,8 +402,12 @@ public abstract class GameView extends WebPage {
   }
 
   public void discardCard(Card card) {
-    //TODO implementation
-    game.discardCard(((TBIALSession) getSession()).getUser().getId(), card);
+    //TODO
+    if (user.isMyTurn()) {
+      game.discardCard(((TBIALSession) getSession()).getUser().getId(), card);
+    } else {
+      //TODO message on ui?
+    }
   }
 
   public void playCard(int to, Card card) {
@@ -427,9 +436,9 @@ public abstract class GameView extends WebPage {
     public void propertyChange(PropertyChangeEvent event) {
       if (event.getPropertyName().equals("PlayerAdded")) {
         Game g = (Game) event.getOldValue();
-        if (g.getName().equals(game.getName()) && game.isGamePaused() && game.getActivePlayers() == game.getNumPlayers()) {
+        if (g.getGameName().equals(game.getGameName()) && game.isGamePaused() && game.getActivePlayers() == game.getNumPlayers()) {
           game.setGamePaused(false);
-          WebSocketManager.getInstance().sendMessage(continueGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+          WebSocketManager.getInstance().sendMessage(continueGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getGameId()));
         }
       } else if (event.getPropertyName().equals("SendMessage") && user.getId() == game.getHost().getId()) {
         JSONMessage message = (JSONMessage) event.getOldValue();
@@ -443,7 +452,7 @@ public abstract class GameView extends WebPage {
           sendPrivateMessage(message, playerID);
       } else if (event.getPropertyName().equals("UpdatePlayerAttributes")) {
         int gameId = (int) event.getOldValue();
-        if (user.getGame().getId() == gameId && user.getId() != game.getHost().getId())
+        if (user.getGame().getGameId() == gameId && user.getId() != game.getHost().getId())
           updatePlayerAttributes();
       }
     }
@@ -467,6 +476,15 @@ public abstract class GameView extends WebPage {
     for (User user : users) {
       if (user != null) {
         WebSocketManager.getInstance().sendPrivateMessage(message, user.getId());
+      }
+    }
+  }
+
+  private void endTurn() {
+    if (user.getHealth() == user.getHand().size()) {
+      game.setIsPlaying(false);
+      synchronized (game) {
+        game.notifyAll();
       }
     }
   }

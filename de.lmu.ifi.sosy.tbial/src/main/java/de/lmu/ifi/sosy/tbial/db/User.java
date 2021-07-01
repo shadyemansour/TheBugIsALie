@@ -36,15 +36,16 @@ public class User implements Serializable {
   private Card characterCard;
   private Card roleCard;
   // remove String role, character later
-  private String role; 
+  private String role;
   private String character;
   private List<Card> hand = new ArrayList<Card>();
 
 
-  private Boolean joinedGame;
+  private boolean joinedGame;
 
   private Game game;
-  private Boolean fired;
+  private boolean fired;
+  private boolean myTurn;
 
   protected PropertyChangeSupport propertyChangeSupport;
 
@@ -57,18 +58,26 @@ public class User implements Serializable {
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
     this.game = game;
-    this.prestige=-1;
-    this.health=-1;
-    this.roleCard=null;
-    this.characterCard=null;
+    this.prestige = -1;
+    this.health = -1;
+    this.roleCard = null;
+    this.characterCard = null;
     this.role = null;
     this.character = null;
     this.hand = null;
     this.joinedGame = game != null;
     this.fired = false;
     this.propertyChangeSupport = new PropertyChangeSupport(this);
+    this.myTurn = false;
 
+  }
 
+  public boolean isMyTurn() {
+    return myTurn;
+  }
+
+  public void setMyTurn(boolean myTurn) {
+    this.myTurn = myTurn;
   }
 
   public String getName() {
@@ -135,17 +144,21 @@ public class User implements Serializable {
     return health;
   }
 
-  public Card getRoleCard(){return this.roleCard;}
+  public Card getRoleCard() {
+    return this.roleCard;
+  }
 
-  public void setRoleCard(Card role){this.roleCard=role;}
+  public void setRoleCard(Card role) {
+    this.roleCard = role;
+  }
 
 
   public void setCharacterCard(Card character) {
-      this.characterCard = character;
+    this.characterCard = character;
   }
 
   public Card getCharacterCard() {
-      return characterCard;
+    return characterCard;
   }
 
   public String getRole() {
@@ -221,15 +234,15 @@ public class User implements Serializable {
   public void setGame(Game game) {
     this.game = game;
   }
-  
+
   public void setFired(Boolean fired) {
-  	this.fired = fired;
+    this.fired = fired;
   }
-  
+
   public Boolean getFired() {
-  	return fired;
+    return fired;
   }
-  
+
   public void addPropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.addPropertyChangeListener(listener);
   }

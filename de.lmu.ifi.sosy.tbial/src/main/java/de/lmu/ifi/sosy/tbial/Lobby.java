@@ -1,15 +1,12 @@
 package de.lmu.ifi.sosy.tbial;
 
-import de.lmu.ifi.sosy.tbial.db.Card;
 import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
-import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
 import de.lmu.ifi.sosy.tbial.gametable.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
@@ -17,15 +14,12 @@ import de.lmu.ifi.sosy.tbial.networking.WebSocketManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -40,11 +34,6 @@ import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.RefreshingView;
-import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -52,11 +41,8 @@ import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
 import org.apache.wicket.protocol.ws.api.message.IWebSocketPushMessage;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.json.JSONObject;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
 /**
  * Basic lobby page. It <b>should</b> show the list of currently available games. Needs to be
@@ -229,8 +215,8 @@ public class Lobby extends BasePage {
 
                             } else {
                                 TabPanel2.this.replaceWith(new ConfirmCancelPanel(TabPanel2.this.getId(),
-                                                               "You are currently in game '" + user.getGame().getName() + "'! Do you want to leave this game and join game '"
-                                                                   + listItem.getModelObject().getName() + "'?") {
+                                                               "You are currently in game '" + user.getGame().getGameName() + "'! Do you want to leave this game and join game '"
+                                                                   + listItem.getModelObject().getGameName() + "'?") {
 
                                                                private static final long serialVersionUID = 1L;
 
@@ -247,7 +233,7 @@ public class Lobby extends BasePage {
                                                                        checkPassword(TabPanel2.this, listItem);
                                                                    } else {
                                                                        User user = ((TBIALSession) getSession()).getUser();
-                                                                       ((TBIALApplication) getApplication()).getGame(game.getName()).removePlayer(user);
+                                                                       ((TBIALApplication) getApplication()).getGame(game.getGameName()).removePlayer(user);
                                                                        joinGame(newGame, user);
                                                                        listItem.setOutputMarkupId(true);
                                                                        tabs.remove(2);
@@ -266,7 +252,7 @@ public class Lobby extends BasePage {
                         }
                     });
                     User user = ((TBIALSession) getSession()).getUser();
-                    if (user != null && user.getGame() != null && listItem.getModelObject().getName().equals(user.getGame().getName())) {
+                    if (user != null && user.getGame() != null && listItem.getModelObject().getGameName().equals(user.getGame().getGameName())) {
                         listItem.add(new AttributeModifier("class", Model.of("currentGame")));
                     }
                 }
@@ -299,7 +285,7 @@ public class Lobby extends BasePage {
                                       @Override
                                       protected void onConfirm() {
                                           if (user.getJoinedGame()) {
-                                              ((TBIALApplication) getApplication()).getGame(user.getGame().getName()).removePlayer(user);
+                                              ((TBIALApplication) getApplication()).getGame(user.getGame().getGameName()).removePlayer(user);
                                           }
                                           joinGame(newGame, user);
                                           listItem.setOutputMarkupId(true);
@@ -462,7 +448,7 @@ public class Lobby extends BasePage {
 
 //    				game = getSession().getGame(gameId);
 
-            final Label label = new Label("gamename", game.getName());
+            final Label label = new Label("gamename", game.getGameName());
             add(label);
 
             /**
@@ -513,7 +499,7 @@ public class Lobby extends BasePage {
                         } else {
                             game.setGameState("running");
                             //  game.setGameStarted(true);
-                            WebSocketManager.getInstance().sendMessage(startGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getId()));
+                            WebSocketManager.getInstance().sendMessage(startGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getGameId()));
                             if (numplayers == 4) {
                                 setResponsePage(FourBoard.class);
                             } else if (numplayers == 5) {
@@ -625,7 +611,7 @@ public class Lobby extends BasePage {
     public void joinGame(Game game, User player) {
         player.setGame(game);
         player.setJoinedGame(true);
-        ((Database) getDatabase()).setUserGame(player.getId(), game.getName());
+        ((Database) getDatabase()).setUserGame(player.getId(), game.getGameName());
         game.addPlayer(player);
     }
 
@@ -677,7 +663,7 @@ public class Lobby extends BasePage {
                 body = jsonMsg.getJSONObject("msgBody");
                 id = (int) body.get("gameID");
                 int hostID = (int) body.get("hostID");
-                if (hostID != ((TBIALSession) getSession()).getUser().getId() && id == ((TBIALSession) getSession()).getUser().getGame().getId()) {
+                if (hostID != ((TBIALSession) getSession()).getUser().getId() && id == ((TBIALSession) getSession()).getUser().getGame().getGameId()) {
                     int numplayers = game.getNumPlayers();
                     if (numplayers == 4) {
                         setResponsePage(FourBoard.class);

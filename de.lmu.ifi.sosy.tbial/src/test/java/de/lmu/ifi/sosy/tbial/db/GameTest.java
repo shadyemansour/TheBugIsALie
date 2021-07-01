@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
@@ -83,19 +82,19 @@ public class GameTest {
 
   @Test
   public void getName_returnsName() {
-    game.setName(name);
-    assertThat(game.getName(), is(name));
+    game.setGameName(name);
+    assertThat(game.getGameName(), is(name));
   }
 
   @Test
   public void getId_returnsId() {
-    game.setId(id);
-    assertThat(game.getId(), is(id));
+    game.setGameId(id);
+    assertThat(game.getGameId(), is(id));
   }
 
   @Test(expected = NullPointerException.class)
   public void setName_whenNullNameGiven_throwsException() {
-    game.setName(null);
+    game.setGameName(null);
   }
 
   @Test(expected = NullPointerException.class)

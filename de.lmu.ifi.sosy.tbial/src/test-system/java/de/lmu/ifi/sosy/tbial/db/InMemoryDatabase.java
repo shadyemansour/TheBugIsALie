@@ -48,7 +48,7 @@ public class InMemoryDatabase implements Database {
     requireNonNull(name);
     synchronized (games) {
       for (Game game : games) {
-        if (name.equals(game.getName())) {
+        if (name.equals(game.getGameName())) {
           return game;
         }
       }
@@ -65,7 +65,7 @@ public class InMemoryDatabase implements Database {
   public void setGameState(int id, String gameState) {
     synchronized (games) {
       for (Game game : games) {
-        if (id == game.getId()) {
+        if (id == game.getGameId()) {
           game.setGameStateInMemoryDatabase(gameState);
         }
       }
@@ -96,7 +96,7 @@ public class InMemoryDatabase implements Database {
   public void setGameHost(int id, String host) {
     synchronized (games) {
       for (Game game : games) {
-        if (id == game.getId()) {
+        if (id == game.getGameId()) {
           User user = null;
           for (User user1 : users) {
             if (host.equals(user1.getName())) {
@@ -116,7 +116,7 @@ public class InMemoryDatabase implements Database {
     synchronized (games) {
       for (int i = 0; i < games.size(); i++) {
         Game game = games.get(i);
-        if (id == game.getId()) {
+        if (id == game.getGameId()) {
           games.set(i, null);
         }
       }
@@ -239,7 +239,7 @@ public class InMemoryDatabase implements Database {
     if (!name.equals("NULL")) {
       synchronized (games) {
         for (Game game : games) {
-          if (name.equals(game.getName())) {
+          if (name.equals(game.getGameName())) {
             g = game;
             break;
           }

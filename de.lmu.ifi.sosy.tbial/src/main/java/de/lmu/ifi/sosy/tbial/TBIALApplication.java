@@ -4,7 +4,6 @@ import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
-import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.beans.PropertyChangeEvent;
@@ -15,13 +14,11 @@ import org.apache.wicket.*;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.ws.WebSocketSettings;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
-import org.apache.wicket.util.lang.Bytes;
 
 
 /**
@@ -188,7 +185,7 @@ public class TBIALApplication extends WebApplication {
   public Game getGame(String gameName) {
     Game game = null;
     for (Game g : availableGames) {
-      if (g.getName().equals(gameName)) {
+      if (g.getGameName().equals(gameName)) {
         game = g;
         break;
       }
@@ -206,7 +203,7 @@ public class TBIALApplication extends WebApplication {
         for (User u : allUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
-            database.setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
+            database.setGameHost(((Game) event.getOldValue()).getGameId(), event.getNewValue().toString());
             g.setHost(u);
             g.setHostName(u.getName());
             break;
@@ -216,22 +213,22 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {
         Game game = (Game) event.getNewValue();
         removeGame(game);
-        database.removeGame(game.getId());
+        database.removeGame(game.getGameId());
       } else if (event.getPropertyName().equals("PlayerAdded")) {
         Game game = (Game) event.getOldValue();
-        database.addPlayerToGame(game.getId(), event.getNewValue().toString());
+        database.addPlayerToGame(game.getGameId(), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("PlayerAddedGameRunning")) {
         Game game = (Game) event.getOldValue();
-        database.addPlayerToGame(game.getId(), event.getNewValue().toString());
+        database.addPlayerToGame(game.getGameId(), event.getNewValue().toString());
         if (game.getActivePlayers() == game.getNumPlayers()) {
 
         }
       } else if (event.getPropertyName().equals("PlayerRemoved")) {
         Game game = (Game) event.getOldValue();
-        database.removePlayerFromGame(game.getId(), event.getNewValue().toString());
+        database.removePlayerFromGame(game.getGameId(), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("PlayerRemovedGameRunning")) {
         Game game = (Game) event.getOldValue();
-        database.removePlayerFromGame(game.getId(), event.getNewValue().toString());
+        database.removePlayerFromGame(game.getGameId(), event.getNewValue().toString());
 
       } else if (event.getPropertyName().equals("GameIsNewAddPlayers")) {
         Game game = (Game) event.getOldValue();

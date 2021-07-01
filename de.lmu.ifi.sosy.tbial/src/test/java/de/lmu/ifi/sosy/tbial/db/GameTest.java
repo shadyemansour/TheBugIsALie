@@ -307,16 +307,27 @@ public class GameTest {
 
   @Test
   public void currentPlayerMessageTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
     game.startGame();
+    int expected = -1;
+    List<User> players = game.getPlayers();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        expected = game.getCurrentID();
+        break;
+      }
+    }
     JSONObject body = new JSONObject();
     body.put("gameID", id);
-    body.put("playerID", host.getId());
+    body.put("playerID", expected);
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "CurrentPlayer");
     msg.put("msgBody", body);
-    JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.currentPlayerMessage().getMessage(), true);
+    JSONMessage expectedMessage = new JSONMessage(msg);
+    JSONAssert.assertEquals(expectedMessage.getMessage(), game.currentPlayerMessage().getMessage(), true);
   }
 
   @Test
@@ -373,7 +384,5 @@ public class GameTest {
       }
     }
     assertTrue(expected);
-
   }
-
 }

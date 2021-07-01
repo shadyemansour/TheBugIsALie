@@ -357,5 +357,23 @@ public class GameTest {
     assertEquals(0, game.getRoleCards().size());
   }
 
+  @Test
+  public void managerStartsFirst() {
+    boolean expected = false;
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    List<User> players = game.getPlayers();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        expected = game.getCurrentID() == player.getId() && game.getCurrentPlayer() == i;
+        break;
+      }
+    }
+    assertTrue(expected);
+
+  }
 
 }

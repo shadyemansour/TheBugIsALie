@@ -184,15 +184,23 @@ public class Game implements Serializable {
 		JSONArray charactersArray = new JSONArray();
 		Card roleCard;
 		Card characterCard;
-		for (User player : players) {
+		for (int i = 0; i < players.size(); i++) {
+			User player = players.get(i);
+
 			if (player != null) {
 				roleCard = roleCards.get(0);
+				String title = roleCard.getTitle();
 
 				JSONObject role = new JSONObject();
 				role.put("playerID", player.getId());
-				role.put("role", roleCard.getTitle());
+				role.put("role", title);
 				role.put("roleCard", roleCard);
 				rolesArray.put(role);
+
+				if (title.equals("Manager")) {
+					currentPlayer = i;
+					currentID = player.getId();
+				}
 
 				player.setRoleCard(roleCard);
 				roleCards.remove(0);
@@ -228,7 +236,7 @@ public class Game implements Serializable {
 				List<Card> hand = new ArrayList<Card>();
 				JSONArray handArray = new JSONArray();
 
-				for (int i = 0; i < player.getHealth(); i++) {
+				for (int j = 0; j < player.getHealth(); j++) {
 					hand.add(stack.get(0));
 					handArray.put(stack.get(0));
 					stack.remove(0);
@@ -240,8 +248,6 @@ public class Game implements Serializable {
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
 
-		currentPlayer = 0;
-		currentID = players.get(currentPlayer).getId();
 
 		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
 		timer.schedule(new RemindTask(), 1000);
@@ -665,6 +671,14 @@ public class Game implements Serializable {
 
 	public void setPlayers(List<User> players) {
 		this.players = players;
+	}
+
+	public int getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public int getCurrentID() {
+		return currentID;
 	}
 
 	public String getGameState() {

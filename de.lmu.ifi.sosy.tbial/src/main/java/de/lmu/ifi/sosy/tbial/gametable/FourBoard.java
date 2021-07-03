@@ -61,7 +61,7 @@ public class FourBoard extends GameView {
     currenthealth2 = players.get(1).getHealth();
     currenthealth3 = players.get(2).getHealth();
     currenthealth4 = players.get(3).getHealth();
-    System.out.println("user - " + user.getName() + " h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
+  //  System.out.println("user - " + user.getName() + " h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
   }
 
   protected void createPlayerAttributes() {

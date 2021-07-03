@@ -365,8 +365,10 @@ public class Game implements Serializable {
 
 	public void drawCards(int playerID, int numCards) {
 		JSONArray cards = new JSONArray();
-
 		for (int n = 0; n < numCards; n++) {
+			if(stack.size()==0){
+                decksShuffled();
+            }
 			//TODO Draw cards from stack and save in Array
 			cards.put(stack.get(0));
 			stack.remove(0);
@@ -383,13 +385,20 @@ public class Game implements Serializable {
 		msgBody.put("cards", array);
 		JSONMessage[] msg = new JSONMessage[2];
 		msg[0] = createJSONMessage("YourCards", msgBody);
+		
+		if (playerID == host.getId()) {
+			cardsHostMessages.add(msg[0].copy());
+		} else {
+				propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
+				}
+		/*
 		if (gameInitiated) {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
 		} else if (playerID == host.getId()) {
 			cardsHostMessages.add(msg[0].copy());
 		} else {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
-		}
+		}*/
 
 		JSONObject msgBodyBroadcast = new JSONObject();
 		msgBodyBroadcast.put("gameID", id);
@@ -398,7 +407,11 @@ public class Game implements Serializable {
 		msgBodyBroadcast.put("cardsInDeck", stack.size());
 		msg[1] = createJSONMessage("CardsDrawn", msgBodyBroadcast);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
-		if (!gameInitiated && playerID != host.getId()) {
+	/*	if (!gameInitiated && playerID != host.getId()) {
+			cardsHostMessages.add(msg[1].copy());
+		}*/
+		
+		if (playerID != host.getId()) {
 			cardsHostMessages.add(msg[1].copy());
 		}
 		return msg;
@@ -953,6 +966,11 @@ public class Game implements Serializable {
 			sendMessagesToHostOnStart();
 		}
 	}
+	
+	public int getCurrentID() {
+		return currentID;
+	}
+	
 
 //
 //	public List<Card> getHeap() {

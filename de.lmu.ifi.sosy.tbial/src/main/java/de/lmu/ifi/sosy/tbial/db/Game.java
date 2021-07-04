@@ -312,6 +312,7 @@ public class Game implements Serializable {
 		msgBody.put("roleCards", cardsArray);
 		JSONMessage msg = createJSONMessage("GameWon", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		roleCardsHostMessage=msg;
 		return msg;
 	}
 	

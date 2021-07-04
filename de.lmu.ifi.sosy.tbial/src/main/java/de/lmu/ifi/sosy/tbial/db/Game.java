@@ -41,6 +41,9 @@ public class Game extends Thread implements Serializable {
   private boolean gameWon;
   private List<User> firedPlayers;
   private boolean isPlaying;
+  private boolean managerFired;
+  private boolean consultantFired;
+  private int numEvilMonkeys;
 
 
   //   private  ArrayList<Card> charakterCards = new  ArrayList<Card>(); TODO later (US37)
@@ -92,6 +95,10 @@ public class Game extends Thread implements Serializable {
     this.gameInitiated = false;
     this.gameWon = false;
     this.firedPlayers = new ArrayList<>();
+    this.managerFired = false;
+    this.consultantFired = false;
+    this.numEvilMonkeys = numPlayers == 4 || numPlayers == 5 ? 2 : 3;
+
 
   }
 
@@ -266,8 +273,21 @@ public class Game extends Thread implements Serializable {
       if (!player.getFired()) {
         player.setMyTurn(true);
         currentPlayerMessage();
-        drawCards(currentID, 2);
         isPlaying = true;
+        if (player.hasStumblingCards()) {
+          //todo deal with them
+          synchronized (this) {
+            while (isPlaying) {
+              try {
+                this.wait();
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+        }
+        isPlaying = true;
+        drawCards(currentID, 2);
 
         // TODO turn logic
         synchronized (this) {
@@ -283,18 +303,42 @@ public class Game extends Thread implements Serializable {
       }
       nextPlayer();
 
-      if (firedPlayers.size() == players.size() - 1) {
-        gameWon = true;
+      isTheGameOver();
+
+    }
+
+  }
+
+  public void isTheGameOver() {
+    List<Integer> ids = new ArrayList<>();
+    if (managerFired) {
+      if (numEvilMonkeys > 0) {
         for (User winner : players) {
-          if (!winner.getFired()) {
-            gameWon(winner.getId());
+          if (winner.getRole().equals("Evil Code Monkey")) {
+            ids.add(winner.getId());
+          }
+        }
+      } else {
+        for (User winner : players) {
+          if (winner.getRole().equals("Consultant")) {
+            ids.add(winner.getId());
             break;
           }
         }
       }
+      gameWon(ids);
+      return;
     }
 
-
+    if (numEvilMonkeys == 0 && consultantFired) {
+      gameWon = true;
+      for (User winner : players) {
+        if (winner.getRole().equals("Manager") || winner.getRole().equals("Honest Developer")) {
+          ids.add(winner.getId());
+        }
+      }
+      gameWon(ids);
+    }
   }
 
   public void playerFired(int playerID) {
@@ -305,6 +349,13 @@ public class Game extends Thread implements Serializable {
         role = player.getRoleCard();
         player.setFired(true);
         firedPlayers.add(player);
+        if (player.getRole().equals("Manager")) {
+          managerFired = true;
+        } else if (player.getRole().equals("Evil Code Monkey")) {
+          numEvilMonkeys--;
+        } else if (player.getRole().equals("Consultant")) {
+          consultantFired = true;
+        }
         break;
       }
     }
@@ -366,18 +417,19 @@ public class Game extends Thread implements Serializable {
     return msg;
   }
 
-  public void gameWon(int playerID) {
+  public void gameWon(List<Integer> playerIDs) {
     //TODO implementation
-    gameWonMessage(playerID);
+    JSONArray ids = new JSONArray(playerIDs);
+    gameWonMessage(ids);
   }
 
   /**
    * sends GameWon Message
    */
-  protected JSONMessage gameWonMessage(int playerID) {
+  protected JSONMessage gameWonMessage(JSONArray playerIDs) {
     JSONObject msgBody = new JSONObject();
     msgBody.put("gameID", id);
-    msgBody.put("playerID", playerID);
+    msgBody.put("playerIDs", playerIDs);
     JSONMessage msg = createJSONMessage("GameWon", msgBody);
     propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
     return msg;

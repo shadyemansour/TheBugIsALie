@@ -6,6 +6,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
@@ -217,13 +219,13 @@ public class GameTest {
   public void gameWonMessageTest() {
     JSONObject body = new JSONObject();
     body.put("gameID", id);
-    body.put("playerID", 1);
+    body.put("playerIDs", new JSONArray(Collections.singletonList(1)));
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "GameWon");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.gameWonMessage(1).getMessage(), true);
+    JSONAssert.assertEquals(expected.getMessage(), game.gameWonMessage(new JSONArray(Collections.singletonList(1))).getMessage(), true);
   }
 
   @Test

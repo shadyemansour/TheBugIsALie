@@ -230,6 +230,11 @@ public abstract class GameView extends WebPage {
           //TODO USE THE DATA
           break;
         case "GameWon":
+          JSONArray idsJSON = (JSONArray) body.get("playerIDs");
+          for (int i = 0; i < idsJSON.length(); i++) {
+            int winner = (int) idsJSON.get(i);
+            //TODO USE THE DATA
+          }
           int playerID = (int) body.get("playerID");
           //TODO USE THE DATA
           break;

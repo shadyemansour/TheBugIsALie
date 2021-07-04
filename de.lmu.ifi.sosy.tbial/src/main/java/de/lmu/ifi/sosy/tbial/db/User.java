@@ -46,6 +46,7 @@ public class User implements Serializable {
   private Game game;
   private boolean fired;
   private boolean myTurn;
+  private boolean hasStumblingCards;
 
   protected PropertyChangeSupport propertyChangeSupport;
 
@@ -69,7 +70,12 @@ public class User implements Serializable {
     this.fired = false;
     this.propertyChangeSupport = new PropertyChangeSupport(this);
     this.myTurn = false;
+    this.hasStumblingCards = false;
 
+  }
+
+  public boolean hasStumblingCards() {
+    return hasStumblingCards;
   }
 
   public boolean isMyTurn() {
@@ -149,7 +155,9 @@ public class User implements Serializable {
   }
 
   public void setRoleCard(Card role) {
+
     this.roleCard = role;
+    this.role = role.getTitle();
   }
 
 

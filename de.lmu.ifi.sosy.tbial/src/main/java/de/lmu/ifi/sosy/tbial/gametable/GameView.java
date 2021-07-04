@@ -42,6 +42,11 @@ public abstract class GameView extends WebPage {
   public List<Card> p3hand = new ArrayList<Card>();
   public List<Card> p4hand = new ArrayList<Card>();
 
+  public List<Card> p1drophand = new ArrayList<Card>();
+  public List<Card> p2drophand = new ArrayList<Card>();
+  public List<Card> p3drophand = new ArrayList<Card>();
+  public List<Card> p4drophand = new ArrayList<Card>();
+
   List<Card> p1role = new ArrayList<Card>();
   List<Card> p2role = new ArrayList<Card>();
   List<Card> p3role = new ArrayList<Card>();

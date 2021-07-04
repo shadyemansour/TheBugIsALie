@@ -36,6 +36,7 @@ public abstract class GameView extends WebPage {
   protected Game game = user.getGame();
   List<Card> stackTest = game.getStack();
   public List<User> playerList = game.getPlayers();
+  public List<User> actualPlayerlist = new ArrayList<User>();
 
   public List<Card> p1hand = new ArrayList<Card>();
   public List<Card> p2hand = new ArrayList<Card>();
@@ -59,6 +60,7 @@ public abstract class GameView extends WebPage {
   Form<?> form;
 
   public GameView() {
+    setPlayerList();
     this.game.addPropertyChangeListener(new GameViewListener());
 
     System.out.println("GameView init" + game + " " + user);
@@ -121,6 +123,37 @@ public abstract class GameView extends WebPage {
         Thread.currentThread().interrupt();
       }
       game.startGame();
+    }
+  }
+  protected void setPlayerList() {
+	int pos = 2;
+    for (int i = 0; i < playerList.size(); i++) {
+    	if(playerList.get(i).getId() == user.getId()) {
+    		pos = i;
+    	}
+    }
+    switch(pos) {
+    case 0:
+    	actualPlayerlist.add(playerList.get(2));
+    	actualPlayerlist.add(playerList.get(3));
+    	actualPlayerlist.add(playerList.get(0));
+    	actualPlayerlist.add(playerList.get(1));
+    	break;
+    case 1:
+    	actualPlayerlist.add(playerList.get(3));
+    	actualPlayerlist.add(playerList.get(0));
+    	actualPlayerlist.add(playerList.get(1));
+    	actualPlayerlist.add(playerList.get(2));
+    	break;
+    case 2:
+    	actualPlayerlist = playerList;
+    	break;
+    case 3:
+    	actualPlayerlist.add(playerList.get(1));
+    	actualPlayerlist.add(playerList.get(2));
+    	actualPlayerlist.add(playerList.get(3));
+    	actualPlayerlist.add(playerList.get(0));
+    	break;
     }
   }
 
@@ -360,6 +393,74 @@ public abstract class GameView extends WebPage {
           int to = body.getInt("to");
           Card car = (Card) body.get("card");
           //TODO USE THE DATA
+          for (int i = 0; i < actualPlayerlist.size(); i++) {
+            if (from == actualPlayerlist.get(i).getId()) {
+            	switch(i) {
+            	case 0:
+            		if(from == user.getId()) {
+            			for (int j = 0; j<p1hand.size(); j++) {
+            				if (p1hand.get(j) == car) {
+            					p1hand.remove(j);
+            				}
+            			}
+            		} else {
+            			p1hand.remove(0);
+            		}
+            		break;
+            	case 1:
+            		if(from == user.getId()) {
+            			for (int j = 0; j<p2hand.size(); j++) {
+            				if (p2hand.get(j) == car) {
+            					p2hand.remove(j);
+            				}
+            			}
+            		} else {
+            			p2hand.remove(0);
+            		}
+            		break;
+            	case 2:
+            		if(from == user.getId()) {
+            			for (int j = 0; j<p3hand.size(); j++) {
+            				if (p3hand.get(j) == car) {
+            					p3hand.remove(j);
+            				}
+            			}
+            		} else {
+            			p3hand.remove(0);
+            		}
+            		break;
+            	case 3:
+            		if(from == user.getId()) {
+            			for (int j = 0; j<p4hand.size(); j++) {
+            				if (p4hand.get(j) == car) {
+            					p4hand.remove(j);
+            				}
+            			}
+            		} else {
+            			p4hand.remove(0);
+            		}
+            		break;
+            	}
+            }
+          }
+          for (int i = 0; i < actualPlayerlist.size(); i++) {
+        	  if (to == actualPlayerlist.get(i).getId()) {
+        		  switch(i) {
+        		  case 0:
+        			  p1drophand.add(car);
+        			  break;
+        		  case 1:
+        			  p2drophand.add(car);
+        			  break;
+        		  case 2:
+        			  p3drophand.add(car);
+        			  break;
+        		  case 3:
+        			  p4drophand.add(car);
+        			  break;
+              	}
+        	  }
+          }
           break;
         case "CardDiscarded":
           int player = body.getInt("playerID");

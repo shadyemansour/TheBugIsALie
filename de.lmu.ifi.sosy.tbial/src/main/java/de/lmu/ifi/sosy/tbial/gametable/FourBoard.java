@@ -44,7 +44,7 @@ public class FourBoard extends GameView {
 
   User user = ((TBIALSession) getSession()).getUser();
   List<Game> appGames = ((TBIALApplication) getApplication()).getAvailableGames();
-  List<User> players;
+  List<User> players = actualPlayerlist;
   // Game game;
   private Label p1prestige, p2prestige, p3prestige, p4prestige;
   private Label p1health, p2health, p3health, p4health;
@@ -76,7 +76,6 @@ public class FourBoard extends GameView {
 
   protected void createPlayerAttributes() {
 
-    players = game.getPlayers();
     players.get(0).setPrestige(0);
     players.get(1).setPrestige(0);
     players.get(2).setPrestige(0);
@@ -191,16 +190,12 @@ public class FourBoard extends GameView {
     	private static final long serialVersionUID = 1L;
 		@Override
 		protected void onEvent(AjaxRequestTarget target) {
-			System.out.println("drophand-1");
-			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-				p1drophand.add(selectedCard);
-				for (int i=0; i < p3hand.size(); i++) {
-					if (p3hand.get(i) == selectedCard) {
-						p3hand.remove(i);
-					}
-				}
+			System.out.println("drophand-1: " + players.get(0).getName());
+			//if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+			if (selectedCard != null) {
+				game.playCard(players.get(2).getId(), players.get(0).getId(), selectedCard);
 				selectedCard = null;
-			} else {}
+			}
 		}
 	});
     playerCardContainer.setOutputMarkupId(true);
@@ -290,16 +285,12 @@ public class FourBoard extends GameView {
     	private static final long serialVersionUID = 1L;
 		@Override
 		protected void onEvent(AjaxRequestTarget target) {
-			System.out.println("drophand-2");
-			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-				p2drophand.add(selectedCard);
-				for (int i=0; i < p3hand.size(); i++) {
-					if (p3hand.get(i) == selectedCard) {
-						p3hand.remove(i);
-					}
-				}
+			System.out.println("drophand-2: " + players.get(1).getName());
+			//if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+			if (selectedCard != null) {
+				game.playCard(players.get(2).getId(), players.get(1).getId(), selectedCard);
 				selectedCard = null;
-			} else {}
+			}
 		}
 	});
     add(playerCardContainer2);
@@ -387,7 +378,7 @@ public class FourBoard extends GameView {
       private static final long serialVersionUID = 1l;
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        System.out.println("drophand-3");
+    	  System.out.println("drophand-3: " + players.get(2).getName());
         if (selectedCard != null) {
           // TODO bug delegation cards
         }
@@ -486,16 +477,12 @@ public class FourBoard extends GameView {
     	private static final long serialVersionUID = 1L;
 		@Override
 		protected void onEvent(AjaxRequestTarget target) {
-			System.out.println("drophand-4");
-			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-				p4drophand.add(selectedCard);
-				for (int i=0; i < p3hand.size(); i++) {
-					if (p3hand.get(i) == selectedCard) {
-						p3hand.remove(i);
-					}
-				}
+			System.out.println("drophand-4: " + players.get(3).getName());
+			//if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+			if (selectedCard != null) {
+				game.playCard(players.get(2).getId(), players.get(3).getId(), selectedCard);
 				selectedCard = null;
-			} else {}
+			}
 		}
 	});
     add(playerCardContainer4);

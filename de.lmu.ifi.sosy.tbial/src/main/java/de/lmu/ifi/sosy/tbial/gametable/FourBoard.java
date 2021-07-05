@@ -1,18 +1,23 @@
 package de.lmu.ifi.sosy.tbial.gametable;
 
 import de.lmu.ifi.sosy.tbial.db.*;
+import de.lmu.ifi.sosy.tbial.networking.WebSocketManager;
 import de.lmu.ifi.sosy.tbial.*;
-import de.lmu.ifi.sosy.tbial.db.Card;
+
+import static de.lmu.ifi.sosy.tbial.TBIALApplication.getDatabase;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.repeater.Item;
@@ -37,7 +42,7 @@ public class FourBoard extends GameView {
   List<User> players;
   // Game game;
   private Label p1prestige, p2prestige, p3prestige, p4prestige;
-  private Label p1health, p2health, p3health, p4health;
+  //  private Label p1health, p2health, p3health, p4health;
   private Label p1name, p2name, p3name, p4name;
   int currenthealth1, currenthealth2, currenthealth3, currenthealth4;
 
@@ -46,6 +51,8 @@ public class FourBoard extends GameView {
     super();
 
     createPlayerAttributes();
+    updatePlayerAttributes();
+    updateHealth();
     assignLabels();
 
     createStackAndHeap();
@@ -54,14 +61,89 @@ public class FourBoard extends GameView {
     createPlayer2Area();
     createPlayer3Area();
     createPlayer4Area();
+
+    setupButton();
+  }
+
+  protected void setupButton() {
+    AjaxButton testButton = new AjaxButton("testButton") {
+      /**
+       * UID for serialization.
+       */
+      private static final long serialVersionUID = 1;
+
+      public void onSubmit(AjaxRequestTarget target) {
+//        User user = ((TBIALSession) getSession()).getUser();
+        System.out.println("game: " + game);
+        game.updateHealth(user.getId(), 1);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target) {
+      }
+    };
+    form = new Form<>("controls-form");
+    form.add(testButton);
+    form.setOutputMarkupId(true);
+    add(form);
   }
 
   protected void updatePlayerAttributes() {
-    currenthealth1 = players.get(0).getHealth();
-    currenthealth2 = players.get(1).getHealth();
-    currenthealth3 = players.get(2).getHealth();
-    currenthealth4 = players.get(3).getHealth();
-    System.out.println("user - " + user.getName() + " h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
+
+    System.out.println("user - " + user.getName() + " --- h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
+  }
+
+  protected void updateHealth() {
+    players = game.getPlayers();
+    System.out.println("Updating health on: " + players);
+    int size = playerList.size();
+    for (int i = 0; i < size; i++) {
+      if (playerList.get(i).getId() == user.getId()) {
+        switch (i) {
+          case 0:
+            currenthealth1 = players.get(2).getHealth();
+            currenthealth2 = players.get(3).getHealth();
+            currenthealth3 = players.get(0).getHealth();
+            currenthealth4 = players.get(1).getHealth();
+            p1health = players.get(2).getHealth();
+            p2health = players.get(3).getHealth();
+            p3health = players.get(0).getHealth();
+            p4health = players.get(1).getHealth();
+            break;
+          case 1:
+            currenthealth1 = players.get(3).getHealth();
+            currenthealth2 = players.get(0).getHealth();
+            currenthealth3 = players.get(1).getHealth();
+            currenthealth4 = players.get(2).getHealth();
+            p1health = players.get(3).getHealth();
+            p2health = players.get(0).getHealth();
+            p3health = players.get(1).getHealth();
+            p4health = players.get(2).getHealth();
+            break;
+          case 2:
+            currenthealth1 = players.get(0).getHealth();
+            currenthealth2 = players.get(1).getHealth();
+            currenthealth3 = players.get(2).getHealth();
+            currenthealth4 = players.get(3).getHealth();
+            p1health = players.get(0).getHealth();
+            p2health = players.get(1).getHealth();
+            p3health = players.get(2).getHealth();
+            p4health = players.get(3).getHealth();
+            break;
+          case 3:
+            currenthealth1 = players.get(1).getHealth();
+            currenthealth2 = players.get(2).getHealth();
+            currenthealth3 = players.get(3).getHealth();
+            currenthealth4 = players.get(0).getHealth();
+            p1health = players.get(1).getHealth();
+            p2health = players.get(2).getHealth();
+            p3health = players.get(3).getHealth();
+            p4health = players.get(0).getHealth();
+            break;
+        }
+      }
+    }
+    System.out.println("user - " + user.getName() + " --- h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
   }
 
   protected void createPlayerAttributes() {
@@ -71,11 +153,6 @@ public class FourBoard extends GameView {
     players.get(1).setPrestige(0);
     players.get(2).setPrestige(0);
     players.get(3).setPrestige(0);
-
-    currenthealth1 = players.get(0).getHealth();
-    currenthealth2 = players.get(1).getHealth();
-    currenthealth3 = players.get(2).getHealth();
-    currenthealth4 = players.get(3).getHealth();
 
     // adjust to playerlist order
     // PLAYER 1  -  ATTRIBUTES
@@ -120,70 +197,102 @@ public class FourBoard extends GameView {
    * assign labels for player names
    */
   private void assignLabels() {
-  	
+
     int size = playerList.size();
     for (int i = 0; i < size; i++) {
       if (playerList.get(i).getId() == user.getId()) {
-        switch(i) {
-        case 0:
-        	for (int j = 0; j < size; j++) {
-        		String labelId = "p" + (j + 1);
-            Label player = new Label(labelId, playerList.get((j + 2) % 4).getName());
-            add(player);
-            String healthId = "p" + (j + 1) + "heal";
-            String currentHealth = "currentHealth" + ((j + 2) % 4);
-//            Label health = new Label(healthId, new PropertyModel<>(this, currentHealth));
-            Model<String> healthModel = Model.of(Integer.toString(playerList.get((j + 2) % 4).getHealth());
-            Label health = new Label(healthId, new PropertyModel<>(this, healthModel));
-            health.setOutputMarkupId(true);
-            add(health);
-            String prestigeId = "p" + (j + 1) + "pres";
-            Label prestige = new Label(prestigeId, playerList.get((j + 2) % 4).getPrestige());
-            add(prestige);
-        	}
-        	break;
-        case 1:
-        	for (int j = 0; j < size; j++) {
-        		String labelId = "p" + (j + 1);
-            Label player = new Label(labelId, playerList.get((j + 3) % 4).getName());
-            add(player);
-            String healthId = "p" + (j + 1) + "heal";
-            Label health = new Label(healthId, new PropertyModel<>(this, Integer.toString(playerList.get((j + 3) % 4).getHealth())));
-            health.setOutputMarkupId(true);
-            add(health);
-            String prestigeId = "p" + (j + 1) + "pres";
-            Label prestige = new Label(prestigeId, playerList.get((j + 3) % 4).getPrestige());
-            add(prestige);
-        	}
-        	break;
-        case 2:
-        	for (int j = 0; j < size; j++) {
-        		String labelId = "p" + (j + 1);
-            Label player = new Label(labelId, playerList.get(j % 4).getName());
-            add(player);
-            String healthId = "p" + (j + 1) + "heal";
-            Label health = new Label(healthId, new PropertyModel<>(this, Integer.toString(playerList.get(j % 4).getHealth())));
-            health.setOutputMarkupId(true);
-            add(health);
-            String prestigeId = "p" + (j + 1) + "pres";
-            Label prestige = new Label(prestigeId, playerList.get(j % 4).getPrestige());
-            add(prestige);
-        	}
-        	break;
-        case 3:
-        	for (int j = 0; j < size; j++) {
-        		String labelId = "p" + (j + 1);
-            Label player = new Label(labelId, playerList.get((j + 1) % 4).getName());
-            add(player);
-            String healthId = "p" + (j + 1) + "heal";
-            Label health = new Label(healthId, new PropertyModel<>(this, Integer.toString(playerList.get((j + 1) % 4).getHealth())));
-            health.setOutputMarkupId(true);
-            add(health);
-            String prestigeId = "p" + (j + 1) + "pres";
-            Label prestige = new Label(prestigeId, playerList.get((j + 1) % 4).getPrestige());
-            add(prestige);
-        	}
-        	break;
+        switch (i) {
+          case 0:
+            for (int j = 0; j < size; j++) {
+              String containerId = "attributes-container-" + (j + 1);
+              WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
+              attributesContainer.setOutputMarkupId(true);
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              add(attributesContainer);
+
+              String labelId = "p" + (j + 1);
+              Label player = new Label(labelId, playerList.get((j + 2) % 4).getName());
+              attributesContainer.add(player);
+              String healthId = "p" + (j + 1) + "heal";
+//            Label health = new Label(healthId, new PropertyModel<>(playerList.get((j + 2) % 4), "health"));
+              String currentId = "p" + (j + 1) + "health";
+              Label health = new Label(healthId, new PropertyModel<>(this, currentId));
+              health.setOutputMarkupId(true);
+              attributesContainer.add(health);
+              String prestigeId = "p" + (j + 1) + "pres";
+              Label prestige = new Label(prestigeId, playerList.get((j + 2) % 4).getPrestige());
+              attributesContainer.add(prestige);
+            }
+            break;
+          case 1:
+            for (int j = 0; j < size; j++) {
+              String containerId = "attributes-container-" + (j + 1);
+              WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
+              attributesContainer.setOutputMarkupId(true);
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              add(attributesContainer);
+
+              String labelId = "p" + (j + 1);
+              Label player = new Label(labelId, playerList.get((j + 3) % 4).getName());
+              attributesContainer.add(player);
+              String healthId = "p" + (j + 1) + "heal";
+//            Label health = new Label(healthId, new PropertyModel<>(this, Integer.toString(playerList.get((j + 3) % 4).getHealth())));
+//            Label health = new Label(healthId, new PropertyModel<>(playerList.get((j + 3) % 4), "health"));
+              String currentId = "p" + (j + 1) + "health";
+              Label health = new Label(healthId, new PropertyModel<>(this, currentId));
+              health.setOutputMarkupId(true);
+              attributesContainer.add(health);
+              String prestigeId = "p" + (j + 1) + "pres";
+              Label prestige = new Label(prestigeId, playerList.get((j + 3) % 4).getPrestige());
+              attributesContainer.add(prestige);
+            }
+            break;
+          case 2:
+            for (int j = 0; j < size; j++) {
+              String containerId = "attributes-container-" + (j + 1);
+              WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
+              attributesContainer.setOutputMarkupId(true);
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              add(attributesContainer);
+
+              String labelId = "p" + (j + 1);
+              Label player = new Label(labelId, playerList.get(j % 4).getName());
+              attributesContainer.add(player);
+              String healthId = "p" + (j + 1) + "heal";
+//            Label health = new Label(healthId, new PropertyModel<>(this, Integer.toString(playerList.get(j % 4).getHealth())));
+//            Label health = new Label(healthId, new PropertyModel<>(playerList.get(j % 4), "health"));
+              String currentId = "p" + (j + 1) + "health";
+              Label health = new Label(healthId, new PropertyModel<>(this, currentId));
+              health.setOutputMarkupId(true);
+              attributesContainer.add(health);
+              String prestigeId = "p" + (j + 1) + "pres";
+              Label prestige = new Label(prestigeId, playerList.get(j % 4).getPrestige());
+              attributesContainer.add(prestige);
+            }
+            break;
+          case 3:
+            for (int j = 0; j < size; j++) {
+              String containerId = "attributes-container-" + (j + 1);
+              WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
+              attributesContainer.setOutputMarkupId(true);
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              add(attributesContainer);
+
+              String labelId = "p" + (j + 1);
+              Label player = new Label(labelId, playerList.get((j + 1) % 4).getName());
+              attributesContainer.add(player);
+              String healthId = "p" + (j + 1) + "heal";
+//            Label health = new Label(healthId, new PropertyModel<>(this, Integer.toString(playerList.get((j + 1) % 4).getHealth())));
+//            Label health = new Label(healthId, new PropertyModel<>(playerList.get((j + 1) % 4), "health"));
+              String currentId = "p" + (j + 1) + "health";
+              Label health = new Label(healthId, new PropertyModel<>(this, currentId));
+              health.setOutputMarkupId(true);
+              attributesContainer.add(health);
+              String prestigeId = "p" + (j + 1) + "pres";
+              Label prestige = new Label(prestigeId, playerList.get((j + 1) % 4).getPrestige());
+              attributesContainer.add(prestige);
+            }
+            break;
         }
       }
     }

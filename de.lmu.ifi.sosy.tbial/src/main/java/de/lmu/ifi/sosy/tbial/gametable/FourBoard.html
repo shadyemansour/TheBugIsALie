@@ -1,177 +1,178 @@
 <!DOCTYPE html>
 <html xmlns:wicket="http://wicket.apache.org">
 <head>
-<meta charset="utf-8" />
-<title>4 Player Table</title>
+    <meta charset="utf-8"/>
+    <title>4 Player Table</title>
 </head>
 
 <body>
-  <wicket:extend>
+<wicket:extend>
     <div>
-      <div class="playerTop">
-        <div>
-          <span wicket:id="p1" style="padding-left:10px"></span>
-          <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
-          <span wicket:id="p1heal" name="p1heal"></span>
-          <label for="p1pres" style="padding-left:10px">Prestige: </label>
-          <span wicket:id="p1pres" name="p1pres"></span>
+        <div class="playerTop">
+            <div wicket:id="attributes-container-1">
+                <span wicket:id="p1" style="padding-left:10px"></span>
+                <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
+                <span wicket:id="p1heal" name="p1heal"></span>
+                <label for="p1pres" style="padding-left:10px">Prestige: </label>
+                <span wicket:id="p1pres" name="p1pres"></span>
+            </div>
+
+            <!-- this is the card hand for player 1 (top) -->
+            <div wicket:id="player-card-container1" class="player-card-container">
+                <div wicket:id="playable-cards-container1" class="playable-cards-container">
+                    <div class="card-drop-area-frame rotate-180">
+                        <div wicket:id="card-drop-area1" class="card-drop-area">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                    <div class="card-hand-frame rotate-180">
+                        <div wicket:id="card-hand1" class="card-hand">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                </div>
+                <div wicket:id="health-role-container1" class="health-role-container">
+                    <div class="health-panel">
+                        <div wicket:id="health-player1">x</div>
+                    </div>
+                    <div class="role-card-panel rotate-180">
+                        <div wicket:id="role-card-panel1" class="role-card">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-      
-        <!-- this is the card hand for player 1 (top) -->
-        <div wicket:id="player-card-container1" class="player-card-container">
-          <div wicket:id="playable-cards-container1" class="playable-cards-container">
-            <div class="card-drop-area-frame rotate-180">
-              <div wicket:id="card-drop-area1" class="card-drop-area">
-                <div wicket:id="card">x</div>
-              </div>
+        <div class="playerLeft">
+            <div wicket:id="attributes-container-4">
+                <span wicket:id="p4" style="padding-left:10px"></span>
+                <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
+                <span wicket:id="p4heal" name="p4heal"></span>
+                <label for="p4pres" style="padding-left:10px">Prestige: </label>
+                <span wicket:id="p4pres" name="p4pres"></span>
             </div>
-            <div class="card-hand-frame rotate-180">
-              <div wicket:id="card-hand1" class="card-hand">
-                <div wicket:id="card">x</div>
-              </div>
+
+            <!-- this is the card hand for player 4 (left) -->
+            <div wicket:id="player-card-container4" class="player-card-container">
+                <div wicket:id="playable-cards-container4" class="playable-cards-container">
+                    <div class="card-drop-area-frame">
+                        <div wicket:id="card-drop-area4" class="card-drop-area">
+                            <div wicket:id="card" class="card-rotate-m90">x</div>
+                        </div>
+                    </div>
+                    <div class="card-hand-frame">
+                        <div wicket:id="card-hand4" class="card-hand">
+                            <div wicket:id="card" class="card-rotate-m90">x</div>
+                        </div>
+                    </div>
+                </div>
+                <div wicket:id="health-role-container4" class="health-role-container">
+                    <div class="health-panel">
+                        <div wicket:id="health-player4">x</div>
+                    </div>
+                    <div class="role-card-panel">
+                        <div wicket:id="role-card-panel4" class="role-card card-rotate-m90">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div wicket:id="health-role-container1" class="health-role-container">
-            <div class="health-panel">
-              <div wicket:id="health-player1">x</div>
-            </div>
-            <div class="role-card-panel rotate-180">
-              <div wicket:id="role-card-panel1" class="role-card">
-                <div wicket:id="card">x</div>
-              </div>
-            </div>
-          </div>
+
         </div>
-      
-      </div>
-      <div class="playerLeft">
-        <div>
-          <span wicket:id="p4" style="padding-left:10px"></span>
-          <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
-          <span wicket:id="p4heal" name="p4heal"></span>
-          <label for="p4pres" style="padding-left:10px">Prestige: </label>
-          <span wicket:id="p4pres" name="p4pres"></span>
+        <div class="playerRight">
+            <div wicket:id="attributes-container-2">
+                <span wicket:id="p2" style="padding-left:10px"></span>
+                <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
+                <span wicket:id="p2heal" name="p2heal"></span>
+                <label for="p2pres" style="padding-left:10px">Prestige: </label>
+                <span wicket:id="p2pres" name="p2pres"></span>
+            </div>
+
+            <!-- this is the card hand for player 2 (right) -->
+            <div wicket:id="player-card-container2" class="player-card-container">
+                <div wicket:id="playable-cards-container2" class="playable-cards-container">
+                    <div class="card-drop-area-frame">
+                        <div wicket:id="card-drop-area2" class="card-drop-area">
+                            <div wicket:id="card" class="card-rotate-p90">x</div>
+                        </div>
+                    </div>
+                    <div class="card-hand-frame">
+                        <div wicket:id="card-hand2" class="card-hand">
+                            <div wicket:id="card" class="card-rotate-p90">x</div>
+                        </div>
+                    </div>
+                </div>
+                <div wicket:id="health-role-container2" class="health-role-container">
+                    <div class="health-panel">
+                        <div wicket:id="health-player2">x</div>
+                    </div>
+                    <div class="role-card-panel">
+                        <div wicket:id="role-card-panel2" class="role-card card-rotate-p90">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
-      
-        <!-- this is the card hand for player 4 (left) -->
-        <div wicket:id="player-card-container4" class="player-card-container">
-          <div wicket:id="playable-cards-container4" class="playable-cards-container">
-            <div class="card-drop-area-frame">
-              <div wicket:id="card-drop-area4" class="card-drop-area">
-                <div wicket:id="card" class="card-rotate-m90">x</div>
-              </div>
+        <div class="playerBottom">
+            <div wicket:id="attributes-container-3">
+                <span wicket:id="p3" style="padding-left:10px"></span>
+                <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
+                <span wicket:id="p3heal" name="p3heal"></span>
+                <label for="p3pres" style="padding-left:10px">Prestige: </label>
+                <span wicket:id="p3pres" name="p3pres"></span>
             </div>
-            <div class="card-hand-frame">
-              <div wicket:id="card-hand4" class="card-hand">
-                <div wicket:id="card" class="card-rotate-m90">x</div>
-              </div>
+
+            <!-- this is the card hand for player 3 (bottom) -->
+            <div wicket:id="player-card-container3" class="player-card-container">
+                <div wicket:id="playable-cards-container3" class="playable-cards-container">
+                    <div class="card-drop-area-frame">
+                        <div wicket:id="card-drop-area3" class="card-drop-area">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                    <div class="card-hand-frame">
+                        <div wicket:id="card-hand3" class="card-hand">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                </div>
+                <div wicket:id="health-role-container3" class="health-role-container">
+                    <div class="health-panel">
+                        <div wicket:id="health-player3">x</div>
+                    </div>
+                    <div class="role-card-panel">
+                        <div wicket:id="role-card-panel3" class="role-card">
+                            <div wicket:id="card">x</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div wicket:id="health-role-container4" class="health-role-container">
-            <div class="health-panel">
-              <div wicket:id="health-player4">x</div>
-            </div>
-            <div class="role-card-panel">
-              <div wicket:id="role-card-panel4" class="role-card card-rotate-m90">
-                <div wicket:id="card">x</div>
-              </div>
-            </div>
-          </div>
+            <form wicket:id="controls-form">
+                <input type="button" wicket:id="testButton" value="Test"/>
+            </form>
         </div>
-      
-      </div>
-      <div class="playerRight">
-        <div>
-          <span wicket:id="p2" style="padding-left:10px"></span>
-          <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
-          <span wicket:id="p2heal" name="p2heal"></span>
-          <label for="p2pres" style="padding-left:10px">Prestige: </label>
-          <span wicket:id="p2pres" name="p2pres"></span>
+        <div class="cards">
+            <div wicket:id="middle-table-container" class="middle-table-container">
+                <!-- this is the stack -->
+                <div class='stack'>
+                    <div wicket:id="stack" class="card-stack">
+                        <div wicket:id="card">x</div>
+                    </div>
+                </div>
+
+                <!-- this is the heap example -->
+                <div class="heap">
+                    <div wicket:id="heap" class="card-heap">
+                        <div wicket:id="card">x</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-      
-        <!-- this is the card hand for player 2 (right) -->
-        <div wicket:id="player-card-container2" class="player-card-container">
-          <div wicket:id="playable-cards-container2" class="playable-cards-container">
-            <div class="card-drop-area-frame">
-              <div wicket:id="card-drop-area2" class="card-drop-area">
-                <div wicket:id="card" class="card-rotate-p90">x</div>
-              </div>
-            </div>
-            <div class="card-hand-frame">
-              <div wicket:id="card-hand2" class="card-hand">
-                <div wicket:id="card" class="card-rotate-p90">x</div>
-              </div>
-            </div>
-          </div>
-          <div wicket:id="health-role-container2" class="health-role-container">
-            <div class="health-panel">
-              <div wicket:id="health-player2">x</div>
-            </div>
-            <div class="role-card-panel">
-              <div wicket:id="role-card-panel2" class="role-card card-rotate-p90">
-                <div wicket:id="card">x</div>
-              </div>
-            </div>
-          </div>
-        </div>
-    	
-      
-  	  </div>
-      <div class="playerBottom">
-        <div>
-          <span wicket:id="p3" style="padding-left:10px"></span>
-          <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
-          <span wicket:id="p3heal" name="p3heal"></span>
-          <label for="p3pres" style="padding-left:10px">Prestige: </label>
-          <span wicket:id="p3pres" name="p3pres"></span>
-        </div>
-      
-        <!-- this is the card hand for player 3 (bottom) -->
-        <div wicket:id="player-card-container3" class="player-card-container">
-          <div wicket:id="playable-cards-container3" class="playable-cards-container">
-            <div class="card-drop-area-frame">
-              <div wicket:id="card-drop-area3" class="card-drop-area">
-                <div wicket:id="card">x</div>
-              </div>
-            </div>
-            <div class="card-hand-frame">
-              <div wicket:id="card-hand3" class="card-hand">
-                <div wicket:id="card">x</div>
-              </div>
-            </div>
-          </div>
-          <div wicket:id="health-role-container3" class="health-role-container">
-            <div class="health-panel">
-              <div wicket:id="health-player3">x</div>
-            </div>
-            <div class="role-card-panel">
-              <div wicket:id="role-card-panel3" class="role-card">
-                <div wicket:id="card">x</div>
-              </div>
-            </div>
-          </div>
-        </div>
-    	
-        
-      </div>
-      <div class="cards">
-        <div wicket:id="middle-table-container" class="middle-table-container">
-          <!-- this is the stack -->
-          <div class='stack'>
-            <div wicket:id="stack" class="card-stack">
-              <div wicket:id="card">x</div>
-            </div>
-          </div>
-          
-          <!-- this is the heap example -->
-          <div class="heap">
-            <div wicket:id="heap" class="card-heap">
-              <div wicket:id="card">x</div>
-            </div>
-          </div>
-        </div>
-        
-      </div>
     </div>
 </wicket:extend>
 </body>

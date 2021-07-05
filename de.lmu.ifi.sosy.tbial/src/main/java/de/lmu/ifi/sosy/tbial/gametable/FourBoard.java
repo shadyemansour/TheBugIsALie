@@ -191,9 +191,9 @@ public class FourBoard extends GameView {
 		@Override
 		protected void onEvent(AjaxRequestTarget target) {
 			System.out.println("drophand-1: " + players.get(0).getName());
-			//if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-			if (selectedCard != null) {
-				game.playCard(players.get(2).getId(), players.get(0).getId(), selectedCard);
+			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+			//if (selectedCard != null) {
+				game.playCard(user.getId(), players.get(0).getId(), selectedCard);
 				selectedCard = null;
 			}
 		}
@@ -286,9 +286,9 @@ public class FourBoard extends GameView {
 		@Override
 		protected void onEvent(AjaxRequestTarget target) {
 			System.out.println("drophand-2: " + players.get(1).getName());
-			//if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-			if (selectedCard != null) {
-				game.playCard(players.get(2).getId(), players.get(1).getId(), selectedCard);
+			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+			//if (selectedCard != null) {
+				game.playCard(user.getId(), players.get(1).getId(), selectedCard);
 				selectedCard = null;
 			}
 		}
@@ -478,9 +478,9 @@ public class FourBoard extends GameView {
 		@Override
 		protected void onEvent(AjaxRequestTarget target) {
 			System.out.println("drophand-4: " + players.get(3).getName());
-			//if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-			if (selectedCard != null) {
-				game.playCard(players.get(2).getId(), players.get(3).getId(), selectedCard);
+			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+			//if (selectedCard != null) {
+				game.playCard(user.getId(), players.get(3).getId(), selectedCard);
 				selectedCard = null;
 			}
 		}

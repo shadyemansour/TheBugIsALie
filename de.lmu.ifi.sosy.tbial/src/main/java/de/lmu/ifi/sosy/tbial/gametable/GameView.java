@@ -36,7 +36,12 @@ public abstract class GameView extends WebPage {
   protected Game game = user.getGame();
   List<Card> stackTest = game.getStack();
   public List<User> playerList = game.getPlayers();
-   
+  
+  public List<Integer> healthList = new ArrayList<Integer>(playerList.size());
+  
+  Model<String> p1healthModel = Model.of("4");
+  int p1health = -1, p2health = -1, p3health = -1, p4health = -1;
+  
   public List<Card> p1hand = new ArrayList<Card>();
   public List<Card> p2hand = new ArrayList<Card>();
   public List<Card> p3hand = new ArrayList<Card>();
@@ -372,6 +377,83 @@ public abstract class GameView extends WebPage {
           int p = body.getInt("playerID");
           int health = body.getInt("health");
           //TODO USE THE DATA
+//          updatePlayerAttributes();
+          int pPos = 0;
+          for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getId() == p) {
+              playerPos = i;
+            }
+          }
+          for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getId() == user.getId()) {
+              switch (i) {
+                case 0:
+                  switch (pPos) {
+	                  case 0:
+	                  	p3health = health;
+	                  	break;
+                    case 1:
+                      p4health = health;
+                      break;
+                    case 2:
+                      p1health = health;
+                      break;
+                    case 3:
+                      p2health = health;
+                      break;
+                  }
+                  break;
+                case 1:
+                  switch (pPos) {
+                    case 0:
+                      p2health = health;
+                      break;
+                    case 1:
+	                  	p3health = health;
+	                  	break;
+                    case 2:
+                    	p4health = health;
+                      break;
+                    case 3:
+                    	p1health = health;
+                      break;
+                  }
+                  break;
+                case 2:
+                  switch (pPos) {
+                    case 0:
+                    	p1health = health;
+                      break;
+                    case 1:
+                    	p2health = health;
+                      break;
+                    case 2:
+	                  	p3health = health;
+	                  	break;
+                    case 3:
+                    	p4health = health;
+                      break;
+                  }
+                  break;
+                case 3:
+                  switch (pPos) {
+                    case 0:
+                    	p4health = health;
+                      break;
+                    case 1:
+                    	p1health = health;
+                      break;
+                    case 2:
+                    	p2health = health;
+                      break;
+                    case 3:
+	                  	p3health = health;
+	                  	break;
+                  }
+                  break;
+              }
+            }
+          }
           break;
 
       }

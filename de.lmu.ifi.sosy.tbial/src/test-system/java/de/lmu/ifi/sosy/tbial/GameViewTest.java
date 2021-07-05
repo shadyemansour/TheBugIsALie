@@ -38,6 +38,10 @@ public class GameViewTest extends PageTestBase {
     user3 = database.register("user3", "user3");
     attemptLogin("testhost", "testpassword");
     game = database.createGame("testGame", host.getName(), "", "new", 4);
+    game.addPlayer(host);
+    game.addPlayer(user1);
+    game.addPlayer(user2);
+    game.addPlayer(user3);
     tester.assertRenderedPage(Lobby.class);
     AjaxTabbedPanel tabbedPanel = (AjaxTabbedPanel)
         tester.getComponentFromLastRenderedPage("tabs");
@@ -252,9 +256,21 @@ public class GameViewTest extends PageTestBase {
 
   @Test
   public void playerNameLabel_assignedCorrect() {
-  	tester.assertLabel("p1", "user2");
-  	tester.assertLabel("p2", "user3");
-  	tester.assertLabel("p3", "testhost");
-  	tester.assertLabel("p4", "user1");
+  	tester.assertLabel("attributes-container-1:p1", "user2");
+  	tester.assertLabel("attributes-container-2:p2", "user3");
+  	tester.assertLabel("attributes-container-3:p3", "testhost");
+  	tester.assertLabel("attributes-container-4:p4", "user1");
+  }
+  
+  @Test
+  public void playerHealth_initialCorrect() {
+  	
+  	tester.assertLabel("attributes-container-1:p1heal", String.valueOf(user2.getHealth()));
+  }
+  
+  @Test
+  public void playerHealth_correctAfterChange() {
+  	game.updateHealth(user2.getId(), 2);
+  	tester.assertLabel("attributes-container-1:p1heal", "2");
   }
 }

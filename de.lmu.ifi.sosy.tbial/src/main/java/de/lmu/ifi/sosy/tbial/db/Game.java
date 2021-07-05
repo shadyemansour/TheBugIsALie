@@ -274,6 +274,14 @@ public class Game implements Serializable {
 	 */
 	public void updateHealth(int playerID, int health) {
 		//TODO implementation
+		System.out.println("updating Health ...");
+		System.out.println(players);
+		for (User player : players) {
+			if (player.getId() == playerID) {
+				player.setHealth(health);
+			}
+			System.out.println(player.getName() + ": " + player.getHealth());
+		}
 		updateHealthMessage(playerID, health);
 	}
 

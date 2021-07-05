@@ -9,7 +9,7 @@
   <wicket:extend>
     <div>
       <div class="playerTop">
-        <div>
+        <div wicket:id="attributes-container-1">
           <span wicket:id="p1" style="padding-left:10px"></span>
           <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
           <span wicket:id="p1heal" name="p1heal"></span>
@@ -45,7 +45,7 @@
       
       </div>
       <div class="playerLeft">
-        <div>
+        <div wicket:id="attributes-container-4">
           <span wicket:id="p4" style="padding-left:10px"></span>
           <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
           <span wicket:id="p4heal" name="p4heal"></span>
@@ -81,7 +81,7 @@
       
       </div>
       <div class="playerRight">
-        <div>
+        <div wicket:id="attributes-container-2">
           <span wicket:id="p2" style="padding-left:10px"></span>
           <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
           <span wicket:id="p2heal" name="p2heal"></span>
@@ -118,7 +118,7 @@
       
   	  </div>
       <div class="playerBottom">
-        <div>
+        <div wicket:id="attributes-container-3">
           <span wicket:id="p3" style="padding-left:10px"></span>
           <img src="images/mental.png" width="20" height="20" style="padding-left:10px">
           <span wicket:id="p3heal" name="p3heal"></span>
@@ -151,8 +151,9 @@
             </div>
           </div>
         </div>
-    	
-        
+        <form wicket:id="controls-form">
+    	  <input type="button" wicket:id="testButton" value="Test"/>
+        </form>
       </div>
       <div class="cards">
         <div wicket:id="middle-table-container" class="middle-table-container">

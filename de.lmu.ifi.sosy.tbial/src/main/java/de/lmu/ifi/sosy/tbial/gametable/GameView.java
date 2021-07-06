@@ -381,7 +381,7 @@ public abstract class GameView extends WebPage {
           int pPos = 0;
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == p) {
-              playerPos = i;
+              pPos = i;
             }
           }
           for (int i = 0; i < playerList.size(); i++) {

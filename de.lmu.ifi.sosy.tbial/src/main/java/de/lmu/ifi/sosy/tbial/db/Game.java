@@ -272,7 +272,7 @@ public class Game extends Thread implements Serializable {
       User player = players.get(currentPlayer);
       if (!player.getFired()) {
         player.setMyTurn(true);
-        currentPlayerMessage();
+        currentPlayerMessage(); // what happens if its a turn of a fired player?
         isPlaying = true;
         if (player.hasStumblingCards()) {
           //todo deal with them
@@ -302,7 +302,7 @@ public class Game extends Thread implements Serializable {
         player.setMyTurn(false);
       }
       nextPlayer();
-
+      
       isTheGameOver();
 
     }

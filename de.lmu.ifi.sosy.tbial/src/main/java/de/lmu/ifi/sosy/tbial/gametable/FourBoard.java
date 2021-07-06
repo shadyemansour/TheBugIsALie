@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.repeater.Item;
@@ -54,6 +57,48 @@ public class FourBoard extends GameView {
     createPlayer2Area();
     createPlayer3Area();
     createPlayer4Area();
+    
+    setupButton();
+  }
+
+  protected void setupButton() {
+  	AjaxButton endTurnButton = new AjaxButton("endTurnButton") {
+  		/**
+       * UID for serialization.
+       */
+      private static final long serialVersionUID = 1;
+
+      public void onSubmit(AjaxRequestTarget target) {
+//        User user = ((TBIALSession) getSession()).getUser();
+      	System.out.println("end game");
+      	endTurn();
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target) {
+      }
+  	};
+  	AjaxButton testButton = new AjaxButton("testButton") {
+  		/**
+       * UID for serialization.
+       */
+      private static final long serialVersionUID = 1;
+
+      public void onSubmit(AjaxRequestTarget target) {
+//        User user = ((TBIALSession) getSession()).getUser();
+      	System.out.println("game: " + game);
+        game.updateHealth(user.getId(), 1);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target) {
+      }
+  	};
+  	form = new Form<>("controls-form");
+  	form.add(endTurnButton);
+  	form.add(testButton);
+  	form.setOutputMarkupId(true);
+  	add(form);
   }
 
   protected void updatePlayerAttributes() {

@@ -485,7 +485,7 @@ public abstract class GameView extends WebPage {
     }
   }
 
-  private void endTurn() {
+  void endTurn() {
     if (user.getHealth() == user.getHand().size()) {
       game.setIsPlaying(false);
       synchronized (game) {

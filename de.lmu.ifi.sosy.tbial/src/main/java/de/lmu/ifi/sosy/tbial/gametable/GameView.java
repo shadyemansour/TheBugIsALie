@@ -129,6 +129,8 @@ public abstract class GameView extends WebPage {
     int userID;
     System.out.println("-m to: " + user + " " + msgType + " with gameId: " + gameID);
     System.out.println(game.getGameId());
+    int playerId = body.getInt("playerID");
+    int playerPos = 0;
 
     if (gameID == game.getGameId()) {
       switch (msgType) {
@@ -249,7 +251,6 @@ public abstract class GameView extends WebPage {
           }
           break;
         case "CardsDrawn":
-          int playerId = body.getInt("playerID");
           int numCards = body.getInt("cards");
           int numDeckCards = body.getInt("cardsInDeck");
           //TODO USE THE DATA
@@ -258,7 +259,6 @@ public abstract class GameView extends WebPage {
             Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
             cardsDrawn.add(hiddenCard);
           }
-          int playerPos = 0;
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == playerId) {
               playerPos = i;

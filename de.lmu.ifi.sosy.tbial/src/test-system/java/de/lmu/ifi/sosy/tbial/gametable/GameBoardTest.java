@@ -113,19 +113,19 @@ public class GameBoardTest extends PageTestBase {
       }
     }
     int hostHandSize = host.getHand().size();
-    System.out.println("handbefore: " + host.getHand().size());
-    JSONObject msgBody = new JSONObject();
-    msgBody.put("gameID", 1);
-    msgBody.put("from", host.getId());
-    msgBody.put("to", player3.getId());
-    msgBody.put("card", bugCard);
-    JSONObject msgObject = new JSONObject();
-  	msgObject.put("msgType", "CardPlayed");
-  	msgObject.put("msgBody", msgBody);
-  	JSONMessage msg = new JSONMessage(msgObject);
-	gameView.handleMessage(msg);
-	System.out.println("handAFTER: " + host.getHand().size());
-    assertThat(host.getHand().size(), is(hostHandSize - 1));
+    if (bugCard != null ) {
+    	JSONObject msgBody = new JSONObject();
+        msgBody.put("gameID", 1);
+        msgBody.put("from", host.getId());
+        msgBody.put("to", player3.getId());
+        msgBody.put("card", bugCard);
+        JSONObject msgObject = new JSONObject();
+      	msgObject.put("msgType", "CardPlayed");
+      	msgObject.put("msgBody", msgBody);
+      	JSONMessage msg = new JSONMessage(msgObject);
+    	gameView.handleMessage(msg);
+        assertThat(host.getHand().size(), is(hostHandSize - 1));
+    }
   }
 
   @Test

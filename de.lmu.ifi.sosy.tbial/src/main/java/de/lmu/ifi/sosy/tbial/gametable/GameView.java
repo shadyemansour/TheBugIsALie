@@ -116,9 +116,6 @@ public abstract class GameView extends WebPage {
         Thread.currentThread().interrupt();
       }
       game.startGame();
-
-   //   drawCards(2); //  testing: draw two cards
-
     }
   }
 
@@ -396,8 +393,8 @@ public abstract class GameView extends WebPage {
   protected abstract void updatePlayerAttributes();
 
   public void drawCards(int numCards) {
-   // game.drawCards(((TBIALSession) getSession()).getUser().getId(), numCards );
-	  game.drawCards(game.getCurrentID(), numCards);
+    game.drawCards(((TBIALSession) getSession()).getUser().getId(), numCards );
+	
   }
 
   public void discardCard(Card card) {

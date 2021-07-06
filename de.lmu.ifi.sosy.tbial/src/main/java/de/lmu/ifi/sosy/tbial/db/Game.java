@@ -240,7 +240,7 @@ public class Game implements Serializable {
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
 
-		currentPlayer = 0;
+		currentPlayer = 2;
 		currentID = players.get(currentPlayer).getId();
 
 		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
@@ -385,20 +385,21 @@ public class Game implements Serializable {
 		msgBody.put("cards", array);
 		JSONMessage[] msg = new JSONMessage[2];
 		msg[0] = createJSONMessage("YourCards", msgBody);
-		
-		if (playerID == host.getId()) {
-			cardsHostMessages.add(msg[0].copy());
-		} else {
-				propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
-				}
-		/*
 		if (gameInitiated) {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
 		} else if (playerID == host.getId()) {
 			cardsHostMessages.add(msg[0].copy());
 		} else {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
-		}*/
+		}
+		
+/* 
+		if (playerID == host.getId()) {
+			cardsHostMessages.add(msg[0].copy());
+		} else {
+				propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
+				}*/
+		
 
 		JSONObject msgBodyBroadcast = new JSONObject();
 		msgBodyBroadcast.put("gameID", id);
@@ -407,13 +408,14 @@ public class Game implements Serializable {
 		msgBodyBroadcast.put("cardsInDeck", stack.size());
 		msg[1] = createJSONMessage("CardsDrawn", msgBodyBroadcast);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
-	/*	if (!gameInitiated && playerID != host.getId()) {
+		if (!gameInitiated && playerID != host.getId()) {
+			cardsHostMessages.add(msg[1].copy());
+		}
+		
+	/*	if (playerID != host.getId()) {
 			cardsHostMessages.add(msg[1].copy());
 		}*/
 		
-		if (playerID != host.getId()) {
-			cardsHostMessages.add(msg[1].copy());
-		}
 		return msg;
 	}
 
@@ -964,6 +966,7 @@ public class Game implements Serializable {
 
 		public void run() {
 			sendMessagesToHostOnStart();
+			drawCards(getCurrentID(),2);
 		}
 	}
 	

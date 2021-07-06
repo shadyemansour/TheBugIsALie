@@ -240,7 +240,7 @@ public class Game implements Serializable {
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
 
-		currentPlayer = 2;
+		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();
 
 		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);

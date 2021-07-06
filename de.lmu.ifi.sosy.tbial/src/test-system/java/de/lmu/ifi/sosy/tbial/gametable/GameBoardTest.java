@@ -4,6 +4,7 @@ import de.lmu.ifi.sosy.tbial.*;
 import de.lmu.ifi.sosy.tbial.db.*;
 
 import static de.lmu.ifi.sosy.tbial.TestUtil.hasNameAndPassword;
+import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -19,9 +20,11 @@ import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.junit.Before;
 import org.junit.Test;
+import org.json.JSONObject;
 
 public class GameBoardTest extends PageTestBase {
   Game game;
+  GameView gameView;
 
   User host;
   User player2;
@@ -82,6 +85,7 @@ public class GameBoardTest extends PageTestBase {
 
     tester.startPage(FourBoard.class);
     tester.assertRenderedPage(FourBoard.class);
+    gameView = (GameView) tester.getLastRenderedPage();
 
     tester.assertLabel("p1", "test3");
     tester.assertLabel("p1heal", Integer.toString(player3.getHealth()));
@@ -98,6 +102,30 @@ public class GameBoardTest extends PageTestBase {
     tester.assertLabel("p4", "test2");
     tester.assertLabel("p4heal", Integer.toString(player2.getHealth()));
     tester.assertLabel("p4pres", "0");
+
+    game.startGame();
+    
+    Card bugCard = null;
+    for (int i = 0; i < host.getHand().size(); i++) {
+      if (host.getHand().get(i).getSubTitle() == "--bug--") {
+        bugCard = host.getHand().get(i);
+        break;
+      }
+    }
+    int hostHandSize = host.getHand().size();
+    System.out.println("handbefore: " + host.getHand().size());
+    JSONObject msgBody = new JSONObject();
+    msgBody.put("gameID", 1);
+    msgBody.put("from", host.getId());
+    msgBody.put("to", player3.getId());
+    msgBody.put("card", bugCard);
+    JSONObject msgObject = new JSONObject();
+  	msgObject.put("msgType", "CardPlayed");
+  	msgObject.put("msgBody", msgBody);
+  	JSONMessage msg = new JSONMessage(msgObject);
+	gameView.handleMessage(msg);
+	System.out.println("handAFTER: " + host.getHand().size());
+    assertThat(host.getHand().size(), is(hostHandSize - 1));
   }
 
   @Test

@@ -397,6 +397,7 @@ public abstract class GameView extends WebPage {
             if (from == actualPlayerlist.get(i).getId()) {
             	switch(i) {
             	case 0:
+                // visually display card removal
             		if(from == user.getId()) {
             			for (int j = 0; j<p1hand.size(); j++) {
             				if (p1hand.get(j) == car) {
@@ -406,6 +407,8 @@ public abstract class GameView extends WebPage {
             		} else {
             			p1hand.remove(0);
             		}
+                // remove card from players cardhand
+                removeCardFromHand(from, car);
             		break;
             	case 1:
             		if(from == user.getId()) {
@@ -417,6 +420,7 @@ public abstract class GameView extends WebPage {
             		} else {
             			p2hand.remove(0);
             		}
+                removeCardFromHand(from, car);
             		break;
             	case 2:
             		if(from == user.getId()) {
@@ -428,6 +432,7 @@ public abstract class GameView extends WebPage {
             		} else {
             			p3hand.remove(0);
             		}
+                removeCardFromHand(from, car);
             		break;
             	case 3:
             		if(from == user.getId()) {
@@ -439,6 +444,7 @@ public abstract class GameView extends WebPage {
             		} else {
             			p4hand.remove(0);
             		}
+                removeCardFromHand(from, car);
             		break;
             	}
             }
@@ -482,6 +488,19 @@ public abstract class GameView extends WebPage {
 
       }
 
+    }
+  }
+  public void removeCardFromHand(int from, Card car) {
+    for (int k = 0; k < playerList.size(); k++) {
+      if (from == playerList.get(k).getId()) {
+        List<Card> tmp = playerList.get(k).getHand();
+        for (int l = 0; l < tmp.size(); l++) {
+          if (tmp.get(l) == car) {
+            tmp.remove(l);
+            playerList.get(k).setHand(tmp);
+          }
+        }
+      }
     }
   }
 

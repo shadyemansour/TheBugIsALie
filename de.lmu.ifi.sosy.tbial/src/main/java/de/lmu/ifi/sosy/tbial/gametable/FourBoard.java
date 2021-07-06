@@ -40,6 +40,7 @@ public class FourBoard extends GameView {
   List<Card> cardDropModels, cardDropModels2, cardDropModels3, cardDropModels4;
   ListView<Card> cardDropArea, cardDropArea2, cardDropArea3, cardDropArea4;
   Card selectedCard;
+  boolean selectable = false;
   ListView<Card> cardHand, cardHand2, cardHand3, cardHand4;
 
   User user = ((TBIALSession) getSession()).getUser();
@@ -192,7 +193,6 @@ public class FourBoard extends GameView {
 		protected void onEvent(AjaxRequestTarget target) {
 			System.out.println("drophand-1: " + players.get(0).getName());
 			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-			//if (selectedCard != null) {
 				game.playCard(user.getId(), players.get(0).getId(), selectedCard);
 				selectedCard = null;
 			}
@@ -287,7 +287,6 @@ public class FourBoard extends GameView {
 		protected void onEvent(AjaxRequestTarget target) {
 			System.out.println("drophand-2: " + players.get(1).getName());
 			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-			//if (selectedCard != null) {
 				game.playCard(user.getId(), players.get(1).getId(), selectedCard);
 				selectedCard = null;
 			}
@@ -402,6 +401,14 @@ public class FourBoard extends GameView {
 				int posLeft = (width - p3drophand.size() * 50) / (p3drophand.size() + 1);
 				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
 				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+        item.add(new AjaxEventBehavior("click") {
+					private static final long serialVersionUID = 1L;
+					@Override
+					protected void onEvent(AjaxRequestTarget target) {
+						System.out.println("card: " + item.getModelObject());
+						//selectedCard = item.getModelObject();
+					}
+				});
 			}
     };
     cardDropArea3.setOutputMarkupId(true);
@@ -423,7 +430,7 @@ public class FourBoard extends GameView {
 					@Override
 					protected void onEvent(AjaxRequestTarget target) {
 						System.out.println("card: " + item.getModelObject());
-						selectedCard = item.getModelObject();
+					  selectedCard = item.getModelObject();
 					}
 				});
 			}
@@ -479,7 +486,6 @@ public class FourBoard extends GameView {
 		protected void onEvent(AjaxRequestTarget target) {
 			System.out.println("drophand-4: " + players.get(3).getName());
 			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-			//if (selectedCard != null) {
 				game.playCard(user.getId(), players.get(3).getId(), selectedCard);
 				selectedCard = null;
 			}

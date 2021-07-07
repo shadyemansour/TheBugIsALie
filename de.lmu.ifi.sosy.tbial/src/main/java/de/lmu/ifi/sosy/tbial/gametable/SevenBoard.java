@@ -78,6 +78,9 @@ public class SevenBoard extends GameView {
     currenthealth7 = players.get(6).getHealth();
   }
 
+  protected void updateHealth() {
+  }
+
   protected void createPlayerAttributes() {
 //    for (Game g : appGames) {
 //      if (g.equals(user.getGame())) {

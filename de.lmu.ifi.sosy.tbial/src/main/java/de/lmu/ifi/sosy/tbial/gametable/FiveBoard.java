@@ -73,6 +73,9 @@ public class FiveBoard extends GameView {
     currenthealth5 = players.get(4).getHealth();
   }
 
+  protected void updateHealth() {
+  }
+
   protected void createPlayerAttributes() {
 //    for (Game g : appGames) {
 //      if (g.equals(user.getGame())) {

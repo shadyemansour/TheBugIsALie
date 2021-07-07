@@ -76,6 +76,9 @@ public class SixBoard extends GameView {
     currenthealth6 = players.get(5).getHealth();
   }
 
+  protected void updateHealth() {
+  }
+
   protected void createPlayerAttributes() {
 //    for (Game g : appGames) {
 //      if (g.equals(user.getGame())) {

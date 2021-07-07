@@ -524,7 +524,7 @@ public class Game extends Thread implements Serializable {
 		msg[0] = createJSONMessage("YourCards", msgBody);
 		if (gameInitiated) {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
-			if (turn == 1) {
+			if (turn == 1 && playerID == host.getId()) {
 				cardsHostMessages.add(msg[0].copy());
 			}
 		} else if (playerID == host.getId()) {

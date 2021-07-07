@@ -571,6 +571,9 @@ public class Game extends Thread implements Serializable {
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", currentID);
 		JSONMessage msg = createJSONMessage("CurrentPlayer", msgBody);
+		if (turn == 1) {
+			cardsHostMessages.add(msg.copy());
+		}
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;
 

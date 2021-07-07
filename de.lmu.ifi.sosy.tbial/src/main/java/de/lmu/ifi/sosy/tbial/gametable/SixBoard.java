@@ -76,6 +76,9 @@ public class SixBoard extends GameView {
     currenthealth6 = players.get(5).getHealth();
   }
 
+  protected void updateHealth() {
+  }
+
   protected void createPlayerAttributes() {
 //    for (Game g : appGames) {
 //      if (g.equals(user.getGame())) {
@@ -169,13 +172,13 @@ public class SixBoard extends GameView {
    * creates dummy cards, can be removed later
    */
   private void createDummyCards() {
-    card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-    card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
-    card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+    card1 = new Card("Role", "Manager", "", "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, "");
+    card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, "");
+    card3 = new Card("Action", "System Integration", "", "", "My code is better than yours!", true, true, "");
     card3.setVisible(!card3.isVisible());
-    card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
-    card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-    card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    card4 = new Card("Ability", "Bug Delegation", "", "", "Delegates bug report\n.25 chance to work", true, true, "");
+    card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, "");
+    card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, "");
 
     cardModels = new ArrayList<IModel<Card>>();
     cardModels.add(Model.of(card1));

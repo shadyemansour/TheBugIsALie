@@ -8,6 +8,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
 import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
@@ -36,6 +37,11 @@ public abstract class GameView extends WebPage {
   int currentPlayerId = -1;
   List<Card> stackTest = game.getStack();
   public List<User> playerList = game.getPlayers();
+
+  public List<Integer> healthList = new ArrayList<Integer>(playerList.size());
+
+  Model<String> p1healthModel = Model.of("4");
+  int p1health = -1, p2health = -1, p3health = -1, p4health = -1;
 
   public List<Card> p1hand = new ArrayList<Card>();
   public List<Card> p2hand = new ArrayList<Card>();
@@ -182,28 +188,28 @@ public abstract class GameView extends WebPage {
               System.out.println("assign roles for: " + user);
               switch (i) {
                 case 0:
-                  p1role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(0));
-                  p4role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
                 case 1:
-                  p1role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(1));
-                  p4role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
                 case 2:
-                  p1role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(2));
-                  p4role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
                 case 3:
-                  p1role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(3));
-                  p4role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
               }
             }
@@ -273,7 +279,6 @@ public abstract class GameView extends WebPage {
 
         case "YourCards":
           JSONArray cardsJSON = (JSONArray) body.get("cards");
-
           for (int i = 0; i < cardsJSON.length(); i++) {
             Card card = (Card) cardsJSON.get(i);
             card.setVisible(true);
@@ -286,7 +291,7 @@ public abstract class GameView extends WebPage {
           //TODO USE THE DATA
           List<Card> cardsDrawn = new ArrayList<Card>();
           for (int j = 0; j < numCards; j++) {
-            Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
+            Card hiddenCard = new Card("", "Hidden Card", "", "", "", false, false, "");
             cardsDrawn.add(hiddenCard);
           }
           for (int i = 0; i < playerList.size(); i++) {
@@ -380,7 +385,7 @@ public abstract class GameView extends WebPage {
           }
           stackList.clear();
           for (int j = 0; j < numDeckCards; j++) {
-            Card stackCard = new Card("", "Stack Card", null, null, null, false, false, null);
+            Card stackCard = new Card("", "Stack Card", "", "", "", false, false, "");
             stackList.add(stackCard);
           }
           break;
@@ -406,6 +411,83 @@ public abstract class GameView extends WebPage {
           int p = body.getInt("playerID");
           int health = body.getInt("health");
           //TODO USE THE DATA
+          updateHealth();
+//          int pPos = 0;
+//          for (int i = 0; i < playerList.size(); i++) {
+//            if (playerList.get(i).getId() == p) {
+//              pPos = i;
+//            }
+//          }
+//          for (int i = 0; i < playerList.size(); i++) {
+//            if (playerList.get(i).getId() == user.getId()) {
+//              switch (i) {
+//                case 0:
+//                  switch (pPos) {
+//                    case 0:
+//                      p3health = health;
+//                      break;
+//                    case 1:
+//                      p4health = health;
+//                      break;
+//                    case 2:
+//                      p1health = health;
+//                      break;
+//                    case 3:
+//                      p2health = health;
+//                      break;
+//                  }
+//                  break;
+//                case 1:
+//                  switch (pPos) {
+//                    case 0:
+//                      p2health = health;
+//                      break;
+//                    case 1:
+//                      p3health = health;
+//                      break;
+//                    case 2:
+//                      p4health = health;
+//                      break;
+//                    case 3:
+//                      p1health = health;
+//                      break;
+//                  }
+//                  break;
+//                case 2:
+//                  switch (pPos) {
+//                    case 0:
+//                      p1health = health;
+//                      break;
+//                    case 1:
+//                      p2health = health;
+//                      break;
+//                    case 2:
+//                      p3health = health;
+//                      break;
+//                    case 3:
+//                      p4health = health;
+//                      break;
+//                  }
+//                  break;
+//                case 3:
+//                  switch (pPos) {
+//                    case 0:
+//                      p4health = health;
+//                      break;
+//                    case 1:
+//                      p1health = health;
+//                      break;
+//                    case 2:
+//                      p2health = health;
+//                      break;
+//                    case 3:
+//                      p3health = health;
+//                      break;
+//                  }
+//                  break;
+//              }
+//            }
+//          }
           break;
 
         case "PlayerFired":
@@ -433,6 +515,8 @@ public abstract class GameView extends WebPage {
   protected abstract void updatePlayerAttributes();
   
   protected abstract void visualizeCurrentPlayer(int position);
+
+  protected abstract void updateHealth();
 
   public void drawCards() {
     game.drawCards(((TBIALSession) getSession()).getUser().getId(), 2 /*TODO CHANGE TO VARIABLE*/);
@@ -490,7 +574,7 @@ public abstract class GameView extends WebPage {
       } else if (event.getPropertyName().equals("UpdatePlayerAttributes")) {
         int gameId = (int) event.getOldValue();
         if (user.getGame().getGameId() == gameId && user.getId() != game.getHost().getId())
-          updatePlayerAttributes();
+          updateHealth();
       }
     }
   }

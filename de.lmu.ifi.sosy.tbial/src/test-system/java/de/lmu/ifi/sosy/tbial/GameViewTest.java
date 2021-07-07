@@ -88,21 +88,22 @@ public class GameViewTest extends PageTestBase {
     // System.out.println(gameView.playerList);
     tester.assertComponent("p1-container:player-card-container1:playable-cards-container1:card-hand1", ListView.class);
     assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:playable-cards-container1:card-hand1")).getViewSize());
+
 //    GameView gameView = (GameView) tester.getLastRenderedPage();
 //    gameView.handleMessage(gameView.getGame().getRoleCardsHostMessage());
-  }
+	}
 
-  @Test
-  public void p1hand_sizeIsFour_CardsDrawn() {
-  	JSONObject msgBody = new JSONObject();
-  	msgBody.put("gameID", 1);
-  	msgBody.put("playerID", user2.getId());
-  	msgBody.put("cards", 4);
-  	msgBody.put("cardsInDeck", 30);
-  	JSONObject msgObject = new JSONObject();
-  	msgObject.put("msgType", "CardsDrawn");
-  	msgObject.put("msgBody", msgBody);
-  	JSONMessage msg = new JSONMessage(msgObject);
+	@Test
+	public void p1hand_sizeIsFour_CardsDrawn() {
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", 1);
+		msgBody.put("playerID", user2.getId());
+		msgBody.put("cards", 4);
+		msgBody.put("cardsInDeck", 30);
+		JSONObject msgObject = new JSONObject();
+		msgObject.put("msgType", "CardsDrawn");
+		msgObject.put("msgBody", msgBody);
+		JSONMessage msg = new JSONMessage(msgObject);
 		gameView.handleMessage(msg);
 
     assertEquals(4, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:playable-cards-container1:card-hand1")).getViewSize());
@@ -184,64 +185,64 @@ public class GameViewTest extends PageTestBase {
   	JSONMessage msg = new JSONMessage(msgObject);
 		gameView.handleMessage(msg);
 
-    assertEquals(30, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:stack")).getViewSize());
-  }
+		assertEquals(30, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:stack")).getViewSize());
+	}
 
-  @Test
-  public void heapList_containsCorrectCard_afterDiscardCard() {
-  	Card card = new Card("Action", "Nullpointer!", "--bug--", null, "-1 mental health", true, false, null);
-  	JSONObject msgBody = new JSONObject();
-  	msgBody.put("gameID", 1);
-  	msgBody.put("playerID", user1.getId());
-  	msgBody.put("card", card);
-  	JSONObject msgObject = new JSONObject();
-  	msgObject.put("msgType", "CardDiscarded");
-  	msgObject.put("msgBody", msgBody);
-  	JSONMessage msg = new JSONMessage(msgObject);
+	@Test
+	public void heapList_containsCorrectCard_afterDiscardCard() {
+		Card card = new Card("Action", "Nullpointer!", "--bug--", "", "-1 mental health", true, false, "");
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", 1);
+		msgBody.put("playerID", user1.getId());
+		msgBody.put("card", card);
+		JSONObject msgObject = new JSONObject();
+		msgObject.put("msgType", "CardDiscarded");
+		msgObject.put("msgBody", msgBody);
+		JSONMessage msg = new JSONMessage(msgObject);
 		gameView.handleMessage(msg);
 
 		assertEquals(card, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:heap")).getModelObject().get(0));
-  }
+	}
 
-  @Test
-  public void roles_assignedCorrect() {
-  	JSONArray jsonArray = new JSONArray();
+	@Test
+	public void roles_assignedCorrect() {
+		JSONArray jsonArray = new JSONArray();
 
-  	JSONObject role1 = new JSONObject();
-  	Card role1card = new Card("Role", "Consultant", null, "Aim: Get everyone else \nfired; Manager last!", "Tries to take over the \ncompany", false, false, null);
-  	role1.put("playerID", host.getId());
-  	role1.put("role", role1card.getTitle());
-  	role1.put("roleCard", role1card);
-  	jsonArray.put(role1);
+		JSONObject role1 = new JSONObject();
+		Card role1card = new Card("Role", "Consultant", "", "Aim: Get everyone else \nfired; Manager last!", "Tries to take over the \ncompany", false, false, "");
+		role1.put("playerID", host.getId());
+		role1.put("role", role1card.getTitle());
+		role1.put("roleCard", role1card);
+		jsonArray.put(role1);
 
-  	JSONObject role2 = new JSONObject();
-  	Card role2card = new Card("Role", "Manager", null, "Aim: Remove evil code \nmonkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-  	role2.put("playerID", host.getId());
-  	role2.put("role", role2card.getTitle());
-  	role2.put("roleCard", role2card);
-  	jsonArray.put(role2);
+		JSONObject role2 = new JSONObject();
+		Card role2card = new Card("Role", "Manager", "", "Aim: Remove evil code \nmonkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, "");
+		role2.put("playerID", host.getId());
+		role2.put("role", role2card.getTitle());
+		role2.put("roleCard", role2card);
+		jsonArray.put(role2);
 
-  	JSONObject role3 = new JSONObject();
-  	Card role3card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
-  	role3.put("playerID", host.getId());
-  	role3.put("role", role3card.getTitle());
-  	role3.put("roleCard", role3card);
-  	jsonArray.put(role3);
+		JSONObject role3 = new JSONObject();
+		Card role3card = new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, "");
+		role3.put("playerID", host.getId());
+		role3.put("role", role3card.getTitle());
+		role3.put("roleCard", role3card);
+		jsonArray.put(role3);
 
-  	JSONObject role4 = new JSONObject();
-  	Card role4card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
-  	role4.put("playerID", host.getId());
-  	role4.put("role", role4card.getTitle());
-  	role4.put("roleCard", role4card);
-  	jsonArray.put(role4);
+		JSONObject role4 = new JSONObject();
+		Card role4card = new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, "");
+		role4.put("playerID", host.getId());
+		role4.put("role", role4card.getTitle());
+		role4.put("roleCard", role4card);
+		jsonArray.put(role4);
 
-  	JSONObject msgBody = new JSONObject();
-  	msgBody.put("gameID", 1);
-  	msgBody.put("roles", jsonArray);
-  	JSONObject msgObject = new JSONObject();
-  	msgObject.put("msgType", "Roles");
-  	msgObject.put("msgBody", msgBody);
-  	JSONMessage msg = new JSONMessage(msgObject);
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", 1);
+		msgBody.put("roles", jsonArray);
+		JSONObject msgObject = new JSONObject();
+		msgObject.put("msgType", "Roles");
+		msgObject.put("msgBody", msgBody);
+		JSONMessage msg = new JSONMessage(msgObject);
 		gameView.handleMessage(msg);
 
 		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0)).getTitle());
@@ -250,4 +251,23 @@ public class GameViewTest extends PageTestBase {
 		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
   }
 
+	@Test
+	public void playerNameLabel_assignedCorrect() {
+		tester.assertLabel("p1-container:attributes-container-1:p1", "user2");
+		tester.assertLabel("p2-container:attributes-container-2:p2", "user3");
+		tester.assertLabel("p3-container:attributes-container-3:p3", "testhost");
+		tester.assertLabel("p4-container:attributes-container-4:p4", "user1");
+	}
+
+	@Test
+	public void playerHealth_initialCorrect() {
+
+		tester.assertLabel("p1-container:attributes-container-1:p1heal", String.valueOf(user2.getHealth()));
+	}
+
+	//	@Test
+	public void playerHealth_correctAfterChange() {
+		game.updateHealth(user2.getId(), 2);
+		tester.assertLabel("attributes-container-1:p1heal", "2");
+	}
 }

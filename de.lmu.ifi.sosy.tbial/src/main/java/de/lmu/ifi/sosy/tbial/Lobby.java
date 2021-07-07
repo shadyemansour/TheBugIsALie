@@ -175,7 +175,7 @@ public class Lobby extends BasePage {
 
                 @Override
                 protected void populateItem(final ListItem<Game> listItem) {
-                    listItem.add(new Label("name", new PropertyModel<>(listItem.getModel(), "name")));
+                    listItem.add(new Label("name", listItem.getModelObject().getGameName())); //TODO GAMENAME AFTER THREADS
                     listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
                     listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected() ? "Public" : "Private"));

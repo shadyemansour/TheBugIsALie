@@ -369,6 +369,11 @@ public class Game implements Serializable {
 			if(stack.size()==0){
                 decksShuffled();
             }
+			for (User player : players) {
+				if(player.getId() == playerID) {
+					player.getHand().add(stack.get(0)); break;
+				}
+			}
 			//TODO Draw cards from stack and save in Array
 			cards.put(stack.get(0));
 			stack.remove(0);

@@ -173,28 +173,28 @@ public abstract class GameView extends WebPage {
               System.out.println("assign roles for: " + user);
               switch (i) {
                 case 0:
-                  p1role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(0));
-                  p4role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
                 case 1:
-                  p1role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(1));
-                  p4role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
                 case 2:
-                  p1role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(2));
-                  p4role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(3).getTitle().equals("Manager") ? roleCards.get(3) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
                 case 3:
-                  p1role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", null, null, null, false, false, null));
-                  p2role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p1role.add(roleCards.get(1).getTitle().equals("Manager") ? roleCards.get(1) : new Card("", "Hidden Role", "", "", "", false, false, ""));
+                  p2role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   p3role.add(roleCards.get(3));
-                  p4role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", null, null, null, false, false, null));
+                  p4role.add(roleCards.get(0).getTitle().equals("Manager") ? roleCards.get(0) : new Card("", "Hidden Role", "", "", "", false, false, ""));
                   break;
               }
             }
@@ -255,7 +255,7 @@ public abstract class GameView extends WebPage {
           //TODO USE THE DATA
           List<Card> cardsDrawn = new ArrayList<Card>();
           for (int j = 0; j < numCards; j++) {
-            Card hiddenCard = new Card("", "Hidden Card", null, null, null, false, false, null);
+            Card hiddenCard = new Card("", "Hidden Card", "", "", "", false, false, "");
             cardsDrawn.add(hiddenCard);
           }
           int playerPos = 0;
@@ -350,7 +350,7 @@ public abstract class GameView extends WebPage {
           }
           stackList.clear();
           for (int j = 0; j < numDeckCards; j++) {
-            Card stackCard = new Card("", "Stack Card", null, null, null, false, false, null);
+            Card stackCard = new Card("", "Stack Card", "", "", "", false, false, "");
             stackList.add(stackCard);
           }
           break;

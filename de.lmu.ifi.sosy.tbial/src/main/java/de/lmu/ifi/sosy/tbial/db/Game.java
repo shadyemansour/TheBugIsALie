@@ -257,6 +257,7 @@ public class Game extends Thread implements Serializable {
         drawCardsMessage(player.getId(), handArray);
       }
     }
+    System.out.println(rolesArray);
     rolesAndCharactersMessage("Roles", rolesArray);
     rolesAndCharactersMessage("Characters", charactersArray);
 
@@ -513,6 +514,7 @@ public class Game extends Thread implements Serializable {
     msg[0] = createJSONMessage("YourCards", msgBody);
     if (gameInitiated) {
       propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
+      System.out.println("sent private message to manager");
     } else if (playerID == host.getId()) {
       cardsHostMessages.add(msg[0].copy());
     } else {
@@ -865,19 +867,19 @@ public class Game extends Thread implements Serializable {
     List<Card> roleCardsSix = new ArrayList<Card>();
     List<Card> roleCardsSeven = new ArrayList<Card>();
 
-    roleCardsFour.add(new Card("Role", "Manager", null, "Aim: Remove evil code \nmonkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null));
-    roleCardsFour.add(new Card("Role", "Consultant", null, "Aim: Get everyone else \nfired; Manager last!", "Tries to take over the \ncompany", false, false, null));
-    roleCardsFour.add(new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null));
-    roleCardsFour.add(new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null));
+    roleCardsFour.add(new Card("Role", "Manager", "", "Aim: Remove evil code \nmonkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, ""));
+    roleCardsFour.add(new Card("Role", "Consultant", "", "Aim: Get everyone else \nfired; Manager last!", "Tries to take over the \ncompany", false, false, ""));
+    roleCardsFour.add(new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, ""));
+    roleCardsFour.add(new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, ""));
 
     roleCardsFive.addAll(roleCardsFour);
-    roleCardsFive.add(new Card("Role", "Honest Developer", null, "Aim: Get evil code monkeys \nand consultant fired", "Writes good code \nTries to ship \nHelps the manager", false, false, null));
+    roleCardsFive.add(new Card("Role", "Honest Developer", "", "Aim: Get evil code monkeys \nand consultant fired", "Writes good code \nTries to ship \nHelps the manager", false, false, ""));
 
     roleCardsSix.addAll(roleCardsFive);
-    roleCardsSix.add(new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null));
+    roleCardsSix.add(new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, ""));
 
     roleCardsSeven.addAll(roleCardsSix);
-    roleCardsSeven.add(new Card("Role", "Honest Developer", null, "Aim: Get evil code monkeys \nand consultant fired", "Writes good code \nTries to ship \nHelps the manager", false, false, null));
+    roleCardsSeven.add(new Card("Role", "Honest Developer", "", "Aim: Get evil code monkeys \nand consultant fired", "Writes good code \nTries to ship \nHelps the manager", false, false, ""));
 
     if (this.players.size() == 4) {
       roleCards.addAll(roleCardsFour);
@@ -901,67 +903,67 @@ public class Game extends Thread implements Serializable {
     characterCards.add(new Card("Character",
         "Mark Zuckerberg", "Founder of Facebook", "(Mental Health 3)",
         "If you lose mental health, \ntake one card from the causer",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Tom Anderson", "Founder of MySpace", "(Mental Health 4)",
         "If you lose mental health, \nyou may take a card from the stack",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Jeff Taylor", "Founder of \nmonster.com", "(Mental Health 4)",
         "No cards left? \nTake one from the stack",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Larry Page", "Founder of Google", "(Mental Health 4)",
         "When somebody gets fired, \nyou take the cards",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Larry Ellison", "Founder of Oracle", "(Mental Health 4)",
         "May take three instead of \ntwo cards from the stack, \nbut has to put one back",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Kent Beck", "Inventor of Extreme \nProgramming", "(Mental Health 4)",
         "Drop two cards and \ngain mental health",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Steve Jobs", "Founder of Apple", "(Mental Health 4)",
         "Gets a second chance",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Steve Ballmer", "Chief Executive Officer \nof Microsoft", "(Mental Health 4)",
         "May use bugs as exuses \nand the other way round",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Linus Torvalds", "Linus Inventor", "(Mental Health 4)",
         "Bugs found can only be \ndeflected with two exuses",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Holier than Thou", "Found Everywhere", "(Mental Health 4)",
         "Sees everyone with -1 prestige",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Konrad Zuse", "Built first programmable \ncomputer", "(Mental Health 3)",
         "Is seen with +1 prestige by everybody",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Bruce Schneier", "Security guru", "(Mental Health 4)",
         "May report an arbitrary \nnumber of bugs",
-        false, true, null));
+        false, true, ""));
 
     characterCards.add(new Card("Character",
         "Terry Weissman", "Founder of Bugzilla", "(Mental Health 4)",
         "Got a bug? .25 percent \nchance for delegation",
-        false, true, null));
+        false, true, ""));
 
 
   }
@@ -971,88 +973,88 @@ public class Game extends Thread implements Serializable {
 
     for (int i = 0; i < 4; i++) {
 
-      stack.add(new Card("Action", "Nullpointer!", "--bug--", null,
-          "-1 mental health", true, false, null));
-      stack.add(new Card("Action ", "Off By One!", "--bug--", null,
-          "-1 mental health", true, false, null));
-      stack.add(new Card("Action", "Class Not Found!", "--bug--", null,
-          "-1 mental health", true, false, null));
-      stack.add(new Card("Action", "System Hangs!", "--bug--", null,
-          "-1 mental health", true, false, null));
-      stack.add(new Card("Action", "Core Damp!", "--bug--", null,
-          "-1 mental health", true, false, null));
-      stack.add(new Card("Action", "Customer Hates \nUI!", "--bug--", null,
-          "-1 mental health", true, false, null));
+      stack.add(new Card("Action", "Nullpointer!", "--bug--", "",
+          "-1 mental health", true, false, ""));
+      stack.add(new Card("Action ", "Off By One!", "--bug--", "",
+          "-1 mental health", true, false, ""));
+      stack.add(new Card("Action", "Class Not Found!", "--bug--", "",
+          "-1 mental health", true, false, ""));
+      stack.add(new Card("Action", "System Hangs!", "--bug--", "",
+          "-1 mental health", true, false, ""));
+      stack.add(new Card("Action", "Core Damp!", "--bug--", "",
+          "-1 mental health", true, false, ""));
+      stack.add(new Card("Action", "Customer Hates \nUI!", "--bug--", "",
+          "-1 mental health", true, false, ""));
 
-      stack.add(new Card("Action", "Works For Me!", "--lame excuse--", null,
-          "Fends of bug report", true, false, null));
-      stack.add(new Card("Action", "It's a Feature!", "--lame excuse--", null,
-          "Fends of bug report", true, false, null));
-      stack.add(new Card("Action", "I'm not Responsible!", "--lame excuse--", null,
-          "Fends of bug report", true, false, null));
+      stack.add(new Card("Action", "Works For Me!", "--lame excuse--", "",
+          "Fends of bug report", true, false, ""));
+      stack.add(new Card("Action", "It's a Feature!", "--lame excuse--", "",
+          "Fends of bug report", true, false, ""));
+      stack.add(new Card("Action", "I'm not Responsible!", "--lame excuse--", "",
+          "Fends of bug report", true, false, ""));
 
-      stack.add(new Card("Action", "I refactored \nyour code. \nAway", null, null,
-          "Ignors prestige. \nDrop one card", false, false, null));
-      stack.add(new Card("Action", "Pwnd.", null, null,
-          "Cede one card. Same or \nlower prestige required", false, false, null));
+      stack.add(new Card("Action", "I refactored \nyour code. \nAway", "", "",
+          "Ignors prestige. \nDrop one card", false, false, ""));
+      stack.add(new Card("Action", "Pwnd.", "", "",
+          "Cede one card. Same or \nlower prestige required", false, false, ""));
     }
 
     for (int i = 0; i < 3; i++) {
-      stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", null, "Stumbling Block",
-          "Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, null));
-      stack.add(new Card("Ability", "Microsoft", "(Previous Job)", null,
-          "1 prestige", false, false, null));
-      stack.add(new Card("Action", "System Integration", null, null,
-          "My code is better than \nyours!", false, false, null));  //should be 9?
+      stack.add(new Card("StumblingBlock", "Off-The-Job \nTraining", "", "Stumbling Block",
+          "Not for manager. \nCannot play this turn. \n0.25 chance to deflect", false, false, ""));
+      stack.add(new Card("Ability", "Microsoft", "(Previous Job)", "",
+          "1 prestige", false, false, ""));
+      stack.add(new Card("Action", "System Integration", "", "",
+          "My code is better than \nyours!", false, false, ""));  //should be 9?
     }
     for (int i = 0; i < 2; i++) {
-      stack.add(new Card("Action", "Coffee", "--Solution--", null,
-          "+1 mental health", true, false, null));
-      stack.add(new Card("Action", "Code+Fix \nSession", "--Solution--", null,
-          "+1 mental health", true, false, null));
-      stack.add(new Card("Action", "I know regular \nexpressions", "--Solution--", null,
-          "+1 mental health", true, false, null));
+      stack.add(new Card("Action", "Coffee", "--Solution--", "",
+          "+1 mental health", true, false, ""));
+      stack.add(new Card("Action", "Code+Fix \nSession", "--Solution--", "",
+          "+1 mental health", true, false, ""));
+      stack.add(new Card("Action", "I know regular \nexpressions", "--Solution--", "",
+          "+1 mental health", true, false, ""));
 
-      stack.add(new Card("Action", "Standup \nMeeting", null, null,
-          "The cards are on the \ntable", false, false, null));
-      stack.add(new Card("Action", "Personal Coffee \nMachine", null, null,
-          "Takes 2 cards", false, false, null));
-      stack.add(new Card("Action", "Boring Meeting", null, null,
-          "Play bug or lose \nmental health", false, false, null));
+      stack.add(new Card("Action", "Standup \nMeeting", "", "",
+          "The cards are on the \ntable", false, false, ""));
+      stack.add(new Card("Action", "Personal Coffee \nMachine", "", "",
+          "Takes 2 cards", false, false, ""));
+      stack.add(new Card("Action", "Boring Meeting", "", "",
+          "Play bug or lose \nmental health", false, false, ""));
 
-      stack.add(new Card("Ability", "Bug Delegation", null, null,
-          "Delegates bug report. \n.25 chance to work", false, false, null));
-      stack.add(new Card("Ability", "Wears Tie at \nWork", null, null,
-          "Is seen with +1 prestige by \neverybody", false, false, null));
-      stack.add(new Card("Ability", "Accenture", "-previous job-", null,
-          "May report several bugs in \none round", false, false, null));
-      stack.add(new Card("Ability", "Google", "-previous job-", null,
-          "2 prestige", false, false, null));
+      stack.add(new Card("Ability", "Bug Delegation", "", "",
+          "Delegates bug report. \n.25 chance to work", false, false, ""));
+      stack.add(new Card("Ability", "Wears Tie at \nWork", "", "",
+          "Is seen with +1 prestige by \neverybody", false, false, ""));
+      stack.add(new Card("Ability", "Accenture", "-previous job-", "",
+          "May report several bugs in \none round", false, false, ""));
+      stack.add(new Card("Ability", "Google", "-previous job-", "",
+          "2 prestige", false, false, ""));
 
     }
 
-    stack.add(new Card("Action", "BUG", "-bug-", null,
-        "-1 mental health", true, false, null));
+    stack.add(new Card("Action", "BUG", "-bug-", "",
+        "-1 mental health", true, false, ""));
 
 
-    stack.add(new Card("Action", "Red Bull \nDispenser", null, null,
-        "Take 3 Cards", false, false, null));
+    stack.add(new Card("Action", "Red Bull \nDispenser", "", "",
+        "Take 3 Cards", false, false, ""));
 
-    stack.add(new Card("Action", "Heisenbug", null, null,
-        "Bugs for everybody!", false, false, null));
+    stack.add(new Card("Action", "Heisenbug", "", "",
+        "Bugs for everybody!", false, false, ""));
 
-    stack.add(new Card("Action", "LAN Party", null, null,
-        "Mental health for \neverybody!", false, false, null));
+    stack.add(new Card("Action", "LAN Party", "", "",
+        "Mental health for \neverybody!", false, false, ""));
 
-    stack.add(new Card("Ability", "Wears \nSunglasses at \nWork", null, null,
-        "Sees everybody with -1 \nprestige", false, false, null));
+    stack.add(new Card("Ability", "Wears \nSunglasses at \nWork", "", "",
+        "Sees everybody with -1 \nprestige", false, false, ""));
 
-    stack.add(new Card("Ability", "NASA", "-previous job-", null,
-        "3 prestige", false, false, null));
+    stack.add(new Card("Ability", "NASA", "-previous job-", "",
+        "3 prestige", false, false, ""));
 
     stack.add(new Card("StumblingBlock", "Fortran \nMaintenance", "BOOM", "Stumbling Block",
         "Only playable on self. \nTakes 3 health points. \n.85 chance to deflect to \nnext developer",
-        false, false, null));
+        false, false, ""));
 
   }
 

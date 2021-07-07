@@ -52,7 +52,7 @@ public abstract class GameView extends WebPage {
   List<Card> p2role = new ArrayList<Card>();
   List<Card> p3role = new ArrayList<Card>();
   List<Card> p4role = new ArrayList<Card>();
-  
+
   List<Card> stackList = new ArrayList<Card>();
   List<Card> heapList = new ArrayList<Card>();
 
@@ -247,16 +247,16 @@ public abstract class GameView extends WebPage {
             if (playerList.get(i).getId() == user.getId()) {
               switch (i) {
                 case 0:
-                	visualizeCurrentPlayer((playerPos + 3) % 4);
+                  visualizeCurrentPlayer((playerPos + 3) % 4);
                   break;
                 case 1:
-                	visualizeCurrentPlayer((playerPos + 2) % 4);
+                  visualizeCurrentPlayer((playerPos + 2) % 4);
                   break;
                 case 2:
-                	visualizeCurrentPlayer((playerPos + 1) % 4);
+                  visualizeCurrentPlayer((playerPos + 1) % 4);
                   break;
                 case 3:
-                	visualizeCurrentPlayer(playerPos % 4);
+                  visualizeCurrentPlayer(playerPos % 4);
                   break;
               }
             }
@@ -282,6 +282,7 @@ public abstract class GameView extends WebPage {
           for (int i = 0; i < cardsJSON.length(); i++) {
             Card card = (Card) cardsJSON.get(i);
             card.setVisible(true);
+            user.getHand().add(card);
             p3hand.add(card);
           }
           break;
@@ -513,7 +514,7 @@ public abstract class GameView extends WebPage {
   }
 
   protected abstract void updatePlayerAttributes();
-  
+
   protected abstract void visualizeCurrentPlayer(int position);
 
   protected abstract void updateHealth();
@@ -602,12 +603,12 @@ public abstract class GameView extends WebPage {
   }
 
   void endTurn() {
-    if (user.getHealth() == user.getHand().size()) {
-      game.setIsPlaying(false);
-      synchronized (game) {
-        game.notifyAll();
-      }
+    // if (user.getHealth() == user.getHand().size()) {
+    game.setIsPlaying(false);
+    synchronized (game) {
+      game.notifyAll();
     }
+    // }
   }
 
   public Game getGame() {

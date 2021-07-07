@@ -14,6 +14,7 @@ import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
 import org.apache.wicket.protocol.ws.api.message.IWebSocketPushMessage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.beans.PropertyChangeEvent;
@@ -32,6 +33,7 @@ public abstract class GameView extends WebPage {
   public User user = ((TBIALSession) getSession()).getUser();
   AjaxButton leaveButton;
   protected Game game = user.getGame();
+  int currentPlayerId = -1;
   List<Card> stackTest = game.getStack();
   public List<User> playerList = game.getPlayers();
 
@@ -44,7 +46,7 @@ public abstract class GameView extends WebPage {
   List<Card> p2role = new ArrayList<Card>();
   List<Card> p3role = new ArrayList<Card>();
   List<Card> p4role = new ArrayList<Card>();
-
+  
   List<Card> stackList = new ArrayList<Card>();
   List<Card> heapList = new ArrayList<Card>();
 
@@ -129,7 +131,12 @@ public abstract class GameView extends WebPage {
     int userID;
     System.out.println("-m to: " + user + " " + msgType + " with gameId: " + gameID);
     System.out.println(game.getGameId());
-    int playerId = body.getInt("playerID");
+    int playerId = -1;
+    try {
+      playerId = body.getInt("playerID");
+    } catch (JSONException e) {
+//    	e.printStackTrace();
+    }
     int playerPos = 0;
 
     if (gameID == game.getGameId()) {
@@ -223,8 +230,31 @@ public abstract class GameView extends WebPage {
           }
           break;
         case "CurrentPlayer":
-          int currentPlayerID = (int) body.get("playerID");
+          currentPlayerId = playerId;
           //TODO USE THE DATA
+          for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getId() == playerId) {
+              playerPos = i;
+            }
+          }
+          for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getId() == user.getId()) {
+              switch (i) {
+                case 0:
+                	visualizeCurrentPlayer((playerPos + 3) % 4);
+                  break;
+                case 1:
+                	visualizeCurrentPlayer((playerPos + 2) % 4);
+                  break;
+                case 2:
+                	visualizeCurrentPlayer((playerPos + 1) % 4);
+                  break;
+                case 3:
+                	visualizeCurrentPlayer(playerPos % 4);
+                  break;
+              }
+            }
+          }
           break;
         case "Shuffle":
           int numCardsInDeck = (int) body.get("cardsInDeck");
@@ -401,6 +431,8 @@ public abstract class GameView extends WebPage {
   }
 
   protected abstract void updatePlayerAttributes();
+  
+  protected abstract void visualizeCurrentPlayer(int position);
 
   public void drawCards() {
     game.drawCards(((TBIALSession) getSession()).getUser().getId(), 2 /*TODO CHANGE TO VARIABLE*/);

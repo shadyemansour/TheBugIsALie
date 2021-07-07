@@ -1001,4 +1001,10 @@ public class SevenBoard extends GameView {
     CardPanel roleCardPanel = new CardPanel("role-card-panel7", new Model<Card>(card1));
     healthRoleContainer.add(roleCardPanel);
   }
+
+	@Override
+	protected void visualizeCurrentPlayer(int position) {
+		// TODO Auto-generated method stub
+		
+	}
 }

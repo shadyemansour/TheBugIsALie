@@ -271,6 +271,11 @@ div.playerBottom {
   	height: 300px;
   	bottom: 10px;
   	border: 1px solid white;
+	transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
 }
 div.playerBottom2 {
 	position: absolute;
@@ -1094,3 +1099,23 @@ pre.boxed {
 /* #card-back .card-bottom-desc {
 	display: none;
 } */
+
+.highlightedTurn {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: steelblue;
+	width: 450px;
+	height: 250px;
+	z-index: -1;
+}
+
+.highlightedTurnBottom {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: red;
+	width: 600px;
+	height: 300px;
+	z-index: -1;
+}

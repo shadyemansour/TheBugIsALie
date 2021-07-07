@@ -46,7 +46,7 @@ public class FourBoard extends GameView {
     super();
 
     createPlayerAttributes();
-    //assignLabels();
+    assignLabels();
 
     createStackAndHeap();
 

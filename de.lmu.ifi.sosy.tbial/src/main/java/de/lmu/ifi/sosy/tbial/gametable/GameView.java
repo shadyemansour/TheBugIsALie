@@ -241,11 +241,13 @@ public abstract class GameView extends WebPage {
 
         case "YourCards":
           JSONArray cardsJSON = (JSONArray) body.get("cards");
-
           for (int i = 0; i < cardsJSON.length(); i++) {
             Card card = (Card) cardsJSON.get(i);
             card.setVisible(true);
             p3hand.add(card);
+          }
+          if (user.getId() == game.getHost().getId()) {
+            System.out.println("host got yourcards " + p3hand.size() + " " + cardsJSON.length());
           }
           break;
         case "CardsDrawn":

@@ -252,9 +252,6 @@ public abstract class GameView extends WebPage {
             card.setVisible(true);
             p3hand.add(card);
           }
-          if (user.getId() == game.getHost().getId()) {
-            System.out.println("host got yourcards " + p3hand.size() + " " + cardsJSON.length());
-          }
           break;
         case "CardsDrawn":
           int playerId = body.getInt("playerID");

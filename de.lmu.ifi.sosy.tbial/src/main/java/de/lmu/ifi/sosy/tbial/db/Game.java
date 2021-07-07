@@ -44,6 +44,7 @@ public class Game extends Thread implements Serializable {
 	private boolean managerFired;
 	private boolean consultantFired;
 	private int numEvilMonkeys;
+	private int turn;
 
 
 	//   private  ArrayList<Card> charakterCards = new  ArrayList<Card>(); TODO later (US37)
@@ -98,6 +99,7 @@ public class Game extends Thread implements Serializable {
 		this.managerFired = false;
 		this.consultantFired = false;
 		this.numEvilMonkeys = numPlayers == 4 || numPlayers == 5 ? 2 : 3;
+		this.turn = 1;
 
 
 	}
@@ -303,7 +305,7 @@ public class Game extends Thread implements Serializable {
 				player.setMyTurn(false);
 			}
 			nextPlayer();
-
+			turn++;
 			isTheGameOver();
 
 		}
@@ -522,7 +524,9 @@ public class Game extends Thread implements Serializable {
 		msg[0] = createJSONMessage("YourCards", msgBody);
 		if (gameInitiated) {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
-			System.out.println("sent private message to manager");
+			if (turn == 1) {
+				cardsHostMessages.add(msg[0].copy());
+			}
 		} else if (playerID == host.getId()) {
 			cardsHostMessages.add(msg[0].copy());
 		} else {
@@ -537,6 +541,8 @@ public class Game extends Thread implements Serializable {
 		msg[1] = createJSONMessage("CardsDrawn", msgBodyBroadcast);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg[1], players);
 		if (!gameInitiated && playerID != host.getId()) {
+			cardsHostMessages.add(msg[1].copy());
+		} else if (gameInitiated && turn == 1) {
 			cardsHostMessages.add(msg[1].copy());
 		}
 		return msg;

@@ -365,8 +365,15 @@ public class Game implements Serializable {
 
 	public void drawCards(int playerID, int numCards) {
 		JSONArray cards = new JSONArray();
-
 		for (int n = 0; n < numCards; n++) {
+			if(stack.size()==0){
+                decksShuffled();
+            }
+			for (User player : players) {
+				if(player.getId() == playerID) {
+					player.getHand().add(stack.get(0)); break;
+				}
+			}
 			//TODO Draw cards from stack and save in Array
 			cards.put(stack.get(0));
 			stack.remove(0);
@@ -390,6 +397,14 @@ public class Game implements Serializable {
 		} else {
 			propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
 		}
+		
+/* 
+		if (playerID == host.getId()) {
+			cardsHostMessages.add(msg[0].copy());
+		} else {
+				propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
+				}*/
+		
 
 		JSONObject msgBodyBroadcast = new JSONObject();
 		msgBodyBroadcast.put("gameID", id);
@@ -401,6 +416,11 @@ public class Game implements Serializable {
 		if (!gameInitiated && playerID != host.getId()) {
 			cardsHostMessages.add(msg[1].copy());
 		}
+		
+	/*	if (playerID != host.getId()) {
+			cardsHostMessages.add(msg[1].copy());
+		}*/
+		
 		return msg;
 	}
 
@@ -951,8 +971,14 @@ public class Game implements Serializable {
 
 		public void run() {
 			sendMessagesToHostOnStart();
+			drawCards(getCurrentID(),2);
 		}
 	}
+	
+	public int getCurrentID() {
+		return currentID;
+	}
+	
 
 //
 //	public List<Card> getHeap() {

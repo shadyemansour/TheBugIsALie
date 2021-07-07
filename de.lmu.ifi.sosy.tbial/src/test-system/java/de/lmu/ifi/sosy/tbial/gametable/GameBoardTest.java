@@ -12,12 +12,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.ListView;
 import org.junit.Before;
 import org.junit.Test;
 import org.json.JSONObject;
@@ -103,29 +105,59 @@ public class GameBoardTest extends PageTestBase {
     tester.assertLabel("p4heal", Integer.toString(player2.getHealth()));
     tester.assertLabel("p4pres", "0");
 
-    game.startGame();
-    
-    Card bugCard = null;
-    for (int i = 0; i < host.getHand().size(); i++) {
-      if (host.getHand().get(i).getSubTitle() == "--bug--") {
-        bugCard = host.getHand().get(i);
-        break;
-      }
-    }
-    int hostHandSize = host.getHand().size();
-    if (bugCard != null ) {
-    	JSONObject msgBody = new JSONObject();
-        msgBody.put("gameID", 1);
-        msgBody.put("from", host.getId());
-        msgBody.put("to", player3.getId());
-        msgBody.put("card", bugCard);
-        JSONObject msgObject = new JSONObject();
-      	msgObject.put("msgType", "CardPlayed");
-      	msgObject.put("msgBody", msgBody);
-      	JSONMessage msg = new JSONMessage(msgObject);
-    	gameView.handleMessage(msg);
-        assertThat(host.getHand().size(), is(hostHandSize - 1));
-    }
+  }
+  
+  @Test
+  public void dropCard() {
+	renderFourBoard();
+	game.startGame();
+	    
+	Card bugCard = null;
+	for (int i = 0; i < host.getHand().size(); i++) {
+	  if (host.getHand().get(i).getSubTitle() == "--bug--") {
+	    bugCard = host.getHand().get(i);
+	    break;
+	  }
+	}
+	int hostHandSize = host.getHand().size();
+	if (bugCard != null ) {
+	  JSONObject msgBody = new JSONObject();
+	  msgBody.put("gameID", 1);
+	  msgBody.put("from", host.getId());
+	  msgBody.put("to", player3.getId());
+	  msgBody.put("card", bugCard);
+	  JSONObject msgObject = new JSONObject();
+	  msgObject.put("msgType", "CardPlayed");
+	  msgObject.put("msgBody", msgBody);
+	  JSONMessage msg = new JSONMessage(msgObject);
+	  gameView.handleMessage(msg);
+	  assertThat(host.getHand().size(), is(hostHandSize - 1));
+	}
+  }
+  
+  @Test
+  public void testActualPlayerList() {
+	renderFourBoard();
+	
+	int hostPosition = 0;
+	int p2Position = 0;
+	int p3Position = 0;
+	int p4Position = 0;
+	for (int i = 0; i < gameView.actualPlayerlist.size(); i++) {
+	  if (gameView.actualPlayerlist.get(i).getId() == host.getId()) {
+		hostPosition = i;
+	  } else if (gameView.actualPlayerlist.get(i).getId() == player2.getId()) {
+		  p2Position = i;
+	  } else if (gameView.actualPlayerlist.get(i).getId() == player3.getId()) {
+		  p3Position = i;
+	  } else {
+		  p4Position = i;
+	  }
+	}
+	assertThat(p3Position, is(0));
+	assertThat(p4Position, is(1));
+	assertThat(hostPosition, is(2));
+	assertThat(p2Position, is(3));
   }
 
   @Test

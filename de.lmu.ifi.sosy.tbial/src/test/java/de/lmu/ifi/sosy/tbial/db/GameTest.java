@@ -217,9 +217,14 @@ public class GameTest {
 
   @Test
   public void gameWonMessageTest() {
+  	JSONArray cardsArray = new JSONArray();
+  	for (Card card : game.getRoleCards()) {
+  		cardsArray.put(card);
+  	}
     JSONObject body = new JSONObject();
     body.put("gameID", id);
     body.put("playerIDs", new JSONArray(Collections.singletonList(1)));
+    body.put("roleCards", cardsArray);
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "GameWon");

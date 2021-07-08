@@ -452,6 +452,9 @@ public class Game extends Thread implements Serializable {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerIDs", playerIDs);
+		msgBody.put("roleCards", roleCardsHostMessage.getMessage().getJSONObject("msgBody").get("roles"));
+		System.out.println("gameWon roleCards: " + roleCardsHostMessage.getMessage().getJSONObject("msgBody").get("roles"));
+
 		JSONMessage msg = createJSONMessage("GameWon", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;
@@ -517,6 +520,15 @@ public class Game extends Thread implements Serializable {
 		JSONArray cards = new JSONArray();
 
 		for (int n = 0; n < numCards; n++) {
+			if (stack.size() == 0) {
+				decksShuffled();
+			}
+			for (User player : players) {
+				if (player != null && player.getId() == playerID) {
+					player.getHand().add(stack.get(0));
+					break;
+				}
+			}
 			//TODO Draw cards from stack and save in Array
 			cards.put(stack.get(0));
 			stack.remove(0);
@@ -1131,8 +1143,10 @@ public class Game extends Thread implements Serializable {
 
 		public void run() {
 			sendMessagesToHostOnStart();
+			//	drawCards(getCurrentID(),2);
 		}
 	}
+
 
 //
 //	public List<Card> getHeap() {

@@ -471,10 +471,65 @@ public abstract class GameView extends WebPage {
         case "CardDiscarded":
           int player = body.getInt("playerID");
           Card card = (Card) body.get("card");
-          //TODO handle card removed from card hand
+          for (int i = 0; i < actualPlayerlist.size(); i++) {
+        	  if (player == actualPlayerlist.get(i).getId()){
+        		  switch(i) {
+        		  case 0:
+        			  if(player == user.getId()) {
+              			for (int j = 0; j<p1hand.size(); j++) {
+              				if (p1hand.get(j) == card) {
+              					p1hand.remove(j);
+              				}
+              			}
+              		} else {
+              			p1hand.remove(0);
+              		}
+        			  removeCardFromHand(player, card);
+        			  break;
+        			  
+        		  case 1:
+        			  if(player == user.getId()) {
+              			for (int j = 0; j<p2hand.size(); j++) {
+              				if (p2hand.get(j) == card) {
+              					p2hand.remove(j);
+              				}
+              			}
+              		} else {
+              			p2hand.remove(0);
+              		}
+        			  removeCardFromHand(player, card);
+        			  break;
+        		  case 2:
+        			  if(player == user.getId()) {
+              			for (int j = 0; j<p3hand.size(); j++) {
+              				if (p3hand.get(j) == card) {
+              					p3hand.remove(j);
+              				}
+              			}
+              		} else {
+              			p3hand.remove(0);
+              		}
+        			  removeCardFromHand(player, card);
+        			  break;
+        		  case 3:
+        			  
+        			  if(player == user.getId()) {
+              			for (int j = 0; j<p4hand.size(); j++) {
+              				if (p4hand.get(j) == card) {
+              					p4hand.remove(j);
+              				}
+              			}
+              		} else {
+              			p4hand.remove(0);
+              		}
+
+        			  removeCardFromHand(player, card);
+        			  break;
+        		  }
+        	  }
+          }
           heapList.add(card);
           break;
-
         case "CardDefended":
           int pl = body.getInt("playerID");
           Card ca = (Card) body.get("card");

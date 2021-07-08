@@ -286,4 +286,49 @@ public class GameViewTest extends PageTestBase {
 		
 		tester.assertLabel("p1-container:attributes-container-1:p1heal", "2");
 	}
+	
+	@Test
+	public void currentPlayer_assignedCorrect() {
+		
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", 1);
+		msgBody.put("playerID", 0);
+		JSONObject msgObject = new JSONObject();
+		msgObject.put("msgType", "CurrentPlayer");
+		msgObject.put("msgBody", msgBody);
+		JSONMessage msg = new JSONMessage(msgObject);
+		gameView.handleMessage(msg);
+		
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:turn")).getViewSize());
+		assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:turn")).getViewSize());
+
+		msgBody.put("playerID", 1);
+		msg = new JSONMessage(msgObject);
+		gameView.handleMessage(msg);
+		
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:turn")).getViewSize());
+		assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:turn")).getViewSize());
+
+		msgBody.put("playerID", 2);
+		msg = new JSONMessage(msgObject);
+		gameView.handleMessage(msg);
+		
+		assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:turn")).getViewSize());
+
+		msgBody.put("playerID", 3);
+		msg = new JSONMessage(msgObject);
+		gameView.handleMessage(msg);
+		
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:turn")).getViewSize());
+		assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:turn")).getViewSize());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:turn")).getViewSize());
+	}
 }

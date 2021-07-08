@@ -3,8 +3,7 @@ package de.lmu.ifi.sosy.tbial.db;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,11 +45,11 @@ public class GameTest {
     name = "name";
     id = 42;
     numPlayers = 4;
-    host = new User("hostName", "hostPw", null);
-    user1 = new User("user1Name", "user1Pw", null);
-    user2 = new User("user2Name", "user2Pw", null);
-    user3 = new User("user3Name", "user3Pw", null);
-    user4 = new User("user4Name", "user4Pw", null);
+    host = new User(1, "hostName", "hostPw", null);
+    user1 = new User(2, "user1Name", "user1Pw", null);
+    user2 = new User(3, "user2Name", "user2Pw", null);
+    user3 = new User(4, "user3Name", "user3Pw", null);
+    user4 = new User(5, "user4Name", "user4Pw", null);
     game = new Game(id, name, password, numPlayers, "", host.getName());
     game.setHost(host);
     game.addPlayer(host);
@@ -413,6 +412,132 @@ public class GameTest {
     assertEquals(game.getPlayers().get(next).getId(), game.getCurrentID());
     assertEquals(2, game.getTurn());
     assertEquals(next, game.getCurrentPlayer());
+  }
+
+  @Test
+  public void waitsForStumblingCardsTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    List<User> players = game.getPlayers();
+    int manager = 0;
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        manager = i;
+        break;
+      }
+    }
+    players.get(manager).setHasStumblingCards(true);
+    game.start();
+
+    await().until(() -> game.getIsPlaying());
+    players.get(manager).setHasStumblingCards(false);
+    game.setIsPlaying(false);
+    assertFalse(game.getIsPlaying());
+    await().until(() -> game.getIsPlaying());
+    assertTrue(game.getIsPlaying());
+  }
+
+  @Test
+  public void FireManagerAndGameWonTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    int managerID = 0;
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        managerID = player.getId();
+        break;
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    game.playerFired(managerID);
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isManagerFired());
+    assertTrue(game.isGameWon());
+  }
+
+  @Test
+  public void FireEvilMonkeysAndConsultantAndGameWonTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    List<Integer> monkeysIDs = new ArrayList<>();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Evil Code Monkey") || player.getRoleCard().getTitle().equals("Consultant")) {
+        monkeysIDs.add(player.getId());
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    for (int id : monkeysIDs) {
+      game.playerFired(id);
+    }
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isGameWon());
+  }
+
+  @Test
+  public void FireEveryoneExceptConsultantAndGameWonTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    List<Integer> IDs = new ArrayList<>();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (!player.getRoleCard().getTitle().equals("Consultant")) {
+        IDs.add(player.getId());
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    for (int id : IDs) {
+      game.playerFired(id);
+    }
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isGameWon());
+  }
+
+  @Test
+  public void FireEveryoneExceptHonestAndConsultantEvilMonkeysWinTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    List<Integer> IDs = new ArrayList<>();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (!player.getRoleCard().getTitle().equals("Consultant") || !player.getRoleCard().getTitle().equals("Honest Developer")) {
+        IDs.add(player.getId());
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    for (int id : IDs) {
+      game.playerFired(id);
+    }
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isGameWon());
   }
 
 

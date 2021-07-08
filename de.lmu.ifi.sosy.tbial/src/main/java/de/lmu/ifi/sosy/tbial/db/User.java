@@ -78,6 +78,10 @@ public class User implements Serializable {
     return hasStumblingCards;
   }
 
+  public void setHasStumblingCards(boolean hasStumblingCards) {
+    this.hasStumblingCards = hasStumblingCards;
+  }
+
   public boolean isMyTurn() {
     return myTurn;
   }

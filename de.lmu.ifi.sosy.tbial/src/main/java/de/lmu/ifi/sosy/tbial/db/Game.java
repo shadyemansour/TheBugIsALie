@@ -322,13 +322,22 @@ public class Game extends Thread implements Serializable {
 					}
 				}
 			} else {
-				for (User winner : players) {
-					if (winner.getRole().equals("Consultant")) {
-						ids.add(winner.getId());
-						break;
+				if (firedPlayers.size() == numPlayers - 1) {
+					for (User winner : players) {
+						if (winner.getRole().equals("Consultant")) {
+							ids.add(winner.getId());
+							break;
+						}
+					}
+				} else {
+					for (User winner : players) {
+						if (winner.getRole().equals("Evil Code Monkey")) {
+							ids.add(winner.getId());
+						}
 					}
 				}
 			}
+			gameWon = true;
 			gameWon(ids);
 			return;
 		}
@@ -342,13 +351,12 @@ public class Game extends Thread implements Serializable {
 			}
 			gameWon(ids);
 		}
+
 	}
 
 	public void endTurn() {
-		isPlaying = false;
-		synchronized (this) {
-			this.notifyAll();
-		}
+		setIsPlaying(false);
+
 	}
 
 	public void playerFired(int playerID) {
@@ -716,6 +724,14 @@ public class Game extends Thread implements Serializable {
 		return Objects.hash(name, password);
 	}
 
+	public boolean isGameWon() {
+		return gameWon;
+	}
+
+	public boolean isManagerFired() {
+		return managerFired;
+	}
+
 	public String getGameName() {
 		return name;
 	}
@@ -818,6 +834,9 @@ public class Game extends Thread implements Serializable {
 
 	public void setIsPlaying(boolean playing) {
 		isPlaying = playing;
+		synchronized (this) {
+			this.notifyAll();
+		}
 	}
 
 	public int getCurrentPlayer() {

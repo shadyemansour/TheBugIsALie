@@ -407,7 +407,9 @@ public class GameTest {
 
     int next = (first == 3 ? 0 : first + 1);
     await().until(() -> game.getIsPlaying());
+
     game.endTurn();
+    await().until(() -> game.getTurn() == 2);
     assertEquals(game.getPlayers().get(next).getId(), game.getCurrentID());
     assertEquals(2, game.getTurn());
     assertEquals(next, game.getCurrentPlayer());

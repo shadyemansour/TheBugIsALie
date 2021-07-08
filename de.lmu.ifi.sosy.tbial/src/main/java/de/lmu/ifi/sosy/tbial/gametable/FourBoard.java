@@ -419,6 +419,16 @@ public class FourBoard extends GameView {
     WebMarkupContainer middleTableContainer = new WebMarkupContainer("middle-table-container");
     middleTableContainer.setOutputMarkupId(true);
     middleTableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    middleTableContainer.add(new AjaxEventBehavior("click") {
+    	private static final long serialVersionUID = 1L;
+		@Override
+		protected void onEvent(AjaxRequestTarget target) {
+			if (selectedCard != null ) {
+				game.discardCard(user.getId(), selectedCard);
+				selectedCard = null;
+			}
+		}
+	});
     add(middleTableContainer);
 
     ListView<Card> stack = new ListView<Card>("stack", stackList) {

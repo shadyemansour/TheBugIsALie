@@ -265,9 +265,25 @@ public class GameViewTest extends PageTestBase {
 		tester.assertLabel("p1-container:attributes-container-1:p1heal", String.valueOf(user2.getHealth()));
 	}
 
-	//	@Test
+	@Test
 	public void playerHealth_correctAfterChange() {
+		game.addPlayer(host);
+		game.addPlayer(user1);
+		game.addPlayer(user2);
+		game.addPlayer(user3);
 		game.updateHealth(user2.getId(), 2);
-		tester.assertLabel("attributes-container-1:p1heal", "2");
+		assertEquals(2, user2.getHealth());
+		
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", 1);
+		msgBody.put("playerID", user2.getId());
+		msgBody.put("health", 2);
+		JSONObject msgObject = new JSONObject();
+		msgObject.put("msgType", "Health");
+		msgObject.put("msgBody", msgBody);
+		JSONMessage msg = new JSONMessage(msgObject);
+		gameView.handleMessage(msg);
+		
+		tester.assertLabel("p1-container:attributes-container-1:p1heal", "2");
 	}
 }

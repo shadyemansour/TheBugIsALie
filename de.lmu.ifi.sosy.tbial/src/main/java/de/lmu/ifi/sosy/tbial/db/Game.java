@@ -30,7 +30,6 @@ public class Game extends Thread implements Serializable {
 	private String[] playerNames;
 	private String hostName;
 	private User host;
-	private int playersTurn; // 1 - 7
 	private boolean gamePaused;
 	private boolean gameStarted;
 	private boolean addedPlayers;
@@ -100,6 +99,7 @@ public class Game extends Thread implements Serializable {
 		this.consultantFired = false;
 		this.numEvilMonkeys = numPlayers == 4 || numPlayers == 5 ? 2 : 3;
 		this.turn = 1;
+		this.isPlaying = false;
 
 
 	}
@@ -276,8 +276,8 @@ public class Game extends Thread implements Serializable {
 			if (!player.getFired()) {
 				player.setMyTurn(true);
 				currentPlayerMessage();
-				isPlaying = true;
 				if (player.hasStumblingCards()) {
+					isPlaying = true;
 					//todo deal with them
 					synchronized (this) {
 						while (isPlaying) {
@@ -289,9 +289,9 @@ public class Game extends Thread implements Serializable {
 						}
 					}
 				}
-				isPlaying = true;
-				drawCards(currentID, 2);
 
+				drawCards(currentID, 2);
+				isPlaying = true;
 				// TODO turn logic
 				synchronized (this) {
 					while (isPlaying) {
@@ -341,6 +341,13 @@ public class Game extends Thread implements Serializable {
 				}
 			}
 			gameWon(ids);
+		}
+	}
+
+	public void endTurn() {
+		isPlaying = false;
+		synchronized (this) {
+			this.notifyAll();
 		}
 	}
 
@@ -778,12 +785,8 @@ public class Game extends Thread implements Serializable {
 		setHostName(host.getName());
 	}
 
-	public int getPlayersTurn() {
-		return playersTurn;
-	}
-
-	public void setPlayersTurn(int playersTurn) {
-		this.playersTurn = playersTurn;
+	public int getTurn() {
+		return turn;
 	}
 
 	public JSONMessage getRoleCardsHostMessage() {
@@ -807,6 +810,10 @@ public class Game extends Thread implements Serializable {
 
 	public void setPlayers(List<User> players) {
 		this.players = players;
+	}
+
+	public boolean getIsPlaying() {
+		return isPlaying;
 	}
 
 	public void setIsPlaying(boolean playing) {

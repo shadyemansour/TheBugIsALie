@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosy.tbial.db;
 
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -386,4 +387,31 @@ public class GameTest {
     }
     assertTrue(expected);
   }
+
+  @Test
+  public void endTurnTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    int first = 0;
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        first = i;
+        break;
+      }
+    }
+
+    int next = (first == 3 ? 0 : first + 1);
+    await().until(() -> game.getIsPlaying());
+    game.endTurn();
+    assertEquals(game.getPlayers().get(next).getId(), game.getCurrentID());
+    assertEquals(2, game.getTurn());
+    assertEquals(next, game.getCurrentPlayer());
+  }
+
+
 }

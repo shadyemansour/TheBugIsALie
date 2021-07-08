@@ -603,12 +603,10 @@ public abstract class GameView extends WebPage {
   }
 
   void endTurn() {
-    // if (user.getHealth() == user.getHand().size()) {
-    game.setIsPlaying(false);
-    synchronized (game) {
-      game.notifyAll();
+    if (user.getHealth() >= user.getHand().size()) {
+      game.endTurn();
+
     }
-    // }
   }
 
   public Game getGame() {

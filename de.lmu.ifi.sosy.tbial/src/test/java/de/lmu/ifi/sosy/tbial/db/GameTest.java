@@ -216,9 +216,14 @@ public class GameTest {
 
   @Test
   public void gameWonMessageTest() {
+  	JSONArray cardsArray = new JSONArray();
+  	for (Card card : game.getRoleCards()) {
+  		cardsArray.put(card);
+  	}
     JSONObject body = new JSONObject();
     body.put("gameID", id);
     body.put("playerID", 1);
+    body.put("roleCards", cardsArray);
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "GameWon");
@@ -354,7 +359,7 @@ public class GameTest {
       }
     }
     assertTrue(actual);
-    assertEquals(0, game.getRoleCards().size());
+    assertEquals(4, game.getRoleCards().size());
   }
 
 

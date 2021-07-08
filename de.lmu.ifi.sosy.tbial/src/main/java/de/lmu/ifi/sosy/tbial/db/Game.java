@@ -182,7 +182,6 @@ public class Game implements Serializable {
 
 		JSONArray rolesArray = new JSONArray();
 		JSONArray charactersArray = new JSONArray();
-		JSONArray handArray = new JSONArray();
 		Card roleCard;
 		Card characterCard;
 		for (User player : players) {
@@ -192,6 +191,7 @@ public class Game implements Serializable {
 				JSONObject role = new JSONObject();
 				role.put("playerID", player.getId());
 				role.put("role", roleCard.getTitle());
+				role.put("roleCard", roleCard);
 				rolesArray.put(role);
 
 				player.setRoleCard(roleCard);
@@ -226,23 +226,19 @@ public class Game implements Serializable {
 
 
 				List<Card> hand = new ArrayList<Card>();
+				JSONArray handArray = new JSONArray();
 
 				for (int i = 0; i < player.getHealth(); i++) {
-					hand.add(stack.get(i));
-					handArray.put(stack.get(i));
+					hand.add(stack.get(0));
+					handArray.put(stack.get(0));
+					stack.remove(0);
 				}
-
 				player.setHand(hand);
-				for (int i = 0; i < player.getHealth(); i++) {
-					stack.remove(i);
-
-				}
 				drawCardsMessage(player.getId(), handArray);
 			}
 		}
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
-
 
 		currentPlayer = 0;
 		currentID = players.get(currentPlayer).getId();
@@ -331,7 +327,9 @@ public class Game implements Serializable {
 
 	public void playCard(int from, int to, Card card) {
 		//TODO implementation
+		System.out.println("game-from: " + from + " to: " + to + " card: " + card);
 		cardPlayedMessage(from, to, card);
+		System.out.println("sending msg");
 	}
 
 	/**
@@ -647,6 +645,16 @@ public class Game implements Serializable {
 	public void setPlayersTurn(int playersTurn) {
 		this.playersTurn = playersTurn;
 	}
+
+	public JSONMessage getRoleCardsHostMessage() {
+		return roleCardsHostMessage;
+	}
+
+
+	public JSONMessage getCharacterCardsHostMessage() {
+		return characterCardsHostMessage;
+	}
+
 
 	public List<User> getPlayers() {
 		if (host == null) {

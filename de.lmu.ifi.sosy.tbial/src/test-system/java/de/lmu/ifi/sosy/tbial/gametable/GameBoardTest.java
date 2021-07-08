@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.ListView;
 import org.junit.Before;
 import org.junit.Test;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GameBoardTest extends PageTestBase {
@@ -111,7 +112,23 @@ public class GameBoardTest extends PageTestBase {
   public void dropCard() {
 	renderFourBoard();
 	game.startGame();
-	    
+	
+  	JSONArray jsonArray = new JSONArray();
+  	for (int a = 0; a < host.getHand().size(); a++) {
+  	  jsonArray.put(host.getHand().get(a));
+  	}
+  	JSONObject msgBodyHost = new JSONObject();
+  	msgBodyHost.put("gameID", 1);
+  	msgBodyHost.put("cards", jsonArray);
+  	JSONObject msgObjectHost = new JSONObject();
+  	msgObjectHost.put("msgType", "YourCards");
+  	msgObjectHost.put("msgBody", msgBodyHost);
+  	JSONMessage msgHost = new JSONMessage(msgObjectHost);
+	gameView.handleMessage(msgHost);
+	
+	String cardhand3 = "player-card-container3:playable-cards-container3:card-hand3";
+	assertEquals(host.getHand().size(), ((ListView) tester.getComponentFromLastRenderedPage(cardhand3)).getViewSize());
+  	
 	Card bugCard = null;
 	for (int i = 0; i < host.getHand().size(); i++) {
 	  if (host.getHand().get(i).getSubTitle() == "--bug--") {
@@ -131,7 +148,18 @@ public class GameBoardTest extends PageTestBase {
 	  msgObject.put("msgBody", msgBody);
 	  JSONMessage msg = new JSONMessage(msgObject);
 	  gameView.handleMessage(msg);
+	  
 	  assertThat(host.getHand().size(), is(hostHandSize - 1));
+	  assertEquals(host.getHand().size(), ((ListView) tester.getComponentFromLastRenderedPage(cardhand3)).getViewSize());
+	  
+	  String droparea1 = "player-card-container1:playable-cards-container1:card-drop-area1";
+	  assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage(droparea1)).getViewSize());
+	} else {
+	  assertThat(host.getHand().size(), is(hostHandSize));
+	  assertEquals(host.getHand().size(), ((ListView) tester.getComponentFromLastRenderedPage(cardhand3)).getViewSize());
+	  
+	  String droparea1 = "player-card-container1:playable-cards-container1:card-drop-area1";
+	  assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea1)).getViewSize());
 	}
   }
   

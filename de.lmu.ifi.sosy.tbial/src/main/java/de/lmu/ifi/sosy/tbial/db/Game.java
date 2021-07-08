@@ -360,7 +360,6 @@ public class Game implements Serializable {
 	}
 
 	public void playCard(int from, int to, Card card) {
-		//TODO implementation
 		cardPlayedMessage(from, to, card);
 	}
 

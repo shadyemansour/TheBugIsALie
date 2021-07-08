@@ -437,12 +437,10 @@ public abstract class GameView extends WebPage {
           int from = body.getInt("from");
           int to = body.getInt("to");
           Card car = (Card) body.get("card");
-          //TODO USE THE DATA
           for (int i = 0; i < actualPlayerlist.size(); i++) {
             if (from == actualPlayerlist.get(i).getId()) {
             	switch(i) {
             	case 0:
-                // visually display card removal
             		if(from == user.getId()) {
             			for (int j = 0; j<p1hand.size(); j++) {
             				if (p1hand.get(j) == car) {
@@ -452,7 +450,6 @@ public abstract class GameView extends WebPage {
             		} else {
             			p1hand.remove(0);
             		}
-                // remove card from players cardhand
                 removeCardFromHand(from, car);
             		break;
             	case 1:

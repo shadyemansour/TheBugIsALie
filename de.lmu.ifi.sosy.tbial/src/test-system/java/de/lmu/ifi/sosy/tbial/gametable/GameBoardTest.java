@@ -3,19 +3,13 @@ package de.lmu.ifi.sosy.tbial.gametable;
 import de.lmu.ifi.sosy.tbial.*;
 import de.lmu.ifi.sosy.tbial.db.*;
 
-import static de.lmu.ifi.sosy.tbial.TestUtil.hasNameAndPassword;
 import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;

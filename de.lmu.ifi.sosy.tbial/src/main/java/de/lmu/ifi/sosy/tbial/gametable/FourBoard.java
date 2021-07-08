@@ -4,25 +4,17 @@ import de.lmu.ifi.sosy.tbial.db.*;
 import de.lmu.ifi.sosy.tbial.*;
 import de.lmu.ifi.sosy.tbial.db.Card;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.AjaxEventBehavior;
-import org.apache.wicket.markup.repeater.util.ModelIteratorAdapter;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.model.PropertyModel;
@@ -33,11 +25,9 @@ public class FourBoard extends GameView {
    * UID for serialization.
    */
   private static final long serialVersionUID = 1L;
-  private int numPlayer = 4;
   
   
   WebMarkupContainer playerCardContainer, playerCardContainer2, playerCardContainer3, playerCardContainer4;
-  List<Card> cardDropModels, cardDropModels2, cardDropModels3, cardDropModels4;
   ListView<Card> cardDropArea, cardDropArea2, cardDropArea3, cardDropArea4;
   Card selectedCard;
   boolean selectable = false;
@@ -46,7 +36,6 @@ public class FourBoard extends GameView {
   User user = ((TBIALSession) getSession()).getUser();
   List<Game> appGames = ((TBIALApplication) getApplication()).getAvailableGames();
   List<User> players = actualPlayerlist;
-  // Game game;
   private Label p1prestige, p2prestige, p3prestige, p4prestige;
   private Label p1health, p2health, p3health, p4health;
   private Label p1name, p2name, p3name, p4name;
@@ -72,7 +61,6 @@ public class FourBoard extends GameView {
     currenthealth2 = players.get(1).getHealth();
     currenthealth3 = players.get(2).getHealth();
     currenthealth4 = players.get(3).getHealth();
-  //  System.out.println("user - " + user.getName() + " h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
   }
 
   protected void createPlayerAttributes() {
@@ -87,7 +75,6 @@ public class FourBoard extends GameView {
     currenthealth3 = players.get(2).getHealth();
     currenthealth4 = players.get(3).getHealth();
 
-    // adjust to playerlist order
     // PLAYER 1  -  ATTRIBUTES
     p1name = new Label("p1", players.get(0).getName());
     add(p1name);
@@ -407,7 +394,6 @@ public class FourBoard extends GameView {
 					@Override
 					protected void onEvent(AjaxRequestTarget target) {
 						System.out.println("card: " + item.getModelObject());
-						//selectedCard = item.getModelObject();
 					}
 				});
 			}

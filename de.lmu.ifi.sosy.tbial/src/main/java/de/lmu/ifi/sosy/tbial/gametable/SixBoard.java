@@ -881,4 +881,10 @@ public class SixBoard extends GameView {
     CardPanel roleCardPanel = new CardPanel("role-card-panel6", new Model<Card>(card1));
     healthRoleContainer.add(roleCardPanel);
   }
+
+	@Override
+	protected void updateHealth() {
+		// TODO Auto-generated method stub
+		
+	}
 }

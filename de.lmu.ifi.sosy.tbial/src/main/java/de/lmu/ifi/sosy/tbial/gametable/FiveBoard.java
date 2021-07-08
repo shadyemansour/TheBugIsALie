@@ -760,4 +760,10 @@ public class FiveBoard extends GameView {
     CardPanel roleCardPanel = new CardPanel("role-card-panel5", new Model<Card>(card1));
     healthRoleContainer.add(roleCardPanel);
   }
+
+	@Override
+	protected void updateHealth() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -292,6 +292,7 @@ public class FourBoard extends GameView {
 			}
 		}
 	});
+    playerCardContainer2.setOutputMarkupId(true);
     add(playerCardContainer2);
 
     /*
@@ -478,7 +479,6 @@ public class FourBoard extends GameView {
      * player-card-container
      */
     playerCardContainer4 = new WebMarkupContainer("player-card-container4");
-    playerCardContainer4.setOutputMarkupId(true);
     playerCardContainer4.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
     playerCardContainer4.add(new AjaxEventBehavior("click") {
     	private static final long serialVersionUID = 1L;
@@ -491,6 +491,7 @@ public class FourBoard extends GameView {
 			}
 		}
 	});
+    playerCardContainer4.setOutputMarkupId(true);
     add(playerCardContainer4);
     
     /*
@@ -501,7 +502,7 @@ public class FourBoard extends GameView {
     /*
      * drop area
      */
-    cardDropArea = new ListView<Card>("card-drop-area4", p4drophand) {
+    cardDropArea4 = new ListView<Card>("card-drop-area4", p4drophand) {
 			private static final long serialVersionUID = 1L;
 			int width = 300;
 			@Override
@@ -512,8 +513,8 @@ public class FourBoard extends GameView {
 			}
     	
     };
-    cardDropArea.setOutputMarkupId(true);
-    playableCardsContainer.add(cardDropArea);
+    cardDropArea4.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea4);
 
     /*
      * card hand

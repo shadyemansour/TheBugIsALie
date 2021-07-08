@@ -361,9 +361,7 @@ public class Game implements Serializable {
 
 	public void playCard(int from, int to, Card card) {
 		//TODO implementation
-		System.out.println("game-from: " + from + " to: " + to + " card: " + card);
 		cardPlayedMessage(from, to, card);
-		System.out.println("sending msg");
 	}
 
 	/**

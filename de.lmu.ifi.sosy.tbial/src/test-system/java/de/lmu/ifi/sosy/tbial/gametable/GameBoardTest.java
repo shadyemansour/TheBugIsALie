@@ -162,6 +162,46 @@ public class GameBoardTest extends PageTestBase {
 	  assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea1)).getViewSize());
 	}
   }
+
+  @Test
+  public void samedroppedCard() {
+	renderFourBoard();
+	game.startGame();
+	
+	Card bugCard = null;
+	for (int i = 0; i < host.getHand().size(); i++) {
+	  if (host.getHand().get(i).getSubTitle() == "--bug--") {
+	    bugCard = host.getHand().get(i);
+	    break;
+	  }
+	}
+	
+	if (bugCard != null) {
+	  JSONObject msgBody = new JSONObject();
+	  msgBody.put("gameID", 1);
+	  msgBody.put("from", host.getId());
+	  msgBody.put("to", player3.getId());
+	  msgBody.put("card", bugCard);
+	  JSONObject msgObject = new JSONObject();
+	  msgObject.put("msgType", "CardPlayed");
+	  msgObject.put("msgBody", msgBody);
+	  JSONMessage msg = new JSONMessage(msgObject);
+	  gameView.handleMessage(msg);
+	  
+	  String droparea1 = "player-card-container1:playable-cards-container1:card-drop-area1";
+	  assertEquals(bugCard, ((ListView) tester.getComponentFromLastRenderedPage(droparea1)).getModelObject().get(0));
+	}
+	
+  }
+  
+  @Test
+  public void cardClickable() {
+	renderFourBoard();
+	game.startGame();
+	
+	tester.executeAjaxEvent("player-card-container3:playable-cards-container3:card-hand3", "click");
+	tester.executeAjaxEvent("player-card-container1:playable-cards-container1", "click");
+  }
   
   @Test
   public void testActualPlayerList() {

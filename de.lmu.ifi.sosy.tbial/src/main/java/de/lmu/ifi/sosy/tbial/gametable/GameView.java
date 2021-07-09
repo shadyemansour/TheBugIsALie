@@ -46,6 +46,12 @@ public abstract class GameView extends WebPage {
   List<Card> p2role = new ArrayList<Card>();
   List<Card> p3role = new ArrayList<Card>();
   List<Card> p4role = new ArrayList<Card>();
+  
+  List<Card> p1character = new ArrayList<Card>();
+  List<Card> p2character = new ArrayList<Card>();
+  List<Card> p3character = new ArrayList<Card>();
+  List<Card> p4character = new ArrayList<Card>();
+  
 
   List<Card> stackList = new ArrayList<Card>();
   List<Card> heapList = new ArrayList<Card>();
@@ -203,8 +209,13 @@ public abstract class GameView extends WebPage {
           break;
         case "Characters":
           JSONArray characters = (JSONArray) body.get("characters");
+          List<Card> characterCards = new ArrayList<Card>();
           for (int i = 0; i < characters.length(); i++) {
             JSONObject container = (JSONObject) characters.get(i);
+            
+            Card characterCard = (Card) container.get("characterCard");
+            characterCards.add(characterCard);
+            
             int playerID = container.getInt("playerID");
             if (playerID == user.getId()) {
               String character = container.getString("character");
@@ -219,6 +230,37 @@ public abstract class GameView extends WebPage {
           }
           if (allUsersHaveHealth()) {
             updatePlayerAttributes();
+          }
+          
+          for (int i = 0; i < playerList.size(); i++) {
+        	  if (playerList.get(i).getId() == user.getId()) {
+        		  switch (i) {
+        		  case 0:
+                      p1character.add(characterCards.get(2));
+                      p2character.add(characterCards.get(3));
+                      p3character.add(characterCards.get(0));
+                      p4character.add(characterCards.get(1));
+                      break;
+        		  case 1:
+                      p1character.add(characterCards.get(3));
+                      p2character.add(characterCards.get(0));
+                      p3character.add(characterCards.get(1));
+                      p4character.add(characterCards.get(2));
+                      break;
+        		  case 2:
+                      p1character.add(characterCards.get(0));
+                      p2character.add(characterCards.get(1));
+                      p3character.add(characterCards.get(2));
+                      p4character.add(characterCards.get(3));
+                      break;
+        		  case 3:
+                      p1character.add(characterCards.get(1));
+                      p2character.add(characterCards.get(2));
+                      p3character.add(characterCards.get(3));
+                      p4character.add(characterCards.get(0));
+                      break;
+        		  }
+        	  }
           }
           break;
         case "CurrentPlayer":

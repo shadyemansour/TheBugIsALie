@@ -159,14 +159,14 @@ public class GameStartGameTest {
 
 		}
 	}
-
+/*
 	@Test
 	public void startGame_getsNumberOfRemainingCharacterCards() {
 		int expected = 6;
 		assertThat(game.getCharacterCards().size(), is(expected));
 
 	}
-
+*/
 
 	@Test
 	public void startGame_checksHealth() {

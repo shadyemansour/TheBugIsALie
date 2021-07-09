@@ -197,10 +197,12 @@ public class Game implements Serializable {
 
 				player.setRoleCard(roleCard);
 				
-				characterCard = characterCards.get(0);
+				characterCard = characterCards.get(index);
 				JSONObject character = new JSONObject();
 				character.put("playerID", player.getId());
 				character.put("character", characterCard.getTitle());
+				character.put("characterCard", characterCard);
+				
 
 				player.setCharacterCard(characterCard);
 
@@ -214,7 +216,7 @@ public class Game implements Serializable {
 					health = 4;
 				}
 
-				characterCards.remove(0);
+				// characterCards.remove(0);
 
 				if (player.getRoleCard().getTitle().equals("Manager")) {
 					health += 1;
@@ -247,7 +249,7 @@ public class Game implements Serializable {
 		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
-		gameWonMessage(players.get(1).getId());
+
 	}
 
 	public void decksShuffled() {
@@ -1005,7 +1007,6 @@ public class Game implements Serializable {
 
 		public void run() {
 			sendMessagesToHostOnStart();
-			drawCards(getCurrentID(),2);
 		}
 	}
 	

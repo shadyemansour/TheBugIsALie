@@ -433,6 +433,9 @@ public class Game extends Thread implements Serializable {
 		for (User player : players) {
 			if (player.getId() == playerID) {
 				player.setHealth(health);
+				if (health == 0) {
+					playerFired(playerID);
+				}
 			}
 		}
 		updateHealthMessage(playerID, health);

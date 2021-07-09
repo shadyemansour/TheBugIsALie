@@ -432,12 +432,12 @@ public class FourBoard extends GameView {
       protected void onEvent(AjaxRequestTarget target) {
         if (user.isBeingAttacked() && selectedDropCard != null) {
           // can't defend
-          game.updateHealth(user.getId(), user.getHealth() - 1);
           discardCard(selectedDropCard, "drop");
           p3drophand.remove(selectedDropCard);
           heapList.add(selectedDropCard);
           user.setBeingAttacked(false);
           selectedDropCard = null;
+          game.updateHealth(user.getId(), user.getHealth() - 1);
           return;
         }
 

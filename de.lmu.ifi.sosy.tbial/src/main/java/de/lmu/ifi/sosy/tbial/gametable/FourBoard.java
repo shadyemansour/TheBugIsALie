@@ -272,7 +272,7 @@ public class FourBoard extends GameView {
               String containerId = "attributes-container-" + (j + 1);
               WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
               attributesContainer.setOutputMarkupId(true);
-              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
               switch (j) {
                 case 0:
                   p1container.add(attributesContainer);
@@ -307,7 +307,7 @@ public class FourBoard extends GameView {
               String containerId = "attributes-container-" + (j + 1);
               WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
               attributesContainer.setOutputMarkupId(true);
-              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
               switch (j) {
                 case 0:
                   p1container.add(attributesContainer);
@@ -344,7 +344,7 @@ public class FourBoard extends GameView {
               String containerId = "attributes-container-" + (j + 1);
               WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
               attributesContainer.setOutputMarkupId(true);
-              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
               switch (j) {
                 case 0:
                   p1container.add(attributesContainer);
@@ -381,7 +381,7 @@ public class FourBoard extends GameView {
               String containerId = "attributes-container-" + (j + 1);
               WebMarkupContainer attributesContainer = new WebMarkupContainer(containerId);
               attributesContainer.setOutputMarkupId(true);
-              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+              attributesContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
               switch (j) {
                 case 0:
                   p1container.add(attributesContainer);
@@ -424,27 +424,25 @@ public class FourBoard extends GameView {
   private void createStackAndHeap() {
     WebMarkupContainer middleTableContainer = new WebMarkupContainer("middle-table-container");
     middleTableContainer.setOutputMarkupId(true);
-    middleTableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    middleTableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     middleTableContainer.add(new AjaxEventBehavior("click") {
       private static final long serialVersionUID = 1L;
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        if (user.isBeingAttacked() && selectedCard != null) {
-          if (selectedCard == p1drophand.get(0)) {
-            // can't defend
-            game.updateHealth(user.getId(), user.getHealth() - 1);
-            discardCard(p3drophand.get(0));
-          } else if (selectedCard.getSubTitle() == "--lame excuse--") {
-            defendCard(selectedCard, p3drophand.get(0));
-          }
-          p1drophand.remove(0);
-          selectedCard = null;
+        if (user.isBeingAttacked() && selectedDropCard != null) {
+          // can't defend
+          game.updateHealth(user.getId(), user.getHealth() - 1);
+          discardCard(selectedDropCard, "drop");
+          p3drophand.remove(selectedDropCard);
+          heapList.add(selectedDropCard);
+          user.setBeingAttacked(false);
+          selectedDropCard = null;
           return;
         }
 
         if (selectedCard != null) {
-          game.discardCard(user.getId(), selectedCard);
+          game.discardCard(user.getId(), selectedCard, "hand");
           selectedCard = null;
         }
       }
@@ -484,10 +482,10 @@ public class FourBoard extends GameView {
    * creates player area for top player
    */
   private void createPlayer1Area() {
-	
+
     p1container = new WebMarkupContainer("p1-container");
     p1container.setOutputMarkupId(true);
-    p1container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+    p1container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     add(p1container);
     ListView<String> turn = new ListView<String>("turn", p1turn) {
       private static final long serialVersionUID = 1L;
@@ -503,7 +501,7 @@ public class FourBoard extends GameView {
      * player-card-container
      */
     playerCardContainer = new WebMarkupContainer("player-card-container1");
-    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     playerCardContainer.add(new AjaxEventBehavior("click") {
       private static final long serialVersionUID = 1L;
 
@@ -569,14 +567,13 @@ public class FourBoard extends GameView {
 
     /*
      * mental health
-     * TODO: how do we want to display the mental health?
-     * TODO: show current mental health
+
      */
     Label health = new Label("health-player1", "mental health of player 1");
     healthRoleContainer.add(health);
 
     /*
-     * role card TODO: put real role card here TODO: show or hide card depending
+     * role card
      * on player and card
      */
     ListView<Card> roleCard = new ListView<Card>("role-card-panel1", p1role) {
@@ -595,10 +592,10 @@ public class FourBoard extends GameView {
    * creates player area for right player
    */
   private void createPlayer2Area() {
-	
+
     p2container = new WebMarkupContainer("p2-container");
     p2container.setOutputMarkupId(true);
-    p2container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+    p2container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     add(p2container);
     ListView<String> turn = new ListView<String>("turn", p2turn) {
       private static final long serialVersionUID = 1L;
@@ -614,7 +611,7 @@ public class FourBoard extends GameView {
      * player-card-container
      */
     playerCardContainer2 = new WebMarkupContainer("player-card-container2");
-    playerCardContainer2.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer2.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     playerCardContainer2.add(new AjaxEventBehavior("click") {
       private static final long serialVersionUID = 1L;
 
@@ -679,14 +676,14 @@ public class FourBoard extends GameView {
     playerCardContainer2.add(healthRoleContainer);
 
     /*
-     * mental health TODO: how do we want to display the mental health? TODO:
+     * mental health
      * show current mental health
      */
     Label health = new Label("health-player2", "mental health of player 2");
     healthRoleContainer.add(health);
 
     /*
-     * role card TODO: put real role card here TODO: show or hide card depending
+     * role card
      * on player and card
      */
     ListView<Card> roleCard = new ListView<Card>("role-card-panel2", p2role) {
@@ -705,10 +702,10 @@ public class FourBoard extends GameView {
    * creates player area for bottom player
    */
   private void createPlayer3Area() {
-	
+
     p3container = new WebMarkupContainer("p3-container");
     p3container.setOutputMarkupId(true);
-    p3container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+    p3container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     add(p3container);
     ListView<String> turn = new ListView<String>("turn", p3turn) {
       private static final long serialVersionUID = 1L;
@@ -725,7 +722,7 @@ public class FourBoard extends GameView {
      */
     playerCardContainer3 = new WebMarkupContainer("player-card-container3");
     playerCardContainer3.setOutputMarkupId(true);
-    playerCardContainer3.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer3.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     playerCardContainer3.add(new AjaxEventBehavior("click") {
       private static final long serialVersionUID = 1l;
 
@@ -734,6 +731,8 @@ public class FourBoard extends GameView {
         System.out.println("drophand-3: " + actualPlayerlist.get(2).getName());
         if (selectedCard != null && selectedCard.getSubTitle() != "--bug--") {
           // TODO bug delegation cards
+          // TODO boolean delegation, ACTIVE WHEN DELEGATION PLACED, IF ACTIVE 25% AUTOMATIC DEFENSE
+
         }
       }
     });
@@ -787,15 +786,18 @@ public class FourBoard extends GameView {
 
           @Override
           protected void onEvent(AjaxRequestTarget target) {
-            System.out.println("card: " + item.getModelObject());
-            selectedCard = item.getModelObject();
-            if (selectedDropCard != null && selectedDropCard.getSubTitle() == "--bug--") {
-              if (selectedCard.getSubTitle() == "--lame excuse--" || selectedCard.getSubTitle() == "--Solution--") {
-            	defendCard(selectedCard, selectedDropCard);
-            	selectedCard = null;
-            	selectedDropCard = null;
+            if (user.isMyTurn() || user.isBeingAttacked()) {
+              selectedCard = item.getModelObject();
+              System.out.println("card: " + item.getModelObject());
+              if (selectedDropCard != null && selectedDropCard.getSubTitle() == "--bug--") {
+                if (selectedCard.getSubTitle() == "--lame excuse--" || selectedCard.getSubTitle() == "--Solution--") {
+                  defendCard(selectedCard, selectedDropCard);
+                  selectedCard = null;
+                  selectedDropCard = null;
+                }
               }
             }
+
           }
         });
       }
@@ -811,14 +813,14 @@ public class FourBoard extends GameView {
     playerCardContainer3.add(healthRoleContainer);
 
     /*
-     * mental health TODO: how do we want to display the mental health? TODO:
+     * mental health
      * show current mental health
      */
     Label health = new Label("health-player3", "mental health of player 3");
     healthRoleContainer.add(health);
 
     /*
-     * role card TODO: put real role card here TODO: show or hide card depending
+     * role card
      * on player and card
      */
     ListView<Card> roleCard = new ListView<Card>("role-card-panel3", p3role) {
@@ -839,10 +841,10 @@ public class FourBoard extends GameView {
    * creates player area for left player
    */
   private void createPlayer4Area() {
-	
+
     p4container = new WebMarkupContainer("p4-container");
     p4container.setOutputMarkupId(true);
-    p4container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
+    p4container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     add(p4container);
     ListView<String> turn = new ListView<String>("turn", p4turn) {
       private static final long serialVersionUID = 1L;
@@ -858,7 +860,7 @@ public class FourBoard extends GameView {
      * player-card-container
      */
     playerCardContainer4 = new WebMarkupContainer("player-card-container4");
-    playerCardContainer4.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer4.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
     playerCardContainer4.add(new AjaxEventBehavior("click") {
       private static final long serialVersionUID = 1L;
 
@@ -923,14 +925,14 @@ public class FourBoard extends GameView {
     playerCardContainer4.add(healthRoleContainer);
 
     /*
-     * mental health TODO: how do we want to display the mental health? TODO:
+     * mental health
      * show current mental health
      */
     Label health = new Label("health-player4", "mental health of player 4");
     healthRoleContainer.add(health);
 
     /*
-     * role card TODO: put real role card here TODO: show or hide card depending
+     * role card
      * on player and card
      */
     ListView<Card> roleCard = new ListView<Card>("role-card-panel4", p4role) {

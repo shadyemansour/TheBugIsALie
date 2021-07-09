@@ -278,12 +278,13 @@ public class GameTest {
     body.put("gameID", id);
     body.put("playerID", 1);
     body.put("card", card);
+    body.put("discardedFrom", "hand");
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "CardDiscarded");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.discardCardMessage(1, card).getMessage(), true);
+    JSONAssert.assertEquals(expected.getMessage(), game.discardCardMessage(1, card, "hand").getMessage(), true);
   }
 
   @Test

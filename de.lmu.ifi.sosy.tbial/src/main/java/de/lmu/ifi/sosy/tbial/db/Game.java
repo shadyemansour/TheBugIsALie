@@ -355,6 +355,7 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void endTurn() {
+		System.out.println(noOneIsDefending());
 		if (noOneIsDefending()) {
 			setIsPlaying(false);
 		}
@@ -510,19 +511,20 @@ public class Game extends Thread implements Serializable {
 	}
 
 
-	public void discardCard(int playerID, Card card) {
+	public void discardCard(int playerID, Card card, String discardedFrom) {
 		//TODO implementation add to heap?
-		discardCardMessage(playerID, card);
+		discardCardMessage(playerID, card, discardedFrom);
 	}
 
 	/**
 	 * sends CardDiscarded Message
 	 */
-	protected JSONMessage discardCardMessage(int playerID, Card card) {
+	protected JSONMessage discardCardMessage(int playerID, Card card, String discardedFrom) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", playerID);
 		msgBody.put("card", card);
+		msgBody.put("discardedFrom", discardedFrom);
 		JSONMessage msg = createJSONMessage("CardDiscarded", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;

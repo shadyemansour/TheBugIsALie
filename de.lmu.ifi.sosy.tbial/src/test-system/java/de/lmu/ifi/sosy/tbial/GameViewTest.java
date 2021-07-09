@@ -200,6 +200,7 @@ public class GameViewTest extends PageTestBase {
 		msgBody.put("gameID", 1);
 		msgBody.put("playerID", user1.getId());
 		msgBody.put("card", card);
+		msgBody.put("discardedFrom", "heap");
 		JSONObject msgObject = new JSONObject();
 		msgObject.put("msgType", "CardDiscarded");
 		msgObject.put("msgBody", msgBody);

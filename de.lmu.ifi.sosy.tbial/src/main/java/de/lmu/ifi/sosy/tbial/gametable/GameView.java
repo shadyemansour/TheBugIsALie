@@ -621,14 +621,32 @@ public abstract class GameView extends WebPage {
                     case 1:
                       p4role.clear();
                       p4role.add(role);
+                      if (p4hand.size() > 0) {
+                        heapList.add(playerList.get(1).getHand().get(0));
+                      }
+                      p4hand.clear();
+                      playerList.get(1).setHand(p4hand);
+                      p4drophand.clear();
                       break;
                     case 2:
                       p1role.clear();
                       p1role.add(role);
+                      if (p1hand.size() > 0) {
+                        heapList.add(playerList.get(2).getHand().get(0));
+                      }
+                      p1hand.clear();
+                      playerList.get(2).setHand(p1hand);
+                      p1drophand.clear();
                       break;
                     case 3:
                       p2role.clear();
                       p2role.add(role);
+                      if (p2hand.size() > 0) {
+                        heapList.add(playerList.get(3).getHand().get(0));
+                      }
+                      p2hand.clear();
+                      playerList.get(3).setHand(p2hand);
+                      p2drophand.clear();
                       break;
                   }
                   break;
@@ -637,14 +655,32 @@ public abstract class GameView extends WebPage {
                     case 0:
                       p2role.clear();
                       p2role.add(role);
+                      if (p2hand.size() > 0) {
+                        heapList.add(playerList.get(0).getHand().get(0));
+                      }
+                      p2hand.clear();
+                      playerList.get(0).setHand(p2hand);
+                      p2drophand.clear();
                       break;
                     case 2:
                       p4role.clear();
                       p4role.add(role);
+                      if (p4hand.size() > 0) {
+                        heapList.add(playerList.get(2).getHand().get(0));
+                      }
+                      p4hand.clear();
+                      playerList.get(2).setHand(p4hand);
+                      p4drophand.clear();
                       break;
                     case 3:
                       p1role.clear();
                       p1role.add(role);
+                      if (p1hand.size() > 0) {
+                        heapList.add(playerList.get(3).getHand().get(0));
+                      }
+                      p1hand.clear();
+                      playerList.get(3).setHand(p1hand);
+                      p1drophand.clear();
                       break;
                   }
                   break;
@@ -653,14 +689,32 @@ public abstract class GameView extends WebPage {
                     case 0:
                       p1role.clear();
                       p1role.add(role);
+                      if (p1hand.size() > 0) {
+                        heapList.add(playerList.get(0).getHand().get(0));
+                      }
+                      p1hand.clear();
+                      playerList.get(0).setHand(p1hand);
+                      p1drophand.clear();
                       break;
                     case 1:
                       p2role.clear();
                       p2role.add(role);
+                      if (p2hand.size() > 0) {
+                        heapList.add(playerList.get(1).getHand().get(0));
+                      }
+                      p2hand.clear();
+                      playerList.get(1).setHand(p2hand);
+                      p2drophand.clear();
                       break;
                     case 3:
                       p4role.clear();
                       p4role.add(role);
+                      if (p4hand.size() > 0) {
+                        heapList.add(playerList.get(3).getHand().get(0));
+                      }
+                      p4hand.clear();
+                      playerList.get(3).setHand(p4hand);
+                      p4drophand.clear();
                       break;
                   }
                   break;
@@ -669,14 +723,32 @@ public abstract class GameView extends WebPage {
                     case 0:
                       p4role.clear();
                       p4role.add(role);
+                      if (p4hand.size() > 0) {
+                        heapList.add(playerList.get(0).getHand().get(0));
+                      }
+                      p4hand.clear();
+                      playerList.get(0).setHand(p4hand);
+                      p4drophand.clear();
                       break;
                     case 1:
                       p1role.clear();
                       p1role.add(role);
+                      if (p1hand.size() > 0) {
+                        heapList.add(playerList.get(1).getHand().get(0));
+                      }
+                      p1hand.clear();
+                      playerList.get(1).setHand(p1hand);
+                      p1drophand.clear();
                       break;
                     case 2:
                       p2role.clear();
                       p2role.add(role);
+                      if (p2hand.size() > 0) {
+                        heapList.add(playerList.get(2).getHand().get(0));
+                      }
+                      p2hand.clear();
+                      playerList.get(2).setHand(p2hand);
+                      p2drophand.clear();
                       break;
                   }
                   break;

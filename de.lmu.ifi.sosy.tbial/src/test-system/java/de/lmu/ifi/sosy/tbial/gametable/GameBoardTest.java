@@ -227,10 +227,23 @@ public class GameBoardTest extends PageTestBase {
     assertThat(p2Position, is(3));
   }
   
-  //@Test
-  public void defendCard() {
+  @Test
+  public void emptyHandAfterFire() {
 	renderFourBoard();
 	game.startGame();
+    Card role3card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+
+	JSONObject msgBody = new JSONObject();
+	msgBody.put("gameID", 1);
+	msgBody.put("playerID", player3.getId());
+	msgBody.put("role", role3card);
+	JSONObject msgObject = new JSONObject();
+	msgObject.put("msgType", "PlayerFired");
+	msgObject.put("msgBody", msgBody);
+	JSONMessage msg = new JSONMessage(msgObject);
+	gameView.handleMessage(msg);
+    
+    assertEquals(0, player3.getHand().size());
   }
 
   @Test

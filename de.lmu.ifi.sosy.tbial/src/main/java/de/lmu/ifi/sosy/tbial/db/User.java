@@ -47,8 +47,10 @@ public class User implements Serializable {
   private boolean fired;
   private boolean myTurn;
   private boolean hasStumblingCards;
+  private boolean beingAttacked;
 
   protected PropertyChangeSupport propertyChangeSupport;
+
 
   public User(String name, String password, Game game) {
     this(-1, name, password, game);
@@ -71,6 +73,7 @@ public class User implements Serializable {
     this.propertyChangeSupport = new PropertyChangeSupport(this);
     this.myTurn = false;
     this.hasStumblingCards = false;
+    this.beingAttacked = false;
 
   }
 
@@ -253,6 +256,14 @@ public class User implements Serializable {
 
   public Boolean getFired() {
     return fired;
+  }
+
+  public boolean isBeingAttacked() {
+    return beingAttacked;
+  }
+
+  public void setBeingAttacked(boolean beingAttacked) {
+    this.beingAttacked = beingAttacked;
   }
 
   public void addPropertyChangeListener(PropertyChangeListener listener) {

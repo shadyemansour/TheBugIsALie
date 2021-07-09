@@ -217,10 +217,8 @@ public class GameTest {
 
   @Test
   public void gameWonMessageTest() {
-  	JSONArray cardsArray = new JSONArray();
-  	for (Card card : game.getRoleCards()) {
-  		cardsArray.put(card);
-  	}
+    game.startGame();
+    JSONArray cardsArray = (JSONArray) game.getRoleCardsHostMessage().getMessage().getJSONObject("msgBody").get("roles");
     JSONObject body = new JSONObject();
     body.put("gameID", id);
     body.put("playerIDs", new JSONArray(Collections.singletonList(1)));
@@ -230,6 +228,7 @@ public class GameTest {
     msg.put("msgType", "GameWon");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
+    System.out.println(game.gameWonMessage(new JSONArray(Collections.singletonList(1))).getMessage());
     JSONAssert.assertEquals(expected.getMessage(), game.gameWonMessage(new JSONArray(Collections.singletonList(1))).getMessage(), true);
   }
 

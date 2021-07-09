@@ -70,7 +70,7 @@ public abstract class GameView extends WebPage {
     setPlayerList();
     this.game.addPropertyChangeListener(new GameViewListener());
 
- //   System.out.println("GameView init" + game + " " + user);
+    //   System.out.println("GameView init" + game + " " + user);
 //    Card testCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
 
     add(new WebSocketBehavior() {
@@ -133,35 +133,36 @@ public abstract class GameView extends WebPage {
       game.start();
     }
   }
+
   protected void setPlayerList() {
-	int pos = 2;
+    int pos = 2;
     for (int i = 0; i < playerList.size(); i++) {
-    	if(playerList.get(i).getId() == user.getId()) {
-    		pos = i;
-    	}
+      if (playerList.get(i).getId() == user.getId()) {
+        pos = i;
+      }
     }
-    switch(pos) {
-    case 0:
-    	actualPlayerlist.add(playerList.get(2));
-    	actualPlayerlist.add(playerList.get(3));
-    	actualPlayerlist.add(playerList.get(0));
-    	actualPlayerlist.add(playerList.get(1));
-    	break;
-    case 1:
-    	actualPlayerlist.add(playerList.get(3));
-    	actualPlayerlist.add(playerList.get(0));
-    	actualPlayerlist.add(playerList.get(1));
-    	actualPlayerlist.add(playerList.get(2));
-    	break;
-    case 2:
-    	actualPlayerlist = playerList;
-    	break;
-    case 3:
-    	actualPlayerlist.add(playerList.get(1));
-    	actualPlayerlist.add(playerList.get(2));
-    	actualPlayerlist.add(playerList.get(3));
-    	actualPlayerlist.add(playerList.get(0));
-    	break;
+    switch (pos) {
+      case 0:
+        actualPlayerlist.add(playerList.get(2));
+        actualPlayerlist.add(playerList.get(3));
+        actualPlayerlist.add(playerList.get(0));
+        actualPlayerlist.add(playerList.get(1));
+        break;
+      case 1:
+        actualPlayerlist.add(playerList.get(3));
+        actualPlayerlist.add(playerList.get(0));
+        actualPlayerlist.add(playerList.get(1));
+        actualPlayerlist.add(playerList.get(2));
+        break;
+      case 2:
+        actualPlayerlist = playerList;
+        break;
+      case 3:
+        actualPlayerlist.add(playerList.get(1));
+        actualPlayerlist.add(playerList.get(2));
+        actualPlayerlist.add(playerList.get(3));
+        actualPlayerlist.add(playerList.get(0));
+        break;
     }
   }
 
@@ -266,8 +267,8 @@ public abstract class GameView extends WebPage {
               user.setCharacter(character);
               //TODO USE THE DATA
             } else if (playerID == game.getPlayers().get(i).getId()) {
-                int health = container.getInt("health");
-                game.getPlayers().get(i).setHealth(health);
+              int health = container.getInt("health");
+              game.getPlayers().get(i).setHealth(health);
             }
           }
           if (allUsersHaveHealth()) {
@@ -365,7 +366,6 @@ public abstract class GameView extends WebPage {
           for (int i = 0; i < cardsJSON.length(); i++) {
             Card card = (Card) cardsJSON.get(i);
             card.setVisible(true);
-            user.getHand().add(card);
             p3hand.add(card);
           }
           break;
@@ -477,77 +477,80 @@ public abstract class GameView extends WebPage {
           int from = body.getInt("from");
           int to = body.getInt("to");
           Card car = (Card) body.get("card");
+          if (to == user.getId()) {
+            user.setBeingAttacked(true);
+          }
           for (int i = 0; i < actualPlayerlist.size(); i++) {
             if (from == actualPlayerlist.get(i).getId()) {
-            	switch(i) {
-            	case 0:
-            		if(from == user.getId()) {
-            			for (int j = 0; j<p1hand.size(); j++) {
-            				if (p1hand.get(j) == car) {
-            					p1hand.remove(j);
-            				}
-            			}
-            		} else {
-            			p1hand.remove(0);
-            		}
-                removeCardFromHand(from, car);
-            		break;
-            	case 1:
-            		if(from == user.getId()) {
-            			for (int j = 0; j<p2hand.size(); j++) {
-            				if (p2hand.get(j) == car) {
-            					p2hand.remove(j);
-            				}
-            			}
-            		} else {
-            			p2hand.remove(0);
-            		}
-                removeCardFromHand(from, car);
-            		break;
-            	case 2:
-            		if(from == user.getId()) {
-            			for (int j = 0; j<p3hand.size(); j++) {
-            				if (p3hand.get(j) == car) {
-            					p3hand.remove(j);
-            				}
-            			}
-            		} else {
-            			p3hand.remove(0);
-            		}
-                removeCardFromHand(from, car);
-            		break;
-            	case 3:
-            		if(from == user.getId()) {
-            			for (int j = 0; j<p4hand.size(); j++) {
-            				if (p4hand.get(j) == car) {
-            					p4hand.remove(j);
-            				}
-            			}
-            		} else {
-            			p4hand.remove(0);
-            		}
-                removeCardFromHand(from, car);
-            		break;
-            	}
+              switch (i) {
+                case 0:
+                  if (from == user.getId()) {
+                    for (int j = 0; j < p1hand.size(); j++) {
+                      if (p1hand.get(j) == car) {
+                        p1hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p1hand.remove(0);
+                  }
+                  removeCardFromHand(from, car);
+                  break;
+                case 1:
+                  if (from == user.getId()) {
+                    for (int j = 0; j < p2hand.size(); j++) {
+                      if (p2hand.get(j) == car) {
+                        p2hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p2hand.remove(0);
+                  }
+                  removeCardFromHand(from, car);
+                  break;
+                case 2:
+                  if (from == user.getId()) {
+                    for (int j = 0; j < p3hand.size(); j++) {
+                      if (p3hand.get(j) == car) {
+                        p3hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p3hand.remove(0);
+                  }
+                  removeCardFromHand(from, car);
+                  break;
+                case 3:
+                  if (from == user.getId()) {
+                    for (int j = 0; j < p4hand.size(); j++) {
+                      if (p4hand.get(j) == car) {
+                        p4hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p4hand.remove(0);
+                  }
+                  removeCardFromHand(from, car);
+                  break;
+              }
             }
           }
           for (int i = 0; i < actualPlayerlist.size(); i++) {
-        	  if (to == actualPlayerlist.get(i).getId()) {
-        		  switch(i) {
-        		  case 0:
-        			  p1drophand.add(car);
-        			  break;
-        		  case 1:
-        			  p2drophand.add(car);
-        			  break;
-        		  case 2:
-        			  p3drophand.add(car);
-        			  break;
-        		  case 3:
-        			  p4drophand.add(car);
-        			  break;
-              	}
-        	  }
+            if (to == actualPlayerlist.get(i).getId()) {
+              switch (i) {
+                case 0:
+                  p1drophand.add(car);
+                  break;
+                case 1:
+                  p2drophand.add(car);
+                  break;
+                case 2:
+                  p3drophand.add(car);
+                  break;
+                case 3:
+                  p4drophand.add(car);
+                  break;
+              }
+            }
           }
           break;
         case "CardDiscarded":
@@ -657,72 +660,72 @@ public abstract class GameView extends WebPage {
           }
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == user.getId()) {
-            	switch (i) {
-              case 0:
-                switch (playerPosition) {
-                  case 1:
-                  	p4role.clear();
-                  	p4role.add(role);
-                    break;
-                  case 2:
-                  	p1role.clear();
-                  	p1role.add(role);
-                    break;
-                  case 3:
-                  	p2role.clear();
-                  	p2role.add(role);
-                    break;
-                }
-                break;
-              case 1:
-                switch (playerPosition) {
-                  case 0:
-                  	p2role.clear();
-                  	p2role.add(role);
-                    break;
-                  case 2:
-                  	p4role.clear();
-                  	p4role.add(role);
-                    break;
-                  case 3:
-                  	p1role.clear();
-                  	p1role.add(role);
-                    break;
-                }
-                break;
-              case 2:
-                switch (playerPosition) {
-                  case 0:
-                  	p1role.clear();
-                  	p1role.add(role);
-                    break;
-                  case 1:
-                  	p2role.clear();
-                  	p2role.add(role);
-                    break;
-                  case 3:
-                  	p4role.clear();
-                  	p4role.add(role);
-                    break;
-                }
-                break;
-              case 3:
-                switch (playerPosition) {
-                  case 0:
-                  	p4role.clear();
-                  	p4role.add(role);
-                    break;
-                  case 1:
-                  	p1role.clear();
-                  	p1role.add(role);
-                    break;
-                  case 2:
-                  	p2role.clear();
-                  	p2role.add(role);
-                    break;
-                }
-                break;
-            }
+              switch (i) {
+                case 0:
+                  switch (playerPosition) {
+                    case 1:
+                      p4role.clear();
+                      p4role.add(role);
+                      break;
+                    case 2:
+                      p1role.clear();
+                      p1role.add(role);
+                      break;
+                    case 3:
+                      p2role.clear();
+                      p2role.add(role);
+                      break;
+                  }
+                  break;
+                case 1:
+                  switch (playerPosition) {
+                    case 0:
+                      p2role.clear();
+                      p2role.add(role);
+                      break;
+                    case 2:
+                      p4role.clear();
+                      p4role.add(role);
+                      break;
+                    case 3:
+                      p1role.clear();
+                      p1role.add(role);
+                      break;
+                  }
+                  break;
+                case 2:
+                  switch (playerPosition) {
+                    case 0:
+                      p1role.clear();
+                      p1role.add(role);
+                      break;
+                    case 1:
+                      p2role.clear();
+                      p2role.add(role);
+                      break;
+                    case 3:
+                      p4role.clear();
+                      p4role.add(role);
+                      break;
+                  }
+                  break;
+                case 3:
+                  switch (playerPosition) {
+                    case 0:
+                      p4role.clear();
+                      p4role.add(role);
+                      break;
+                    case 1:
+                      p1role.clear();
+                      p1role.add(role);
+                      break;
+                    case 2:
+                      p2role.clear();
+                      p2role.add(role);
+                      break;
+                  }
+                  break;
+              }
             }
           }
           break;
@@ -730,6 +733,7 @@ public abstract class GameView extends WebPage {
 
     }
   }
+
   public void removeCardFromHand(int from, Card car) {
     for (int k = 0; k < playerList.size(); k++) {
       if (from == playerList.get(k).getId()) {
@@ -780,8 +784,11 @@ public abstract class GameView extends WebPage {
   }
 
   public void defendCard(Card card) {
-    //TODO implementation
-    game.defendCard(((TBIALSession) getSession()).getUser().getId(), card);
+    if (user.isBeingAttacked()) {
+      game.defendCard(((TBIALSession) getSession()).getUser().getId(), card);
+      //game.discardCard(((TBIALSession) getSession()).getUser().getId(), p3drophand.get(0));
+      //TODO
+    }
   }
 
   private JSONMessage gamePausedJSONMessage(int userId, int gameId) {

@@ -241,12 +241,14 @@ public class GameTest {
     body.put("gameID", id);
     body.put("playerID", 1);
     body.put("card", card);
+    body.put("card", card);
+    body.put("defendedWith", card);
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "CardDefended");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.cardDefendedMessage(1, card).getMessage(), true);
+    JSONAssert.assertEquals(expected.getMessage(), game.cardDefendedMessage(1, card, card).getMessage(), true);
   }
 
   @Test

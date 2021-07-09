@@ -420,15 +420,29 @@ public class FourBoard extends GameView {
     middleTableContainer.setOutputMarkupId(true);
     middleTableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
     middleTableContainer.add(new AjaxEventBehavior("click") {
-    	private static final long serialVersionUID = 1L;
-		@Override
-		protected void onEvent(AjaxRequestTarget target) {
-			if (selectedCard != null ) {
-				game.discardCard(user.getId(), selectedCard);
-				selectedCard = null;
-			}
-		}
-	});
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        if (user.isBeingAttacked() && selectedCard != null) {
+          if (selectedCard == p1drophand.get(0)) {
+            // can't defend
+            game.updateHealth(user.getId(), user.getHealth() - 1);
+            discardCard(p3drophand.get(0));
+          } else if (selectedCard.getSubTitle() == "--lame excuse--") {
+            defendCard(selectedCard, p3drophand.get(0));
+          }
+          p1drophand.remove(0);
+          selectedCard = null;
+          return;
+        }
+
+        if (selectedCard != null) {
+          game.discardCard(user.getId(), selectedCard);
+          selectedCard = null;
+        }
+      }
+    });
     add(middleTableContainer);
 
     ListView<Card> stack = new ListView<Card>("stack", stackList) {
@@ -467,7 +481,6 @@ public class FourBoard extends GameView {
     /*
      * create dummy card-model for player-card-container4
      */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
 //    cardDropModels.add(Model.of(card5));
 
     p1container = new WebMarkupContainer("p1-container");
@@ -499,12 +512,7 @@ public class FourBoard extends GameView {
           playCard(players.get(0).getId(), selectedCard);
           selectedCard = null;
         }
-//      if (user.isBeingAttacked() && selectedCard != null && selectedCard.getSubTitle() == "--lame excuse--") {
-//        defendCard(selectedCard);
-//        discardCard(p1drophand.get(0));
-//        p1drophand.remove(0);
-//        selectedCard = null;
-//      }
+
       }
     });
     playerCardContainer.setOutputMarkupId(true);
@@ -619,12 +627,6 @@ public class FourBoard extends GameView {
           playCard(players.get(1).getId(), selectedCard);
           selectedCard = null;
         }
-//      if (user.isBeingAttacked() && selectedCard != null && selectedCard.getSubTitle() == "--lame excuse--") {
-//        defendCard(selectedCard);
-//        discardCard(p2drophand.get(0));
-//        p2drophand.remove(0);
-//        selectedCard = null;
-//      }
       }
     });
     playerCardContainer2.setOutputMarkupId(true);
@@ -870,12 +872,6 @@ public class FourBoard extends GameView {
           playCard(players.get(3).getId(), selectedCard);
           selectedCard = null;
         }
-//      if (user.isBeingAttacked() && selectedCard != null && selectedCard.getSubTitle() == "--lame excuse--") {
-//        defendCard(selectedCard);
-//        discardCard(p4drophand.get(0));
-//        p4drophand.remove(0);
-//        selectedCard = null;
-//      }
       }
     });
     playerCardContainer4.setOutputMarkupId(true);

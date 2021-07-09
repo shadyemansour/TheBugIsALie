@@ -557,68 +557,143 @@ public abstract class GameView extends WebPage {
           int player = body.getInt("playerID");
           Card card = (Card) body.get("card");
           for (int i = 0; i < actualPlayerlist.size(); i++) {
-        	  if (player == actualPlayerlist.get(i).getId()){
-        		  switch(i) {
-        		  case 0:
-        			  if(player == user.getId()) {
-              			for (int j = 0; j<p1hand.size(); j++) {
-              				if (p1hand.get(j) == card) {
-              					p1hand.remove(j);
-              				}
-              			}
-              		} else {
-              			p1hand.remove(0);
-              		}
-        			  removeCardFromHand(player, card);
-        			  break;
-        			  
-        		  case 1:
-        			  if(player == user.getId()) {
-              			for (int j = 0; j<p2hand.size(); j++) {
-              				if (p2hand.get(j) == card) {
-              					p2hand.remove(j);
-              				}
-              			}
-              		} else {
-              			p2hand.remove(0);
-              		}
-        			  removeCardFromHand(player, card);
-        			  break;
-        		  case 2:
-        			  if(player == user.getId()) {
-              			for (int j = 0; j<p3hand.size(); j++) {
-              				if (p3hand.get(j) == card) {
-              					p3hand.remove(j);
-              				}
-              			}
-              		} else {
-              			p3hand.remove(0);
-              		}
-        			  removeCardFromHand(player, card);
-        			  break;
-        		  case 3:
-        			  
-        			  if(player == user.getId()) {
-              			for (int j = 0; j<p4hand.size(); j++) {
-              				if (p4hand.get(j) == card) {
-              					p4hand.remove(j);
-              				}
-              			}
-              		} else {
-              			p4hand.remove(0);
-              		}
+            if (player == actualPlayerlist.get(i).getId()) {
+              switch (i) {
+                case 0:
+                  if (player == user.getId()) {
+                    for (int j = 0; j < p1hand.size(); j++) {
+                      if (p1hand.get(j) == card) {
+                        p1hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p1hand.remove(0);
+                  }
+                  removeCardFromHand(player, card);
+                  break;
 
-        			  removeCardFromHand(player, card);
-        			  break;
-        		  }
-        	  }
+                case 1:
+                  if (player == user.getId()) {
+                    for (int j = 0; j < p2hand.size(); j++) {
+                      if (p2hand.get(j) == card) {
+                        p2hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p2hand.remove(0);
+                  }
+                  removeCardFromHand(player, card);
+                  break;
+                case 2:
+                  if (player == user.getId()) {
+                    for (int j = 0; j < p3hand.size(); j++) {
+                      if (p3hand.get(j) == card) {
+                        p3hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p3hand.remove(0);
+                  }
+                  removeCardFromHand(player, card);
+                  break;
+                case 3:
+
+                  if (player == user.getId()) {
+                    for (int j = 0; j < p4hand.size(); j++) {
+                      if (p4hand.get(j) == card) {
+                        p4hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p4hand.remove(0);
+                  }
+
+                  removeCardFromHand(player, card);
+                  break;
+              }
+            }
           }
           heapList.add(card);
           break;
         case "CardDefended":
           int pl = body.getInt("playerID");
+          Card excuseCard = (Card) body.get("defendedWith");
           Card ca = (Card) body.get("card");
-          //TODO USE THE DATA
+          for (int i = 0; i < actualPlayerlist.size(); i++) {
+            if (pl == actualPlayerlist.get(i).getId()) {
+              switch (i) {
+                case 0:
+                  if (pl == user.getId()) {
+                    for (int j = 0; j < p1hand.size(); j++) {
+                      if (p1hand.get(j) == excuseCard) {
+                        p1hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p1hand.remove(0);
+                  }
+                  removeCardFromHand(pl, excuseCard);
+                  break;
+
+                case 1:
+                  if (pl == user.getId()) {
+                    for (int j = 0; j < p2hand.size(); j++) {
+                      if (p2hand.get(j) == excuseCard) {
+                        p2hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p2hand.remove(0);
+                  }
+                  removeCardFromHand(pl, excuseCard);
+                  break;
+                case 2:
+                  if (pl == user.getId()) {
+                    for (int j = 0; j < p3hand.size(); j++) {
+                      if (p3hand.get(j) == excuseCard) {
+                        p3hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p3hand.remove(0);
+                  }
+                  removeCardFromHand(pl, excuseCard);
+                  break;
+                case 3:
+
+                  if (pl == user.getId()) {
+                    for (int j = 0; j < p4hand.size(); j++) {
+                      if (p4hand.get(j) == excuseCard) {
+                        p4hand.remove(j);
+                      }
+                    }
+                  } else {
+                    p4hand.remove(0);
+                  }
+
+                  removeCardFromHand(pl, excuseCard);
+                  break;
+              }
+            }
+          }
+          for (int i = 0; i < actualPlayerlist.size(); i++) {
+            if (pl == actualPlayerlist.get(i).getId()) {
+              switch (i) {
+                case 0:
+                  p1drophand.remove(ca);
+                  break;
+                case 1:
+                  p2drophand.remove(ca);
+                  break;
+                case 2:
+                  p3drophand.remove(ca);
+                  break;
+                case 3:
+                  p4drophand.remove(ca);
+                  break;
+              }
+            }
+          }
           break;
         case "Health":
           int p = body.getInt("playerID");
@@ -838,9 +913,10 @@ public abstract class GameView extends WebPage {
     game.playCard(((TBIALSession) getSession()).getUser().getId(), to, card);
   }
 
-  public void defendCard(Card card) {
+  public void defendCard(Card excuseCard, Card bugCard) {
     if (user.isBeingAttacked()) {
-      game.defendCard(((TBIALSession) getSession()).getUser().getId(), card);
+      game.defendCard(((TBIALSession) getSession()).getUser().getId(), excuseCard, bugCard);
+      user.setBeingAttacked(false);
       //game.discardCard(((TBIALSession) getSession()).getUser().getId(), p3drophand.get(0));
       //TODO
     }

@@ -355,8 +355,19 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void endTurn() {
-		setIsPlaying(false);
+		if (noOneIsDefending()) {
+			setIsPlaying(false);
+		}
 
+	}
+
+	public boolean noOneIsDefending() {
+		for (User user : players) {
+			if (user.isBeingAttacked()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void playerFired(int playerID) {
@@ -460,19 +471,20 @@ public class Game extends Thread implements Serializable {
 		return msg;
 	}
 
-	public void defendCard(int playerID, Card card) {
+	public void defendCard(int playerID, Card excuseCard, Card bugCard) {
 		//TODO implementation
-		cardDefendedMessage(playerID, card);
+		cardDefendedMessage(playerID, excuseCard, bugCard);
 	}
 
 	/**
 	 * sends CardDefended Message
 	 */
-	protected JSONMessage cardDefendedMessage(int playerID, Card card) {
+	protected JSONMessage cardDefendedMessage(int playerID, Card excuseCard, Card bugCard) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("playerID", playerID);
-		msgBody.put("card", card);
+		msgBody.put("card", bugCard);
+		msgBody.put("defendedWith", excuseCard);
 		JSONMessage msg = createJSONMessage("CardDefended", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;

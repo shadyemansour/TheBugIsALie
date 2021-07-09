@@ -195,7 +195,11 @@ public class GameBoardTest extends PageTestBase {
     game.startGame();
 
     tester.executeAjaxEvent("p3-container:player-card-container3:playable-cards-container3:card-hand3", "click");
+    tester.executeAjaxEvent("p3-container:player-card-container3:playable-cards-container3:card-drop-area3", "click");
     tester.executeAjaxEvent("p1-container:player-card-container1:playable-cards-container1", "click");
+    tester.executeAjaxEvent("p2-container:player-card-container2:playable-cards-container2", "click");
+    tester.executeAjaxEvent("p3-container:player-card-container3:playable-cards-container3", "click");
+    tester.executeAjaxEvent("p4-container:player-card-container4:playable-cards-container4", "click");
   }
 
   @Test
@@ -221,6 +225,12 @@ public class GameBoardTest extends PageTestBase {
     assertThat(p4Position, is(1));
     assertThat(hostPosition, is(2));
     assertThat(p2Position, is(3));
+  }
+  
+  //@Test
+  public void defendCard() {
+	renderFourBoard();
+	game.startGame();
   }
 
   @Test

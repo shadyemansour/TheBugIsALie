@@ -41,7 +41,9 @@ public class FourBoard extends GameView {
   WebMarkupContainer playerCardContainer, playerCardContainer2, playerCardContainer3, playerCardContainer4;
   ListView<Card> cardDropArea, cardDropArea2, cardDropArea3, cardDropArea4;
   Card selectedCard;
+  Card selectedDropCard;
   boolean selectable = false;
+  boolean bugPlayed = false;
   ListView<Card> cardHand, cardHand2, cardHand3, cardHand4;
 
   User user = ((TBIALSession) getSession()).getUser();
@@ -91,6 +93,10 @@ public class FourBoard extends GameView {
 //        User user = ((TBIALSession) getSession()).getUser();
         if (user.getId() == currentPlayerId) {
           System.out.println("end game");
+          bugPlayed = false;
+          selectable = false;
+          selectedCard = null;
+          selectedDropCard = null;
           endTurn();
         } else {
           System.out.println("not current user");
@@ -207,7 +213,7 @@ public class FourBoard extends GameView {
 
   protected void createPlayerAttributes() {
 
-    players = game.getPlayers();
+    //players = game.getPlayers();
     players.get(0).setPrestige(0);
     players.get(1).setPrestige(0);
     players.get(2).setPrestige(0);
@@ -478,11 +484,7 @@ public class FourBoard extends GameView {
    * creates player area for top player
    */
   private void createPlayer1Area() {
-    /*
-     * create dummy card-model for player-card-container4
-     */
-//    cardDropModels.add(Model.of(card5));
-
+	
     p1container = new WebMarkupContainer("p1-container");
     p1container.setOutputMarkupId(true);
     p1container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
@@ -507,12 +509,12 @@ public class FourBoard extends GameView {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        System.out.println("drophand-1: " + players.get(0).getName());
-        if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-          playCard(players.get(0).getId(), selectedCard);
+        System.out.println("drophand-1: " + actualPlayerlist.get(0).getName());
+        if (selectedCard != null && selectedCard.getSubTitle() == "--bug--" && !selectable && !bugPlayed) {
+          playCard(actualPlayerlist.get(0).getId(), selectedCard);
           selectedCard = null;
+          bugPlayed = true;
         }
-
       }
     });
     playerCardContainer.setOutputMarkupId(true);
@@ -593,11 +595,7 @@ public class FourBoard extends GameView {
    * creates player area for right player
    */
   private void createPlayer2Area() {
-    /*
-     * create dummy card-model for player-card-container4
-     */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>(); //TODO REMOVE?
-
+	
     p2container = new WebMarkupContainer("p2-container");
     p2container.setOutputMarkupId(true);
     p2container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
@@ -622,10 +620,11 @@ public class FourBoard extends GameView {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        System.out.println("drophand-2: " + players.get(1).getName());
-        if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-          playCard(players.get(1).getId(), selectedCard);
+        System.out.println("drophand-2: " + actualPlayerlist.get(1).getName());
+        if (selectedCard != null && selectedCard.getSubTitle() == "--bug--" && !selectable && !bugPlayed) {
+          playCard(actualPlayerlist.get(1).getId(), selectedCard);
           selectedCard = null;
+          bugPlayed = true;
         }
       }
     });
@@ -706,12 +705,7 @@ public class FourBoard extends GameView {
    * creates player area for bottom player
    */
   private void createPlayer3Area() {
-    /*
-     * create dummy card-model for player-card-container4
-     */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
-//    cardDropModels.add(Model.of(card5));
-
+	
     p3container = new WebMarkupContainer("p3-container");
     p3container.setOutputMarkupId(true);
     p3container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
@@ -737,8 +731,8 @@ public class FourBoard extends GameView {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        System.out.println("drophand-3: " + players.get(2).getName());
-        if (selectedCard != null) {
+        System.out.println("drophand-3: " + actualPlayerlist.get(2).getName());
+        if (selectedCard != null && selectedCard.getSubTitle() != "--bug--") {
           // TODO bug delegation cards
         }
       }
@@ -768,6 +762,7 @@ public class FourBoard extends GameView {
           @Override
           protected void onEvent(AjaxRequestTarget target) {
             System.out.println("card: " + item.getModelObject());
+            selectedDropCard = item.getModelObject();
           }
         });
       }
@@ -794,6 +789,13 @@ public class FourBoard extends GameView {
           protected void onEvent(AjaxRequestTarget target) {
             System.out.println("card: " + item.getModelObject());
             selectedCard = item.getModelObject();
+            if (selectedDropCard != null && selectedDropCard.getSubTitle() == "--bug--") {
+              if (selectedCard.getSubTitle() == "--lame excuse--" || selectedCard.getSubTitle() == "--Solution--") {
+            	defendCard(selectedCard, selectedDropCard);
+            	selectedCard = null;
+            	selectedDropCard = null;
+              }
+            }
           }
         });
       }
@@ -837,12 +839,7 @@ public class FourBoard extends GameView {
    * creates player area for left player
    */
   private void createPlayer4Area() {
-    /*
-     * create dummy card-model for player-card-container4
-     */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
-//    cardDropModels.add(Model.of(card5));
-
+	
     p4container = new WebMarkupContainer("p4-container");
     p4container.setOutputMarkupId(true);
     p4container.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
@@ -867,10 +864,11 @@ public class FourBoard extends GameView {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        System.out.println("drophand-4: " + players.get(3).getName());
-        if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
-          playCard(players.get(3).getId(), selectedCard);
+        System.out.println("drophand-4: " + actualPlayerlist.get(3).getName());
+        if (selectedCard != null && selectedCard.getSubTitle() == "--bug--" && !selectable && !bugPlayed) {
+          playCard(actualPlayerlist.get(3).getId(), selectedCard);
           selectedCard = null;
+          bugPlayed = true;
         }
       }
     });

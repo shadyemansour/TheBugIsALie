@@ -186,6 +186,7 @@ public class Game extends Thread implements Serializable {
 		Collections.shuffle(characterCards);
 
 		setStack();
+
 		Collections.shuffle(stack);
 
 		//	setPlayableStack(stack);

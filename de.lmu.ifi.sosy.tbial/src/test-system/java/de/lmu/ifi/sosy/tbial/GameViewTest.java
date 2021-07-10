@@ -300,67 +300,66 @@ public class GameViewTest extends PageTestBase {
   @Test
   public void characters_assignedCorrect() {
 	  
-	JSONArray jsonArray = new JSONArray();
-	
-	JSONObject char1 = new JSONObject();
-  	Card char1card= new Card("Character",
-			"Mark Zuckerberg", "Founder of Facebook", "(Mental Health 3)",
-			"If you lose mental health, \ntake one card from the causer",
-			false, true, null);
-	char1.put("playerID", host.getId());
-	char1.put("character", char1card.getTitle());
-  	char1.put("characterCard", char1card);
-  	char1.put("health", 3);
-  	jsonArray.put(char1);
-  	
-  	JSONObject char2 = new JSONObject();
-  	Card char2card= new Card("Character",
-			"Tom Anderson", "Founder of MySpace", "(Mental Health 4)",
-			"If you lose mental health, \nyou may take a card from the stack",
-			false, true, null);
-  	char2.put("playerID", host.getId());
-	char2.put("character", char2card.getTitle());
-  	char2.put("characterCard", char2card);
-  	char2.put("health", 4);
-  	jsonArray.put(char2);
+		JSONArray jsonArray = new JSONArray();
 
-  	JSONObject char3 = new JSONObject();
-	Card char3card = new Card("Character",
-			"Jeff Taylor", "Founder of \nmonster.com", "(Mental Health 4)",
-			"No cards left? \nTake one from the stack",
-			false, true, null);
-	char3.put("playerID", host.getId());
-	char3.put("character", char3card.getTitle());
-  	char3.put("characterCard", char3card);
-  	char3.put("health", 4);
-  	jsonArray.put(char3);
+		JSONObject char1 = new JSONObject();
+		Card char1card = new Card("Character", "Mark Zuckerberg", "Founder of Facebook", "(Mental Health 3)",
+				"If you lose mental health, \ntake one card from the causer", false, true, null);
+		char1.put("playerID", host.getId());
+		char1.put("character", char1card.getTitle());
+		char1.put("characterCard", char1card);
+		char1.put("health", 3);
+		jsonArray.put(char1);
 
-	JSONObject char4 = new JSONObject();
-	Card char4card = new Card("Character",
-			"Larry Page", "Founder of Google", "(Mental Health 4)",
-			"When somebody gets fired, \nyou take the cards",
-			false, true, null);
-	char4.put("playerID", host.getId());
-	char4.put("character", char4card.getTitle());
-  	char4.put("characterCard", char4card);
-  	char4.put("health", 4);
-  	jsonArray.put(char4);
-  	
-	JSONObject msgBody = new JSONObject();
-	msgBody.put("gameID", 1);
-	msgBody.put("playerID", host.getId());
-	msgBody.put("characters", jsonArray);
-	JSONObject msgObject = new JSONObject();
-	msgObject.put("msgType", "Characters");
-  	msgObject.put("msgBody", msgBody);
-  	JSONMessage msg = new JSONMessage(msgObject);
-	gameView.handleMessage(msg);
-  	
-  	
+		JSONObject char2 = new JSONObject();
+		Card char2card = new Card("Character", "Tom Anderson", "Founder of MySpace", "(Mental Health 4)",
+				"If you lose mental health, \nyou may take a card from the stack", false, true, null);
+		char2.put("playerID", host.getId());
+		char2.put("character", char2card.getTitle());
+		char2.put("characterCard", char2card);
+		char2.put("health", 4);
+		jsonArray.put(char2);
 
-		assertEquals(char3card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container1:health-role-container1:character-card-panel1")).getModelObject().get(0));
-		assertEquals(char4card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container2:health-role-container2:character-card-panel2")).getModelObject().get(0));
-		assertEquals(char1card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container3:health-role-container3:character-card-panel3")).getModelObject().get(0));
+		JSONObject char3 = new JSONObject();
+		Card char3card = new Card("Character", "Jeff Taylor", "Founder of \nmonster.com", "(Mental Health 4)",
+				"No cards left? \nTake one from the stack", false, true, null);
+		char3.put("playerID", host.getId());
+		char3.put("character", char3card.getTitle());
+		char3.put("characterCard", char3card);
+		char3.put("health", 4);
+		jsonArray.put(char3);
+
+		JSONObject char4 = new JSONObject();
+		Card char4card = new Card("Character", "Larry Page", "Founder of Google", "(Mental Health 4)",
+				"When somebody gets fired, \nyou take the cards", false, true, null);
+		char4.put("playerID", host.getId());
+		char4.put("character", char4card.getTitle());
+		char4.put("characterCard", char4card);
+		char4.put("health", 4);
+		jsonArray.put(char4);
+
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", 1);
+		msgBody.put("playerID", host.getId());
+		msgBody.put("characters", jsonArray);
+		JSONObject msgObject = new JSONObject();
+		msgObject.put("msgType", "Characters");
+		msgObject.put("msgBody", msgBody);
+		JSONMessage msg = new JSONMessage(msgObject);
+		gameView.handleMessage(msg);
+
+		assertEquals(char3card,
+				((ListView) tester
+						.getComponentFromLastRenderedPage("player-card-container1:health-role-container1:character-card-panel1"))
+								.getModelObject().get(0));
+		assertEquals(char4card,
+				((ListView) tester
+						.getComponentFromLastRenderedPage("player-card-container2:health-role-container2:character-card-panel2"))
+								.getModelObject().get(0));
+		assertEquals(char1card,
+				((ListView) tester
+						.getComponentFromLastRenderedPage("player-card-container3:health-role-container3:character-card-panel3"))
+								.getModelObject().get(0));
 		assertEquals(char2card, ((ListView) tester.getComponentFromLastRenderedPage("player-card-container4:health-role-container4:character-card-panel4")).getModelObject().get(0));
  
   	

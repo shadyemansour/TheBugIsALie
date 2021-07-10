@@ -302,6 +302,19 @@ public class GameViewTest extends PageTestBase {
 		gameView.handleMessage(msg);
 
 		assertEquals(role3card, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0));
+		
+		Card role2card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+		msgBody.put("playerID", user1.getId());
+		msgBody.put("role", role2card);
+		gameView.handleMessage(msg);
+		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+		
+		Card role4card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+		msgBody.put("playerID", user3.getId());
+		msgBody.put("role", role4card);
+		gameView.handleMessage(msg);
+		assertEquals(role4card, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0));
+		
 	}
 
 	@Test

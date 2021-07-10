@@ -82,7 +82,7 @@ public class Card implements Serializable {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Card card = (Card) o;
-    return playable == card.playable && visible == card.visible && Objects.equals(type, card.type) && Objects.equals(title, card.title) && Objects.equals(subTitle, card.subTitle) && Objects.equals(middleDesc, card.middleDesc) && Objects.equals(bottomDesc, card.bottomDesc) && Objects.equals(gameLogic, card.gameLogic);
+    return playable == card.playable && visible == card.visible && type.equals(card.type) && title.equals(card.title) && subTitle.equals(card.subTitle) && middleDesc.equals(card.middleDesc) && bottomDesc.equals(card.bottomDesc) && gameLogic.equals(card.gameLogic);
   }
 
   @Override

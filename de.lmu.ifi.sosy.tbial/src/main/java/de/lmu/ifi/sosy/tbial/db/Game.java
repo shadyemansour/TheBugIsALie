@@ -57,8 +57,7 @@ public class Game extends Thread implements Serializable {
 	private transient JSONMessage gameStartedMessageHost;
 	private transient List<JSONMessage> cardsHostMessages;
 
-
-	//    private  List<Card> heap = new  ArrayList<Card>(); TODO later
+	private List<Card> heap = new ArrayList<Card>();
 
 	//	private GameState state;
 	private volatile String gameState; // waiting for players, ready, playing, stopped, game over
@@ -386,6 +385,9 @@ public class Game extends Thread implements Serializable {
 				} else if (player.getRole().equals("Consultant")) {
 					consultantFired = true;
 				}
+				for (Card card : player.getHand()) {
+					discardCard(player.getId(), card, "hand");
+				}
 				break;
 			}
 		}
@@ -476,6 +478,8 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void defendCard(int playerID, Card excuseCard, Card bugCard) {
+		heap.add(excuseCard);
+		heap.add(bugCard);
 		//TODO implementation
 		cardDefendedMessage(playerID, excuseCard, bugCard);
 	}
@@ -515,6 +519,7 @@ public class Game extends Thread implements Serializable {
 
 
 	public void discardCard(int playerID, Card card, String discardedFrom) {
+		heap.add(card);
 		//TODO implementation add to heap?
 		discardCardMessage(playerID, card, discardedFrom);
 	}
@@ -646,6 +651,19 @@ public class Game extends Thread implements Serializable {
 		msgBody.put("numPlayers", numPlayers);
 		JSONMessage msg = createJSONMessage("GameStarted", msgBody);
 		gameStartedMessageHost = msg;
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
+	}
+
+	public JSONMessage cardDelegated(Card card, int id) {
+		heap.add(card);
+		heap.add(new Card("Ability", "Bug Delegation", "", "",
+				"Delegates bug report. \n.25 chance to work", false, false, ""));
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("playerID", id);
+		msgBody.put("card", card);
+		JSONMessage msg = createJSONMessage("CardDelegated", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;
 	}

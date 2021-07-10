@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import static de.lmu.ifi.sosy.tbial.TBIALApplication.getDatabase;
 
@@ -476,7 +477,7 @@ public abstract class GameView extends WebPage {
           int from = body.getInt("from");
           int to = body.getInt("to");
           Card car = (Card) body.get("card");
-          if (to == user.getId()) {
+          if (to != from && to == user.getId()) {
             user.setBeingAttacked(true);
           }
           updatePlayerHands(from, car);
@@ -498,6 +499,29 @@ public abstract class GameView extends WebPage {
               }
             }
           }
+          if (to != from && to == user.getId() && user.hasDelegation()) {
+            Card delegation = new Card("Ability", "Bug Delegation", "", "",
+                "Delegates bug report. \n.25 chance to work", false, false, "");
+            Random random = new Random();
+            double r = random.nextDouble();
+            System.out.println("random number: " + r);
+            if (r < 0.25) {
+              cardDelegated(car);
+            } else {
+              discardCard(delegation, "drop");
+            }
+
+          }
+          break;
+        case "CardDelegated":
+          int playerr = body.getInt("playerID");
+          Card c = (Card) body.get("card");
+          Card delegation = new Card("Ability", "Bug Delegation", "", "",
+              "Delegates bug report. \n.25 chance to work", false, false, "");
+          updatePlayersDropAreas(playerr, delegation);
+          updatePlayersDropAreas(playerr, c);
+          heapList.add(delegation);
+          heapList.add(c);
           break;
         case "CardDiscarded":
           int player = body.getInt("playerID");
@@ -523,85 +547,9 @@ public abstract class GameView extends WebPage {
         case "Health":
           int p = body.getInt("playerID");
           int health = body.getInt("health");
-          //TODO USE THE DATA
           updateHealth();
-//          int pPos = 0;
-//          for (int i = 0; i < playerList.size(); i++) {
-//            if (playerList.get(i).getId() == p) {
-//              pPos = i;
-//            }
-//          }
-//          for (int i = 0; i < playerList.size(); i++) {
-//            if (playerList.get(i).getId() == user.getId()) {
-//              switch (i) {
-//                case 0:
-//                  switch (pPos) {
-//                    case 0:
-//                      p3health = health;
-//                      break;
-//                    case 1:
-//                      p4health = health;
-//                      break;
-//                    case 2:
-//                      p1health = health;
-//                      break;
-//                    case 3:
-//                      p2health = health;
-//                      break;
-//                  }
-//                  break;
-//                case 1:
-//                  switch (pPos) {
-//                    case 0:
-//                      p2health = health;
-//                      break;
-//                    case 1:
-//                      p3health = health;
-//                      break;
-//                    case 2:
-//                      p4health = health;
-//                      break;
-//                    case 3:
-//                      p1health = health;
-//                      break;
-//                  }
-//                  break;
-//                case 2:
-//                  switch (pPos) {
-//                    case 0:
-//                      p1health = health;
-//                      break;
-//                    case 1:
-//                      p2health = health;
-//                      break;
-//                    case 2:
-//                      p3health = health;
-//                      break;
-//                    case 3:
-//                      p4health = health;
-//                      break;
-//                  }
-//                  break;
-//                case 3:
-//                  switch (pPos) {
-//                    case 0:
-//                      p4health = health;
-//                      break;
-//                    case 1:
-//                      p1health = health;
-//                      break;
-//                    case 2:
-//                      p2health = health;
-//                      break;
-//                    case 3:
-//                      p3health = health;
-//                      break;
-//                  }
-//                  break;
-//              }
-//            }
-//          }
           break;
+
         case "PlayerFired":
           int playID = (int) body.get("playerID");
           Card role = (Card) body.get("role");
@@ -881,13 +829,18 @@ public abstract class GameView extends WebPage {
   public void discardCard(Card card, String discardFrom) {
     //TODO
     if (user.isMyTurn() || user.isBeingAttacked()) {
-      if (discardFrom.equals("hand")) {
-        user.getHand().remove(card);
-      }
+//      if (discardFrom.equals("hand")) {
+//        user.getHand().remove(card);
+//      }
       game.discardCard(((TBIALSession) getSession()).getUser().getId(), card, discardFrom);
     } else {
       //TODO message on ui?
     }
+  }
+
+  public void cardDelegated(Card card) {
+    game.cardDelegated(card, user.getId());
+
   }
 
   public void playCard(int to, Card card) {

@@ -433,8 +433,8 @@ public class FourBoard extends GameView {
         if (user.isBeingAttacked() && selectedDropCard != null) {
           // can't defend
           discardCard(selectedDropCard, "drop");
-          p3drophand.remove(selectedDropCard);
-          heapList.add(selectedDropCard);
+          //  p3drophand.remove(selectedDropCard);
+          //  heapList.add(selectedDropCard);
           user.setBeingAttacked(false);
           selectedDropCard = null;
           game.updateHealth(user.getId(), user.getHealth() - 1);
@@ -442,7 +442,7 @@ public class FourBoard extends GameView {
         }
 
         if (selectedCard != null) {
-          game.discardCard(user.getId(), selectedCard, "hand");
+          discardCard(selectedCard, "hand");
           selectedCard = null;
         }
       }
@@ -509,9 +509,11 @@ public class FourBoard extends GameView {
       protected void onEvent(AjaxRequestTarget target) {
         System.out.println("drophand-1: " + actualPlayerlist.get(0).getName());
         if (selectedCard != null && selectedCard.getSubTitle() == "--bug--" && !selectable && !bugPlayed) {
-          playCard(actualPlayerlist.get(0).getId(), selectedCard);
-          selectedCard = null;
-          bugPlayed = true;
+          if (!actualPlayerlist.get(0).isFired()) {
+            playCard(actualPlayerlist.get(0).getId(), selectedCard);
+            selectedCard = null;
+            bugPlayed = true;
+          }
         }
       }
     });
@@ -619,9 +621,11 @@ public class FourBoard extends GameView {
       protected void onEvent(AjaxRequestTarget target) {
         System.out.println("drophand-2: " + actualPlayerlist.get(1).getName());
         if (selectedCard != null && selectedCard.getSubTitle() == "--bug--" && !selectable && !bugPlayed) {
-          playCard(actualPlayerlist.get(1).getId(), selectedCard);
-          selectedCard = null;
-          bugPlayed = true;
+          if (!actualPlayerlist.get(1).isFired()) {
+            playCard(actualPlayerlist.get(1).getId(), selectedCard);
+            selectedCard = null;
+            bugPlayed = true;
+          }
         }
       }
     });
@@ -729,7 +733,10 @@ public class FourBoard extends GameView {
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         System.out.println("drophand-3: " + actualPlayerlist.get(2).getName());
-        if (selectedCard != null && selectedCard.getSubTitle() != "--bug--") {
+        if (selectedCard != null && selectedCard.getTitle().equals("Bug Delegation")) {
+          playCard(user.getId(), selectedCard);
+          user.setHasDelegation(true);
+
           // TODO bug delegation cards
           // TODO boolean delegation, ACTIVE WHEN DELEGATION PLACED, IF ACTIVE 25% AUTOMATIC DEFENSE
 
@@ -868,9 +875,11 @@ public class FourBoard extends GameView {
       protected void onEvent(AjaxRequestTarget target) {
         System.out.println("drophand-4: " + actualPlayerlist.get(3).getName());
         if (selectedCard != null && selectedCard.getSubTitle() == "--bug--" && !selectable && !bugPlayed) {
-          playCard(actualPlayerlist.get(3).getId(), selectedCard);
-          selectedCard = null;
-          bugPlayed = true;
+          if (!actualPlayerlist.get(3).isFired()) {
+            playCard(actualPlayerlist.get(3).getId(), selectedCard);
+            selectedCard = null;
+            bugPlayed = true;
+          }
         }
       }
     });
@@ -946,4 +955,5 @@ public class FourBoard extends GameView {
     roleCard.setOutputMarkupId(true);
     healthRoleContainer.add(roleCard);
   }
+
 }

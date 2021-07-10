@@ -48,6 +48,7 @@ public class User implements Serializable {
   private boolean myTurn;
   private boolean hasStumblingCards;
   private boolean beingAttacked;
+  private boolean hasDelegation;
 
   protected PropertyChangeSupport propertyChangeSupport;
 
@@ -74,6 +75,7 @@ public class User implements Serializable {
     this.myTurn = false;
     this.hasStumblingCards = false;
     this.beingAttacked = false;
+    this.hasDelegation = false;
 
   }
 
@@ -176,6 +178,10 @@ public class User implements Serializable {
     return characterCard;
   }
 
+  public boolean isFired() {
+    return fired;
+  }
+
   public String getRole() {
     return role;
   }
@@ -214,6 +220,13 @@ public class User implements Serializable {
 
   }
 
+  public boolean hasDelegation() {
+    return hasDelegation;
+  }
+
+  public void setHasDelegation(boolean hasDelegation) {
+    this.hasDelegation = hasDelegation;
+  }
 
   @Override
   public String toString() {

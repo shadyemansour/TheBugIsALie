@@ -133,14 +133,18 @@ public class GameBoardTest extends PageTestBase {
     assertEquals(host.getHand().size(), ((ListView) tester.getComponentFromLastRenderedPage(cardhand3)).getViewSize());
 
     Card bugCard = null;
+    int bugPosition = 0;
     for (int i = 0; i < host.getHand().size(); i++) {
       if (host.getHand().get(i).getSubTitle() == "--bug--") {
         bugCard = host.getHand().get(i);
+        bugPosition = i;
         break;
       }
     }
+    List<Card> cardHand = ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:playable-cards-container3:card-hand3")).getList();
     int hostHandSize = host.getHand().size();
     if (bugCard != null) {
+      assertEquals(bugCard, cardHand.get(bugPosition));
       JSONObject msgBody = new JSONObject();
       msgBody.put("gameID", 1);
       msgBody.put("from", host.getId());
@@ -157,6 +161,16 @@ public class GameBoardTest extends PageTestBase {
 
       String droparea1 = "p1-container:player-card-container1:playable-cards-container1:card-drop-area1";
       assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage(droparea1)).getViewSize());
+
+      msgBody.put("to", player2.getId());
+      gameView.handleMessage(msg);
+      String droparea4 = "p4-container:player-card-container4:playable-cards-container4:card-drop-area4";
+      assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage(droparea4)).getViewSize());
+
+      msgBody.put("to", player4.getId());
+      gameView.handleMessage(msg);
+      String droparea2 = "p2-container:player-card-container2:playable-cards-container2:card-drop-area2";
+      assertEquals(1, ((ListView) tester.getComponentFromLastRenderedPage(droparea2)).getViewSize());
     } else {
       assertThat(host.getHand().size(), is(hostHandSize));
       assertEquals(host.getHand().size(), ((ListView) tester.getComponentFromLastRenderedPage(cardhand3)).getViewSize());

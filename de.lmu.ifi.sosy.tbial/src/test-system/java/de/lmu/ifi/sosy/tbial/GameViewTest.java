@@ -18,6 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -112,6 +114,51 @@ public class GameViewTest extends PageTestBase {
 		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:playable-cards-container2:card-hand2")).getViewSize());
 		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:playable-cards-container3:card-hand3")).getViewSize());
 		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:playable-cards-container4:card-hand4")).getViewSize());
+		
+		setOption1();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(5, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:playable-cards-container1:card-hand1")).getViewSize());
+		
+		setOption2();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(6, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:playable-cards-container1:card-hand1")).getViewSize());
+		
+		setOption3();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(7, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:playable-cards-container1:card-hand1")).getViewSize());
+	}
+	
+	public void setOption1() {
+		List<User> newlist = new ArrayList<User>();
+		newlist.add(gameView.playerList.get(1));
+		newlist.add(gameView.playerList.get(2));
+		newlist.add(gameView.playerList.get(3));
+		newlist.add(gameView.playerList.get(0));
+		game.setPlayers(newlist);
+		gameView.playerList = game.getPlayers();
+	}
+	
+	public void setOption2() {
+		List<User> newlist = new ArrayList<User>();
+		newlist.add(gameView.playerList.get(2));
+		newlist.add(gameView.playerList.get(3));
+		newlist.add(gameView.playerList.get(0));
+		newlist.add(gameView.playerList.get(1));
+		game.setPlayers(newlist);
+		gameView.playerList = game.getPlayers();
+	}
+	
+	public void setOption3() {
+		List<User> newlist = new ArrayList<User>();
+		newlist.add(gameView.playerList.get(3));
+		newlist.add(gameView.playerList.get(0));
+		newlist.add(gameView.playerList.get(1));
+		newlist.add(gameView.playerList.get(2));
+		game.setPlayers(newlist);
+		gameView.playerList = game.getPlayers();
 	}
 
 	@Test
@@ -131,6 +178,21 @@ public class GameViewTest extends PageTestBase {
 		assertEquals(4, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:playable-cards-container2:card-hand2")).getViewSize());
 		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:playable-cards-container3:card-hand3")).getViewSize());
 		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:playable-cards-container4:card-hand4")).getViewSize());
+		
+		setOption1();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(5, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:playable-cards-container2:card-hand2")).getViewSize());
+		
+		setOption2();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(6, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:playable-cards-container2:card-hand2")).getViewSize());
+		
+		setOption3();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(7, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:playable-cards-container2:card-hand2")).getViewSize());
 	}
 
 	@Test
@@ -172,6 +234,21 @@ public class GameViewTest extends PageTestBase {
 		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:playable-cards-container2:card-hand2")).getViewSize());
 		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:playable-cards-container3:card-hand3")).getViewSize());
 		assertEquals(4, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:playable-cards-container4:card-hand4")).getViewSize());
+		
+		setOption1();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(5, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:playable-cards-container4:card-hand4")).getViewSize());
+		
+		setOption2();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(6, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:playable-cards-container4:card-hand4")).getViewSize());
+		
+		setOption3();
+		msgBody.put("cards", 1);
+		gameView.handleMessage(msg);
+		assertEquals(7, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:playable-cards-container4:card-hand4")).getViewSize());
 	}
 
 	@Test
@@ -310,6 +387,11 @@ public class GameViewTest extends PageTestBase {
 	@Test
 	public void role_visible_afterPlayerFired() {
 		Card role3card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+		Card role2card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+		Card role4card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
+		String droparea3 = "p1-container:player-card-container1:playable-cards-container1:card-drop-area1";
+		String droparea2 = "p4-container:player-card-container4:playable-cards-container4:card-drop-area4";
+		String droparea4 = "p2-container:player-card-container2:playable-cards-container2:card-drop-area2";
 
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", 1);
@@ -322,19 +404,89 @@ public class GameViewTest extends PageTestBase {
 		gameView.handleMessage(msg);
 
 		assertEquals(role3card, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0));
+		assertEquals(0, user2.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea3)).getViewSize());
 		
-		Card role2card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 		msgBody.put("playerID", user1.getId());
 		msgBody.put("role", role2card);
 		gameView.handleMessage(msg);
 		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+		assertEquals(0, user1.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea2)).getViewSize());
 		
-		Card role4card = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, null);
 		msgBody.put("playerID", user3.getId());
 		msgBody.put("role", role4card);
 		gameView.handleMessage(msg);
 		assertEquals(role4card, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0));
+		assertEquals(0, user3.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea4)).getViewSize());
+	    
+	    setOption1();
+	    msgBody.put("playerID", user2.getId());
+		msgBody.put("role", role3card);
+		gameView.handleMessage(msg);
+		assertEquals(role3card, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0));
+		assertEquals(0, user2.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea3)).getViewSize());
+
+		msgBody.put("playerID", user1.getId());
+		msgBody.put("role", role2card);
+		gameView.handleMessage(msg);
+		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+		assertEquals(0, user1.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea2)).getViewSize());
 		
+		msgBody.put("playerID", user3.getId());
+		msgBody.put("role", role4card);
+		gameView.handleMessage(msg);
+		assertEquals(role4card, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0));
+		assertEquals(0, user3.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea4)).getViewSize());
+
+		setOption2();
+	    msgBody.put("playerID", user2.getId());
+		msgBody.put("role", role3card);
+		gameView.handleMessage(msg);
+		assertEquals(role3card, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0));
+		assertEquals(0, user2.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea3)).getViewSize());
+
+		msgBody.put("playerID", user1.getId());
+		msgBody.put("role", role2card);
+		gameView.handleMessage(msg);
+		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+		assertEquals(0, user1.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea2)).getViewSize());
+		
+		msgBody.put("playerID", user3.getId());
+		msgBody.put("role", role4card);
+		gameView.handleMessage(msg);
+		assertEquals(role4card, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0));
+		assertEquals(0, user3.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea4)).getViewSize());
+
+		setOption3();
+	    msgBody.put("playerID", user2.getId());
+		msgBody.put("role", role3card);
+		gameView.handleMessage(msg);
+		assertEquals(role3card, ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0));
+		assertEquals(0, user2.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea3)).getViewSize());
+
+		msgBody.put("playerID", user1.getId());
+		msgBody.put("role", role2card);
+		gameView.handleMessage(msg);
+		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+		assertEquals(0, user1.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea2)).getViewSize());
+		
+		msgBody.put("playerID", user3.getId());
+		msgBody.put("role", role4card);
+		gameView.handleMessage(msg);
+		assertEquals(role4card, ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0));
+		assertEquals(0, user3.getHand().size());
+		assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea4)).getViewSize());
+	
 	}
 
 	@Test

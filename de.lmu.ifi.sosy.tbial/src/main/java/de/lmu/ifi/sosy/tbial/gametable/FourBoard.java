@@ -4,22 +4,17 @@ import de.lmu.ifi.sosy.tbial.db.*;
 import de.lmu.ifi.sosy.tbial.*;
 import de.lmu.ifi.sosy.tbial.db.Card;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.RefreshingView;
-import org.apache.wicket.markup.repeater.util.ModelIteratorAdapter;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.model.PropertyModel;
@@ -30,12 +25,17 @@ public class FourBoard extends GameView {
    * UID for serialization.
    */
   private static final long serialVersionUID = 1L;
-  private int numPlayer = 4;
+  
+  
+  WebMarkupContainer playerCardContainer, playerCardContainer2, playerCardContainer3, playerCardContainer4;
+  ListView<Card> cardDropArea, cardDropArea2, cardDropArea3, cardDropArea4;
+  Card selectedCard;
+  boolean selectable = false;
+  ListView<Card> cardHand, cardHand2, cardHand3, cardHand4;
 
   User user = ((TBIALSession) getSession()).getUser();
   List<Game> appGames = ((TBIALApplication) getApplication()).getAvailableGames();
-  List<User> players;
-  // Game game;
+  List<User> players = actualPlayerlist;
   private Label p1prestige, p2prestige, p3prestige, p4prestige;
   private Label p1health, p2health, p3health, p4health;
   private Label p1name, p2name, p3name, p4name;
@@ -61,12 +61,10 @@ public class FourBoard extends GameView {
     currenthealth2 = players.get(1).getHealth();
     currenthealth3 = players.get(2).getHealth();
     currenthealth4 = players.get(3).getHealth();
-  //  System.out.println("user - " + user.getName() + " h1: " + currenthealth1 + " h2: " + currenthealth2 + " h3: " + currenthealth3 + " h4: " + currenthealth4);
   }
 
   protected void createPlayerAttributes() {
 
-    players = game.getPlayers();
     players.get(0).setPrestige(0);
     players.get(1).setPrestige(0);
     players.get(2).setPrestige(0);
@@ -77,7 +75,6 @@ public class FourBoard extends GameView {
     currenthealth3 = players.get(2).getHealth();
     currenthealth4 = players.get(3).getHealth();
 
-    // adjust to playerlist order
     // PLAYER 1  -  ATTRIBUTES
     p1name = new Label("p1", players.get(0).getName());
     add(p1name);
@@ -173,17 +170,22 @@ public class FourBoard extends GameView {
    */
   private void createPlayer1Area() {
     /*
-     * create dummy card-model for player-card-container4
-     */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
-//    cardDropModels.add(Model.of(card5));
-
-    /*
      * player-card-container
      */
-    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container1");
-    playerCardContainer.setOutputMarkupId(true);
+    playerCardContainer = new WebMarkupContainer("player-card-container1");
     playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer.add(new AjaxEventBehavior("click") {
+    	private static final long serialVersionUID = 1L;
+		@Override
+		protected void onEvent(AjaxRequestTarget target) {
+			System.out.println("drophand-1: " + players.get(0).getName());
+			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+				game.playCard(user.getId(), players.get(0).getId(), selectedCard);
+				selectedCard = null;
+			}
+		}
+	});
+    playerCardContainer.setOutputMarkupId(true);
     add(playerCardContainer);
 
     /*
@@ -194,26 +196,16 @@ public class FourBoard extends GameView {
     /*
      * drop area
      */
-    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area1") {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected Iterator<IModel<Card>> getItemModels() {
-        return cardDropModels.iterator();
-      }
-
-      int width = 300;
-
-      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
-
-      @Override
-      protected void populateItem(Item<Card> item) {
-        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-        posLeft += stepSize;
-        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-      }
-
+    cardDropArea = new ListView<Card>("card-drop-area1", p1drophand) {
+			private static final long serialVersionUID = 1L;
+			int width = 300;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p1drophand.size() * 50) / (p1drophand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
     };
     cardDropArea.setOutputMarkupId(true);
     playableCardsContainer.add(cardDropArea);
@@ -221,7 +213,7 @@ public class FourBoard extends GameView {
     /*
      * card hand
      */
-    ListView<Card> cardHand = new ListView<Card>("card-hand1", p1hand) {
+    cardHand = new ListView<Card>("card-hand1", p1hand) {
       private static final long serialVersionUID = 1L;
       int width = 300;
 
@@ -278,55 +270,52 @@ public class FourBoard extends GameView {
    * creates player area for right player
    */
   private void createPlayer2Area() {
-    /*
-     * create dummy card-model for player-card-container4
-     */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
 
     /*
      * player-card-container
      */
-    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container2");
-    playerCardContainer.setOutputMarkupId(true);
-    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-    add(playerCardContainer);
+    playerCardContainer2 = new WebMarkupContainer("player-card-container2");
+    playerCardContainer2.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer2.add(new AjaxEventBehavior("click") {
+    	private static final long serialVersionUID = 1L;
+		@Override
+		protected void onEvent(AjaxRequestTarget target) {
+			System.out.println("drophand-2: " + players.get(1).getName());
+			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+				game.playCard(user.getId(), players.get(1).getId(), selectedCard);
+				selectedCard = null;
+			}
+		}
+	});
+    playerCardContainer2.setOutputMarkupId(true);
+    add(playerCardContainer2);
 
     /*
      * left side container includes card-drop-area and card-hand
      */
     WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container2");
-    playerCardContainer.add(playableCardsContainer);
+    playerCardContainer2.add(playableCardsContainer);
     /*
      * drop area
      */
-    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area2") {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected Iterator<IModel<Card>> getItemModels() {
-        return cardDropModels.iterator();
-      }
-
-      int width = 300;
-
-      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
-
-      @Override
-      protected void populateItem(Item<Card> item) {
-        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-        posLeft += stepSize;
-        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-      }
-
+    cardDropArea2 = new ListView<Card>("card-drop-area2", p2drophand) {
+			private static final long serialVersionUID = 1L;
+			int width = 300;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p2drophand.size() * 50) / (p2drophand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
     };
-    cardDropArea.setOutputMarkupId(true);
-    playableCardsContainer.add(cardDropArea);
+    cardDropArea2.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea2);
 
     /*
      * card hand
      */
-    ListView<Card> cardHand = new ListView<Card>("card-hand2", p2hand) {
+    cardHand2 = new ListView<Card>("card-hand2", p2hand) {
       private static final long serialVersionUID = 1L;
       int width = 300;
 
@@ -337,15 +326,15 @@ public class FourBoard extends GameView {
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
     };
-    cardHand.setOutputMarkupId(true);
-    playableCardsContainer.add(cardHand);
+    cardHand2.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand2);
 
     /*
      * container of right side
      */
     WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container2");
     healthRoleContainer.setOutputMarkupId(true);
-    playerCardContainer.add(healthRoleContainer);
+    playerCardContainer2.add(healthRoleContainer);
 
     /*
      * show character card
@@ -384,74 +373,81 @@ public class FourBoard extends GameView {
    */
   private void createPlayer3Area() {
     /*
-     * create dummy card-model for player-card-container4
-     */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
-//    cardDropModels.add(Model.of(card5));
-
-    /*
      * player-card-container
      */
-    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container3");
-    playerCardContainer.setOutputMarkupId(true);
-    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-    add(playerCardContainer);
+    playerCardContainer3 = new WebMarkupContainer("player-card-container3");
+    playerCardContainer3.setOutputMarkupId(true);
+    playerCardContainer3.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer3.add(new AjaxEventBehavior("click") {
+      private static final long serialVersionUID = 1l;
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+    	  System.out.println("drophand-3: " + players.get(2).getName());
+        if (selectedCard != null) {
+          // TODO bug delegation cards
+        }
+      }
+    });
+    add(playerCardContainer3);
 
     /*
      * left side container includes card-drop-area and card-hand
      */
     WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container3");
-    playerCardContainer.add(playableCardsContainer);
+    playerCardContainer3.add(playableCardsContainer);
     /*
      * drop area
      */
-    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area3") {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected Iterator<IModel<Card>> getItemModels() {
-        return cardDropModels.iterator();
-      }
-
-      int width = 300;
-
-      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
-
-      @Override
-      protected void populateItem(Item<Card> item) {
-        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-        posLeft += stepSize;
-        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-      }
-
+    cardDropArea3 = new ListView<Card>("card-drop-area3", p3drophand) {
+			private static final long serialVersionUID = 1L;
+			int width = 300;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p3drophand.size() * 50) / (p3drophand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+        item.add(new AjaxEventBehavior("click") {
+					private static final long serialVersionUID = 1L;
+					@Override
+					protected void onEvent(AjaxRequestTarget target) {
+						System.out.println("card: " + item.getModelObject());
+					}
+				});
+			}
     };
-    cardDropArea.setOutputMarkupId(true);
-    playableCardsContainer.add(cardDropArea);
+    cardDropArea3.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea3);
 
     /*
      * card hand
      */
-    ListView<Card> cardHand = new ListView<Card>("card-hand3", p3hand) {
-      private static final long serialVersionUID = 1L;
-      int width = 300;
-
-      @Override
-      protected void populateItem(ListItem<Card> item) {
-        int posLeft = (width - p3hand.size() * 50) / (p3hand.size() + 1);
-        item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
-        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-      }
+    cardHand3 = new ListView<Card>("card-hand3", p3hand) {
+			private static final long serialVersionUID = 1L;
+			int width = 300;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p3hand.size() * 50) / (p3hand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+				item.add(new AjaxEventBehavior("click") {
+					private static final long serialVersionUID = 1L;
+					@Override
+					protected void onEvent(AjaxRequestTarget target) {
+						System.out.println("card: " + item.getModelObject());
+					  selectedCard = item.getModelObject();
+					}
+				});
+			}
     };
-    cardHand.setOutputMarkupId(true);
-    playableCardsContainer.add(cardHand);
+	cardHand3.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand3);
 
     /*
      * container of right side
      */
     WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container3");
     healthRoleContainer.setOutputMarkupId(true);
-    playerCardContainer.add(healthRoleContainer);
+    playerCardContainer3.add(healthRoleContainer);
 
     
     /*
@@ -494,55 +490,50 @@ public class FourBoard extends GameView {
    */
   private void createPlayer4Area() {
     /*
-     * create dummy card-model for player-card-container4
-     */
-    List<IModel<Card>> cardDropModels = new ArrayList<IModel<Card>>();
-//    cardDropModels.add(Model.of(card5));
-
-    /*
      * player-card-container
      */
-    WebMarkupContainer playerCardContainer = new WebMarkupContainer("player-card-container4");
-    playerCardContainer.setOutputMarkupId(true);
-    playerCardContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-    add(playerCardContainer);
-
+    playerCardContainer4 = new WebMarkupContainer("player-card-container4");
+    playerCardContainer4.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+    playerCardContainer4.add(new AjaxEventBehavior("click") {
+    	private static final long serialVersionUID = 1L;
+		@Override
+		protected void onEvent(AjaxRequestTarget target) {
+			System.out.println("drophand-4: " + players.get(3).getName());
+			if (selectedCard != null && selectedCard.getSubTitle() == "--bug--") {
+				game.playCard(user.getId(), players.get(3).getId(), selectedCard);
+				selectedCard = null;
+			}
+		}
+	});
+    playerCardContainer4.setOutputMarkupId(true);
+    add(playerCardContainer4);
+    
     /*
      * left side container includes card-drop-area and card-hand
      */
     WebMarkupContainer playableCardsContainer = new WebMarkupContainer("playable-cards-container4");
-    playerCardContainer.add(playableCardsContainer);
+    playerCardContainer4.add(playableCardsContainer);
     /*
      * drop area
      */
-    RefreshingView<Card> cardDropArea = new RefreshingView<Card>("card-drop-area4") {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected Iterator<IModel<Card>> getItemModels() {
-        return cardDropModels.iterator();
-      }
-
-      int width = 300;
-
-      int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
-
-      @Override
-      protected void populateItem(Item<Card> item) {
-        item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
-        posLeft += stepSize;
-        item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
-      }
-
+    cardDropArea4 = new ListView<Card>("card-drop-area4", p4drophand) {
+			private static final long serialVersionUID = 1L;
+			int width = 300;
+			@Override
+			protected void populateItem(ListItem<Card> item) {
+				int posLeft = (width - p4drophand.size() * 50) / (p4drophand.size() + 1);
+				item.add(new AttributeAppender("style", "left: " + (posLeft + item.getIndex() * (posLeft + 50)) + "px;"));
+				item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
+			}
+    	
     };
-    cardDropArea.setOutputMarkupId(true);
-    playableCardsContainer.add(cardDropArea);
+    cardDropArea4.setOutputMarkupId(true);
+    playableCardsContainer.add(cardDropArea4);
 
     /*
      * card hand
      */
-    ListView<Card> cardHand = new ListView<Card>("card-hand4", p4hand) {
+    cardHand4 = new ListView<Card>("card-hand4", p4hand) {
       private static final long serialVersionUID = 1L;
       int width = 300;
 
@@ -553,15 +544,15 @@ public class FourBoard extends GameView {
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
     };
-    cardHand.setOutputMarkupId(true);
-    playableCardsContainer.add(cardHand);
+    cardHand4.setOutputMarkupId(true);
+    playableCardsContainer.add(cardHand4);
 
     /*
      * container of right side
      */
     WebMarkupContainer healthRoleContainer = new WebMarkupContainer("health-role-container4");
     healthRoleContainer.setOutputMarkupId(true);
-    playerCardContainer.add(healthRoleContainer);
+    playerCardContainer4.add(healthRoleContainer);
 
     /*
      * show character card

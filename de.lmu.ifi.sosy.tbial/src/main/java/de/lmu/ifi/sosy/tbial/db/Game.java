@@ -196,7 +196,7 @@ public class Game implements Serializable {
 				rolesArray.put(role);
 
 				player.setRoleCard(roleCard);
-				
+
 				characterCard = characterCards.get(0);
 				JSONObject character = new JSONObject();
 				character.put("playerID", player.getId());
@@ -314,33 +314,33 @@ public class Game implements Serializable {
 		msgBody.put("roleCards", cardsArray);
 		JSONMessage msg = createJSONMessage("GameWon", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
-		roleCardsHostMessage=msg;
+		roleCardsHostMessage = msg;
 		return msg;
 	}
-	
+
 	public void playerFired(int playerID) {
-    //TODO implementation
-    Card role = null;
-    for(User player : players){
-        if (player.getId() == playerID){
-             role = player.getRoleCard();
-             break;
-        }
-    }
-    playerFiredMessage(playerID, role);
+		//TODO implementation
+		Card role = null;
+		for (User player : players) {
+			if (player.getId() == playerID) {
+				role = player.getRoleCard();
+				break;
+			}
+		}
+		playerFiredMessage(playerID, role);
 	}
-	
+
 	/**
 	 * sends playerFired Message
 	 */
 	protected JSONMessage playerFiredMessage(int playerID, Card role) {
-    JSONObject msgBody = new JSONObject();
-    msgBody.put("gameID", id);
-    msgBody.put("playerID", playerID);
-    msgBody.put("role", role);
-    JSONMessage msg = createJSONMessage("PlayerFired", msgBody);
-    propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
-    return msg;
+		JSONObject msgBody = new JSONObject();
+		msgBody.put("gameID", id);
+		msgBody.put("playerID", playerID);
+		msgBody.put("role", role);
+		JSONMessage msg = createJSONMessage("PlayerFired", msgBody);
+		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
+		return msg;
 	}
 
 	public void defendCard(int playerID, Card card) {
@@ -362,7 +362,6 @@ public class Game implements Serializable {
 	}
 
 	public void playCard(int from, int to, Card card) {
-		//TODO implementation
 		cardPlayedMessage(from, to, card);
 	}
 
@@ -402,12 +401,13 @@ public class Game implements Serializable {
 	public void drawCards(int playerID, int numCards) {
 		JSONArray cards = new JSONArray();
 		for (int n = 0; n < numCards; n++) {
-			if(stack.size()==0){
-                decksShuffled();
-            }
+			if (stack.size() == 0) {
+				decksShuffled();
+			}
 			for (User player : players) {
-				if(player.getId() == playerID) {
-					player.getHand().add(stack.get(0)); break;
+				if (player != null && player.getId() == playerID) {
+					player.getHand().add(stack.get(0));
+					break;
 				}
 			}
 			//TODO Draw cards from stack and save in Array
@@ -440,7 +440,7 @@ public class Game implements Serializable {
 		} else {
 				propertyChangeSupport.firePropertyChange("SendPrivateMessage", msg[0], playerID);
 				}*/
-		
+
 
 		JSONObject msgBodyBroadcast = new JSONObject();
 		msgBodyBroadcast.put("gameID", id);
@@ -456,7 +456,7 @@ public class Game implements Serializable {
 	/*	if (playerID != host.getId()) {
 			cardsHostMessages.add(msg[1].copy());
 		}*/
-		
+
 		return msg;
 	}
 
@@ -1007,13 +1007,14 @@ public class Game implements Serializable {
 
 		public void run() {
 			sendMessagesToHostOnStart();
+			//	drawCards(getCurrentID(),2);
 		}
 	}
-	
+
 	public int getCurrentID() {
 		return currentID;
 	}
-	
+
 
 //
 //	public List<Card> getHeap() {

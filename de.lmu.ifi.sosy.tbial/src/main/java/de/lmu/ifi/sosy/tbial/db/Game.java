@@ -266,6 +266,7 @@ public class Game extends Thread implements Serializable {
 		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
+		System.out.println("Stack size after initialization: " + stack.size());
 	}
 
 	@Override
@@ -385,6 +386,7 @@ public class Game extends Thread implements Serializable {
 				} else if (player.getRole().equals("Consultant")) {
 					consultantFired = true;
 				}
+				heap.addAll(player.getHand());
 				break;
 			}
 		}
@@ -405,7 +407,9 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void decksShuffled() {
-		//TODO implementation
+		System.out.println("heap size before shuffle: " + heap.size());
+		stack.addAll(heap);
+		heap.clear();
 		decksShuffledMessage(stack.size(), 0);
 	}
 
@@ -1116,7 +1120,7 @@ public class Game extends Thread implements Serializable {
 
 		}
 
-		stack.add(new Card("Action", "BUG", "-bug-", "",
+		stack.add(new Card("Action", "BUG", "--bug--", "",
 				"-1 mental health", true, false, ""));
 
 

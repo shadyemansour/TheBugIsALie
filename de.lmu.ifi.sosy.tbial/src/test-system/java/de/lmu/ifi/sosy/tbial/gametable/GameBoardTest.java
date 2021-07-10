@@ -17,8 +17,11 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.ListView;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.util.List;
+import java.util.ArrayList;
 
 public class GameBoardTest extends PageTestBase {
   Game game;
@@ -33,6 +36,11 @@ public class GameBoardTest extends PageTestBase {
   User player7;
 
   WebMarkupContainer tabs; //TODO DOUBLE CHECK AFTER MERGE
+  
+  int hostPosition = 0;
+  int p2Position = 0;
+  int p3Position = 0;
+  int p4Position = 0;
 
   @Before
   public void setUp() {
@@ -54,7 +62,7 @@ public class GameBoardTest extends PageTestBase {
 
   }
 
-  //@Test
+  @Test
   public void renderFourBoard() {
     game = database.createGame("four", host.getName(), "", "new", 4);
     game.addPlayer(player2);
@@ -206,25 +214,102 @@ public class GameBoardTest extends PageTestBase {
   public void testActualPlayerList() {
     renderFourBoard();
 
-    int hostPosition = 0;
-    int p2Position = 0;
-    int p3Position = 0;
-    int p4Position = 0;
-    for (int i = 0; i < gameView.actualPlayerlist.size(); i++) {
-      if (gameView.actualPlayerlist.get(i).getId() == host.getId()) {
-        hostPosition = i;
-      } else if (gameView.actualPlayerlist.get(i).getId() == player2.getId()) {
-        p2Position = i;
-      } else if (gameView.actualPlayerlist.get(i).getId() == player3.getId()) {
-        p3Position = i;
-      } else {
-        p4Position = i;
-      }
-    }
+    setPositionForList();
+    
     assertThat(p3Position, is(0));
     assertThat(p4Position, is(1));
     assertThat(hostPosition, is(2));
     assertThat(p2Position, is(3));
+    
+    resetPosition();
+    setListOption1();
+    setPositionForList();
+    
+    assertThat(p3Position, is(0));
+    assertThat(p4Position, is(1));
+    assertThat(hostPosition, is(2));
+    assertThat(p2Position, is(3));
+    
+    resetPosition();
+    setListOption2();
+    setPositionForList();
+    
+    assertThat(p3Position, is(0));
+    assertThat(p4Position, is(1));
+    assertThat(hostPosition, is(2));
+    assertThat(p2Position, is(3));
+    
+    resetPosition();
+    setListOption3();
+    setPositionForList();
+    
+    assertThat(p3Position, is(0));
+    assertThat(p4Position, is(1));
+    assertThat(hostPosition, is(2));
+    assertThat(p2Position, is(3));
+  }
+  
+  public void setPositionForList() {
+	for (int i = 0; i < gameView.actualPlayerlist.size(); i++) {
+	  if (gameView.actualPlayerlist.get(i).getId() == host.getId()) {
+	    hostPosition = i;
+	  } else if (gameView.actualPlayerlist.get(i).getId() == player2.getId()) {
+	    p2Position = i;
+	  } else if (gameView.actualPlayerlist.get(i).getId() == player3.getId()) {
+	    p3Position = i;
+	  } else {
+	    p4Position = i;
+	  }
+	}
+  }
+  
+  public void resetPosition() {
+	hostPosition = 0;
+	p2Position = 0;
+	p3Position = 0;
+	p4Position = 0;
+  }
+  
+  public void setListOption1() {
+	List<User> newlist = new ArrayList<User>();
+	newlist.add(game.getPlayers().get(1));
+	newlist.add(game.getPlayers().get(2));
+	newlist.add(game.getPlayers().get(3));
+	newlist.add(game.getPlayers().get(0));
+	game.setPlayers(newlist);
+	gameView.playerList = game.getPlayers();
+	gameView.actualPlayerlist = new ArrayList<User>();
+	gameView.setPlayerList();
+	System.out.println("LIST-OPTION-1");
+	System.out.println(gameView.playerList);
+  }
+  
+  public void setListOption2() {
+	List<User> newlist = new ArrayList<User>();
+	newlist.add(game.getPlayers().get(2));
+	newlist.add(game.getPlayers().get(3));
+	newlist.add(game.getPlayers().get(0));
+	newlist.add(game.getPlayers().get(1));
+	game.setPlayers(newlist);
+	gameView.playerList = game.getPlayers();
+	gameView.actualPlayerlist = new ArrayList<User>();
+	gameView.setPlayerList();
+	System.out.println("LIST-OPTION-2");
+	System.out.println(gameView.playerList);
+  }
+  
+  public void setListOption3() {
+	List<User> newlist = new ArrayList<User>();
+	newlist.add(game.getPlayers().get(3));
+	newlist.add(game.getPlayers().get(0));
+	newlist.add(game.getPlayers().get(1));
+	newlist.add(game.getPlayers().get(2));
+	game.setPlayers(newlist);
+	gameView.playerList = game.getPlayers();
+	gameView.actualPlayerlist = new ArrayList<User>();
+	gameView.setPlayerList();
+	System.out.println("LIST-OPTION-3");
+	System.out.println(gameView.playerList);
   }
   
   @Test
@@ -244,6 +329,38 @@ public class GameBoardTest extends PageTestBase {
 	gameView.handleMessage(msg);
     
     assertEquals(0, player3.getHand().size());
+  }
+  
+  @Test
+  public void cardDropHandSize() {
+	renderFourBoard();
+	game.startGame();
+	
+	JSONArray jsonArray = new JSONArray();
+	for (int i = 0; i < host.getHand().size(); i++) {
+      jsonArray.put(host.getHand().get(i));
+	}
+	JSONObject msgBody = new JSONObject();
+	msgBody.put("gameID", 1);
+	msgBody.put("cards", jsonArray);
+	JSONObject msgObject = new JSONObject();
+	msgObject.put("msgType", "YourCards");
+	msgObject.put("msgBody", msgBody);
+	JSONMessage msg = new JSONMessage(msgObject);
+	gameView.handleMessage(msg);
+	
+	String cardhand3 = "p3-container:player-card-container3:playable-cards-container3:card-hand3";
+	assertEquals(host.getHand().size(), ((ListView) tester.getComponentFromLastRenderedPage(cardhand3)).getViewSize());
+	assertEquals(host.getHand(), ((ListView) tester.getComponentFromLastRenderedPage(cardhand3)).getModelObject());
+	
+	String droparea1 = "p1-container:player-card-container1:playable-cards-container1:card-drop-area1";
+    assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea1)).getViewSize());
+    String droparea2 = "p2-container:player-card-container2:playable-cards-container2:card-drop-area2";
+    assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea2)).getViewSize());
+    String droparea3 = "p3-container:player-card-container3:playable-cards-container3:card-drop-area3";
+    assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea3)).getViewSize());
+    String droparea4 = "p4-container:player-card-container4:playable-cards-container4:card-drop-area4";
+    assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea4)).getViewSize());
   }
 
   @Test

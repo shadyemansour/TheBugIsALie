@@ -197,7 +197,7 @@ public class Game implements Serializable {
 
 				player.setRoleCard(roleCard);
 				
-				characterCard = characterCards.get(index);
+				characterCard = characterCards.get(0);
 				JSONObject character = new JSONObject();
 				character.put("playerID", player.getId());
 				character.put("character", characterCard.getTitle());
@@ -216,7 +216,7 @@ public class Game implements Serializable {
 					health = 4;
 				}
 
-				// characterCards.remove(0);
+			    characterCards.remove(0);
 
 				if (player.getRoleCard().getTitle().equals("Manager")) {
 					health += 1;

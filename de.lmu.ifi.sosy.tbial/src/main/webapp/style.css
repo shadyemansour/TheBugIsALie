@@ -881,6 +881,7 @@ pre.boxed {
 	height: 100px;
 	width: 80px;
 	margin-left: 10px;
+	margin-bottom: 10px;
 	border-radius: 10px;
 	border: solid 1px;
 }

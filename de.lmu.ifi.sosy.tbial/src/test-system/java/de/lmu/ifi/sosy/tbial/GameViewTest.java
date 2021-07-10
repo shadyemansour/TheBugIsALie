@@ -260,21 +260,41 @@ public class GameViewTest extends PageTestBase {
 
 	@Test
 	public void roles_allVisible_afterGameWon() {
-		Card role1card = new Card("Role", "Consultant", "", "Aim: Get everyone else \nfired; Manager last!", "Tries to take over the \ncompany", false, false, "");
-		Card role2card = new Card("Role", "Manager", "", "Aim: Remove evil code \nmonkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, "");
-		Card role3card = new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, "");
-		Card role4card = new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, "");
+		JSONArray jsonArray = new JSONArray();
 
-		JSONArray cardsArray = new JSONArray();
-		cardsArray.put(role1card);
-		cardsArray.put(role2card);
-		cardsArray.put(role3card);
-		cardsArray.put(role4card);
-		System.out.println("gameWon roleCards: " + cardsArray);
+		JSONObject role1 = new JSONObject();
+		Card role1card = new Card("Role", "Consultant", "", "Aim: Get everyone else \nfired; Manager last!", "Tries to take over the \ncompany", false, false, "");
+		role1.put("playerID", host.getId());
+		role1.put("role", role1card.getTitle());
+		role1.put("roleCard", role1card);
+		jsonArray.put(role1);
+
+		JSONObject role2 = new JSONObject();
+		Card role2card = new Card("Role", "Manager", "", "Aim: Remove evil code \nmonkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, "");
+		role2.put("playerID", host.getId());
+		role2.put("role", role2card.getTitle());
+		role2.put("roleCard", role2card);
+		jsonArray.put(role2);
+
+		JSONObject role3 = new JSONObject();
+		Card role3card = new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, "");
+		role3.put("playerID", host.getId());
+		role3.put("role", role3card.getTitle());
+		role3.put("roleCard", role3card);
+		jsonArray.put(role3);
+
+		JSONObject role4 = new JSONObject();
+		Card role4card = new Card("Role", "Evil Code Monkey", "", "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, false, "");
+		role4.put("playerID", host.getId());
+		role4.put("role", role4card.getTitle());
+		role4.put("roleCard", role4card);
+		jsonArray.put(role4);
+
+		System.out.println("gameWon roleCards: " + jsonArray);
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", 1);
 		msgBody.put("playerIDs", new JSONArray(Collections.singletonList(host.getId())));
-		msgBody.put("roleCards", gameView.getGame().getRoleCardsHostMessage().getMessage().getJSONObject("msgBody").get("roles"));
+		msgBody.put("roleCards", jsonArray);
 		JSONObject msgObject = new JSONObject();
 		msgObject.put("msgType", "GameWon");
 		msgObject.put("msgBody", msgBody);

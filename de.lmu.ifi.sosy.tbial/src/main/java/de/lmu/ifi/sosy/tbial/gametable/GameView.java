@@ -305,7 +305,11 @@ public abstract class GameView extends WebPage {
         case "Shuffle":
           int numCardsInDeck = (int) body.get("cardsInDeck");
           int numCardsInHeap = (int) body.get("cardsInHeap");
-          //TODO USE THE DATA
+          heapList.clear();
+          for (int j = 0; j < numCardsInDeck; j++) {
+            Card stackCard = new Card("", "Stack Card", "", "", "", false, false, "");
+            stackList.add(stackCard);
+          }
           break;
         case "GameWon":
           JSONArray idsJSON = (JSONArray) body.get("playerIDs");
@@ -316,9 +320,10 @@ public abstract class GameView extends WebPage {
           List<Card> roleCardsWon = new ArrayList<Card>();
           JSONArray roleCardsJSON = (JSONArray) body.get("roleCards");
           for (int i = 0; i < roleCardsJSON.length(); i++) {
-            Card card = (Card) roleCardsJSON.get(i);
-            card.setVisible(true);
-            roleCardsWon.add(card);
+            JSONObject container = (JSONObject) roleCardsJSON.get(i);
+            Card roleCard = (Card) container.get("roleCard");
+            roleCard.setVisible(true);
+            roleCardsWon.add(roleCard);
           }
           System.out.println("roleJSON" + roleCardsJSON);
           System.out.println("roleCards" + roleCardsWon);
@@ -500,14 +505,15 @@ public abstract class GameView extends WebPage {
             }
           }
           if (to != from && to == user.getId() && user.hasDelegation()) {
-            Card delegation = new Card("Ability", "Bug Delegation", "", "",
-                "Delegates bug report. \n.25 chance to work", false, false, "");
+            Card delegation = p3drophand.get(0);
             Random random = new Random();
             double r = random.nextDouble();
             System.out.println("random number: " + r);
             if (r < 0.25) {
-              cardDelegated(car);
+              cardDelegated(car, delegation);
+              user.setBeingAttacked(false);
             } else {
+              user.setHasDelegation(false);
               discardCard(delegation, "drop");
             }
 
@@ -515,9 +521,10 @@ public abstract class GameView extends WebPage {
           break;
         case "CardDelegated":
           int playerr = body.getInt("playerID");
+          System.out.println(playerr);
           Card c = (Card) body.get("card");
-          Card delegation = new Card("Ability", "Bug Delegation", "", "",
-              "Delegates bug report. \n.25 chance to work", false, false, "");
+          Card delegation = (Card) body.get("delegationCard");
+          System.out.println(c.getTitle());
           updatePlayersDropAreas(playerr, delegation);
           updatePlayersDropAreas(playerr, c);
           heapList.add(delegation);
@@ -667,8 +674,8 @@ public abstract class GameView extends WebPage {
             }
           }
           if (playID == user.getId()) {
-        	p3hand.clear();
-        	user.setHand(p3hand);
+            p3hand.clear();
+            user.setHand(p3hand);
           }
           break;
       }
@@ -805,8 +812,8 @@ public abstract class GameView extends WebPage {
     }
   }
 
-  public void cardDelegated(Card card) {
-    game.cardDelegated(card, user.getId());
+  public void cardDelegated(Card card, Card delegation) {
+    game.cardDelegated(card, delegation, user.getId());
 
   }
 

@@ -652,14 +652,14 @@ public class Game extends Thread implements Serializable {
 		return msg;
 	}
 
-	public JSONMessage cardDelegated(Card card, int id) {
+	public JSONMessage cardDelegated(Card card, Card delegation, int playerID) {
 		heap.add(card);
-		heap.add(new Card("Ability", "Bug Delegation", "", "",
-				"Delegates bug report. \n.25 chance to work", false, false, ""));
+		heap.add(delegation);
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
-		msgBody.put("playerID", id);
+		msgBody.put("playerID", playerID);
 		msgBody.put("card", card);
+		msgBody.put("delegationCard", delegation);
 		JSONMessage msg = createJSONMessage("CardDelegated", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;

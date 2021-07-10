@@ -385,9 +385,6 @@ public class Game extends Thread implements Serializable {
 				} else if (player.getRole().equals("Consultant")) {
 					consultantFired = true;
 				}
-				for (Card card : player.getHand()) {
-					discardCard(player.getId(), card, "hand");
-				}
 				break;
 			}
 		}

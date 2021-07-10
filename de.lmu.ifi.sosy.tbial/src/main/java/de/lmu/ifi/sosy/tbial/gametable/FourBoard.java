@@ -733,14 +733,6 @@ public class FourBoard extends GameView {
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         System.out.println("drophand-3: " + actualPlayerlist.get(2).getName());
-        if (selectedCard != null && selectedCard.getTitle().equals("Bug Delegation")) {
-          playCard(user.getId(), selectedCard);
-          user.setHasDelegation(true);
-
-          // TODO bug delegation cards
-          // TODO boolean delegation, ACTIVE WHEN DELEGATION PLACED, IF ACTIVE 25% AUTOMATIC DEFENSE
-
-        }
       }
     });
     p3container.add(playerCardContainer3);
@@ -803,6 +795,11 @@ public class FourBoard extends GameView {
                   selectedDropCard = null;
                 }
               }
+            }
+            if (selectedCard != null && selectedCard.getTitle().equals("Bug Delegation")) {
+              playCard(user.getId(), selectedCard);
+              user.setHasDelegation(true);
+              // TODO boolean delegation, ACTIVE WHEN DELEGATION PLACED, IF ACTIVE 25% AUTOMATIC DEFENSE
             }
 
           }

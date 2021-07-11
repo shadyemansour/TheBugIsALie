@@ -27,10 +27,7 @@ public class SevenBoard extends GameView {
    */
   private static final long serialVersionUID = 1L;
 
-  User user = ((TBIALSession) getSession()).getUser();
-  List<Game> appGames = ((TBIALApplication) getApplication()).getAvailableGames();
   List<User> players;
-  // Game game;
   private Label p1prestige, p2prestige, p3prestige, p4prestige, p5prestige, p6prestige, p7prestige;
   private Label p1health, p2health, p3health, p4health, p5health, p6health, p7health;
   private Label p1name, p2name, p3name, p4name, p5name, p6name, p7name;
@@ -69,41 +66,13 @@ public class SevenBoard extends GameView {
   }
 
   protected void updatePlayerAttributes() {
-    currenthealth1 = players.get(0).getHealth();
-    currenthealth2 = players.get(1).getHealth();
-    currenthealth3 = players.get(2).getHealth();
-    currenthealth4 = players.get(3).getHealth();
-    currenthealth5 = players.get(4).getHealth();
-    currenthealth6 = players.get(5).getHealth();
-    currenthealth7 = players.get(6).getHealth();
+  }
+
+  protected void updateHealth() {
   }
 
   protected void createPlayerAttributes() {
-//    for (Game g : appGames) {
-//      if (g.equals(user.getGame())) {
-//        game = g;
-////        user.setGame(game);
-//        break;
-//      }
-//    };
-
-    //game.startGame(); // this is temporary since game is not initialized before starting a game
     players = game.getPlayers();
-    // temporary untill game is get with wbesocket
-//    players.get(0).setHealth(4);
-//    players.get(0).setPrestige(0);
-//    players.get(1).setHealth(4);
-//    players.get(1).setPrestige(0);
-//    players.get(2).setHealth(4);
-//    players.get(2).setPrestige(0);
-//    players.get(3).setHealth(4);
-//    players.get(3).setPrestige(0);
-//    players.get(4).setHealth(4);
-//    players.get(4).setPrestige(0);
-//    players.get(5).setHealth(4);
-//    players.get(5).setPrestige(0);
-//    players.get(6).setHealth(4);
-//    players.get(6).setPrestige(0);
 
     currenthealth1 = players.get(0).getHealth();
     currenthealth2 = players.get(1).getHealth();
@@ -183,13 +152,13 @@ public class SevenBoard extends GameView {
    * creates dummy cards, can be removed later
    */
   private void createDummyCards() {
-    card1 = new Card("Role", "Manager", null, "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, null);
-    card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, null);
-    card3 = new Card("Action", "System Integration", null, null, "My code is better than yours!", true, true, null);
+    card1 = new Card("Role", "Manager", "", "Aim: Remove evil code monkies and consultant", "Tries to ship\nTries to stay in charge\nMental Health: +1", false, true, "");
+    card2 = new Card("Character", "Steve Jobs", "Founder of Apple", "(Mental Health 4)", "Gets a second chance", false, true, "");
+    card3 = new Card("Action", "System Integration", "", "", "My code is better than yours!", true, true, "");
     card3.setVisible(!card3.isVisible());
-    card4 = new Card("Ability", "Bug Delegation", null, null, "Delegates bug report\n.25 chance to work", true, true, null);
-    card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
-    card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, null);
+    card4 = new Card("Ability", "Bug Delegation", "", "", "Delegates bug report\n.25 chance to work", true, true, "");
+    card5 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, "");
+    card6 = new Card("StumblingBlock", "Fortran Maintenance", "BOOM", "Stumbling Block", "Only playable on self.\nTakes 3 health points\n.85 chance to deflect to next developer", true, true, "");
 
     cardModels = new ArrayList<IModel<Card>>();
     cardModels.add(Model.of(card1));
@@ -289,10 +258,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -323,16 +292,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -398,10 +366,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -432,16 +400,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -504,10 +471,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -538,16 +505,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -610,10 +576,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -644,16 +610,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -716,10 +681,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -750,16 +715,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -822,10 +786,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -856,16 +820,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -928,10 +891,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -962,16 +925,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -1000,5 +962,11 @@ public class SevenBoard extends GameView {
      */
     CardPanel roleCardPanel = new CardPanel("role-card-panel7", new Model<Card>(card1));
     healthRoleContainer.add(roleCardPanel);
+  }
+
+  @Override
+  protected void visualizeCurrentPlayer(int position) {
+    // TODO Auto-generated method stub
+
   }
 }

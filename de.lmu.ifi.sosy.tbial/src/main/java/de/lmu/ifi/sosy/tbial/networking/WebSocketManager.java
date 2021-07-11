@@ -9,7 +9,7 @@ import org.apache.wicket.protocol.ws.api.registry.IWebSocketConnectionRegistry;
 
 public class WebSocketManager {
 
-  private HashMap<Integer, ConnectedMessage> connections = new HashMap<>();
+  private final HashMap<Integer, ConnectedMessage> connections = new HashMap<>();
   private MyWebSocketPushBroadcaster broadcaster;
   private IWebSocketConnectionRegistry webSocketConnectionRegistry;
   private static WebSocketManager instance;
@@ -37,7 +37,7 @@ public class WebSocketManager {
   }
 
   public void sendPrivateMessage(JSONMessage msg, int userID) {
-    if (connections.keySet().contains(userID)) {
+    if (connections.containsKey(userID)) {
       if (null != broadcaster) {
         broadcaster.broadcast(connections.get(userID), msg);
       } else {

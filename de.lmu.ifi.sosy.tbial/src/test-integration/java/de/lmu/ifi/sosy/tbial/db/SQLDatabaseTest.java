@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class SQLDatabaseTest extends AbstractDatabaseTest {
 
-  private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
+  private static final EmbeddedDataSource dataSource = new EmbeddedDataSource();
 
   static {
     dataSource.setDatabaseName("tbial_test");
@@ -139,7 +139,7 @@ public class SQLDatabaseTest extends AbstractDatabaseTest {
               "INSERT INTO USERS (NAME, PASSWORD, GAME) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, user.getName());
       ps.setString(2, user.getPassword());
-      ps.setString(3, user.getGame() == null ? "NULL" : user.getGame().getName());
+      ps.setString(3, user.getGame() == null ? "NULL" : user.getGame().getGameName());
 
       ps.executeUpdate();
 

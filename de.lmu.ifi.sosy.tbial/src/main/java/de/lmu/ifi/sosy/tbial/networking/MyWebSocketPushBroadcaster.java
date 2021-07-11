@@ -22,7 +22,7 @@ import static java.util.Collections.singletonList;
 public class MyWebSocketPushBroadcaster {
 
   private final IWebSocketConnectionRegistry registry;
-  private Executor webSocketPushMessageExecutor;
+  private final Executor webSocketPushMessageExecutor;
 
   public MyWebSocketPushBroadcaster(IWebSocketConnectionRegistry registry) {
 
@@ -75,7 +75,7 @@ public class MyWebSocketPushBroadcaster {
     private final java.util.concurrent.Executor httpRequestExecutor;
 
     public MyWebSocketPushMessageExecutor() {
-      this(Runnable::run, new ThreadPoolExecutor(1, 20,
+      this(Runnable::run, new ThreadPoolExecutor(1, 100,
           60L, TimeUnit.SECONDS,
           new SynchronousQueue<>(),
           new WebSocketSettings.ThreadFactory()));

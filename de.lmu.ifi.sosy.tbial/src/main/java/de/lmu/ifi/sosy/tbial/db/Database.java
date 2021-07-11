@@ -39,8 +39,6 @@ public interface Database {
 
   void setGameHost(int id, String host);
 
-  //  Game createGame(String name, String host, String password, String gamestate, int numplayers);
-//
   Game getGame(String name);
 
   void setGameState(int id, String gameState);

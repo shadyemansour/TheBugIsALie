@@ -271,6 +271,11 @@ div.playerBottom {
   	height: 300px;
   	bottom: 10px;
   	border: 1px solid white;
+	transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
 }
 div.playerBottom2 {
 	position: absolute;
@@ -281,7 +286,7 @@ div.playerBottom2 {
   	bottom: 10px;
   	border: 1px solid white;
 }
-div.cards{
+div.cards {
 	position: absolute;
 	display: flex;
 	justify-content: space-evenly;
@@ -805,6 +810,11 @@ pre.boxed {
     font-weight: bold;
 }
 
+.middle-table-container {
+	display: flex;
+	justify-content: space-evenly;
+}
+
 .heap {
 	position: relative;
 	height: 250px;
@@ -870,7 +880,24 @@ pre.boxed {
 	border: solid 1px;
 }
 
+.character-card-panel {
+	position: relative;
+	background: lightsteelblue;
+	height: 100px;
+	width: 80px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	border: solid 1px;
+}
+
 .role-card {
+	position: absolute;
+	left: 15px;
+	top: 15px;
+}
+
+.character-card {
 	position: absolute;
 	left: 15px;
 	top: 15px;
@@ -1089,3 +1116,23 @@ pre.boxed {
 /* #card-back .card-bottom-desc {
 	display: none;
 } */
+
+.highlightedTurn {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: steelblue;
+	width: 450px;
+	height: 250px;
+	z-index: -1;
+}
+
+.highlightedTurnBottom {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: red;
+	width: 600px;
+	height: 300px;
+	z-index: -1;
+}

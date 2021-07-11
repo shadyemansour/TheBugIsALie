@@ -111,6 +111,7 @@ public class Lobby extends BasePage {
         tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
         tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
         add(tabbedPanel);
+        game = ((TBIALSession) getSession()).getUser().getGame();
     }
 
     @Override

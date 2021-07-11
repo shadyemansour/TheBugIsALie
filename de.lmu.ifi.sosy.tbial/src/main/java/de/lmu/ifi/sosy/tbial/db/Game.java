@@ -89,7 +89,6 @@ public class Game extends Thread implements Serializable {
 		this.roleCards = new ArrayList<Card>();
 		this.characterCards = new ArrayList<Card>();
 		this.stack = new ArrayList<Card>();
-		this.timer = new Timer();
 		this.cardsHostMessages = new ArrayList<>();
 		this.gameInitiated = false;
 		this.gameWon = false;
@@ -170,7 +169,9 @@ public class Game extends Thread implements Serializable {
 //		if (!players.contains(player)){
 //			players.add(player);
 //		}
-		this.gameLobbyGameState();
+		if (!gameState.equals("running")) {
+			this.gameLobbyGameState();
+		}
 		//	this.generatePlayerAttributes(); // only necessary for debug
 	}
 
@@ -265,6 +266,7 @@ public class Game extends Thread implements Serializable {
 
 
 		propertyChangeSupport.firePropertyChange("UpdatePlayerAttributes", id, null);
+		this.timer = new Timer();
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
 		System.out.println("Stack size after initialization: " + stack.size());
@@ -943,6 +945,7 @@ public class Game extends Thread implements Serializable {
 			if (!addedPlayers && playerNames != null && playerNames.length > ap) {
 				propertyChangeSupport.firePropertyChange("GameIsNewAddPlayers", this, playerNames);
 				addedPlayers = true;
+				gameLobbyGameState();
 			}
 		}
 		return ap;

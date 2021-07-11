@@ -66,11 +66,6 @@ public class FiveBoard extends GameView {
   }
 
   protected void updatePlayerAttributes() {
-    currenthealth1 = players.get(0).getHealth();
-    currenthealth2 = players.get(1).getHealth();
-    currenthealth3 = players.get(2).getHealth();
-    currenthealth4 = players.get(3).getHealth();
-    currenthealth5 = players.get(4).getHealth();
   }
 
   protected void updateHealth() {
@@ -764,9 +759,9 @@ public class FiveBoard extends GameView {
     healthRoleContainer.add(roleCardPanel);
   }
 
-	@Override
-	protected void visualizeCurrentPlayer(int position) {
-		// TODO Auto-generated method stub
-		
-	}
+  @Override
+  protected void visualizeCurrentPlayer(int position) {
+    // TODO Auto-generated method stub
+
+  }
 }

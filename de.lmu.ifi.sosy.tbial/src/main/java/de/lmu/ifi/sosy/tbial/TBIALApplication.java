@@ -156,12 +156,14 @@ public class TBIALApplication extends WebApplication {
      return new ArrayList<>(availableGames);
    }  */
   public List<Game> getAvailableGames() {
-    if (availableGames.isEmpty()) {
-      List<Game> games = database.getGames();
+    List<Game> games = database.getGames();
+    if (games.size() != availableGames.size()) {
       for (Game g : games) {
-        GameListener listener = new GameListener();
-        g.addPropertyChangeListener(listener);
-        availableGames.add(g);
+        if (!availableGames.contains(g)) {
+          GameListener listener = new GameListener();
+          g.addPropertyChangeListener(listener);
+          availableGames.add(g);
+        }
       }
     }
     return new ArrayList<>(availableGames);

@@ -430,7 +430,8 @@ public class FourBoard extends GameView {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        if (user.isBeingAttacked() && selectedDropCard != null && !selectedCard.getTitle().equals("Bug Delegation")) {
+        boolean selectedCardCheck = selectedCard == null || (!selectedCard.getTitle().equals("Bug Delegation"));
+        if (user.isBeingAttacked() && selectedDropCard != null && selectedCardCheck) {
           // can't defend
           discardCard(selectedDropCard, "drop");
           //  p3drophand.remove(selectedDropCard);

@@ -224,6 +224,8 @@ public class Game extends Thread implements Serializable {
 				JSONObject character = new JSONObject();
 				character.put("playerID", player.getId());
 				character.put("character", characterCard.getTitle());
+				character.put("characterCard", characterCard);
+
 
 				player.setCharacterCard(characterCard);
 
@@ -503,7 +505,6 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void playCard(int from, int to, Card card) {
-		//TODO implementation
 		cardPlayedMessage(from, to, card);
 	}
 
@@ -524,7 +525,6 @@ public class Game extends Thread implements Serializable {
 
 	public void discardCard(int playerID, Card card, String discardedFrom) {
 		heap.add(card);
-		//TODO implementation add to heap?
 		discardCardMessage(playerID, card, discardedFrom);
 	}
 
@@ -603,7 +603,6 @@ public class Game extends Thread implements Serializable {
 	 * @return next player's id
 	 */
 	public int nextPlayer() {
-		//TODO null
 		if (currentPlayer == numPlayers - 1)
 			currentPlayer = -1;
 		currentPlayer++;

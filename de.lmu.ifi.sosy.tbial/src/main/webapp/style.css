@@ -880,7 +880,24 @@ pre.boxed {
 	border: solid 1px;
 }
 
+.character-card-panel {
+	position: relative;
+	background: lightsteelblue;
+	height: 100px;
+	width: 80px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	border: solid 1px;
+}
+
 .role-card {
+	position: absolute;
+	left: 15px;
+	top: 15px;
+}
+
+.character-card {
 	position: absolute;
 	left: 15px;
 	top: 15px;

@@ -262,7 +262,6 @@ public class FourBoard extends GameView {
    * assign labels for player names
    */
   private void assignLabels() {
-
     int size = playerList.size();
     for (int i = 0; i < size; i++) {
       if (playerList.get(i).getId() == user.getId()) {
@@ -571,9 +570,20 @@ public class FourBoard extends GameView {
     /*
      * mental health
 
+     * show character card
      */
-    Label health = new Label("health-player1", "mental health of player 1");
-    healthRoleContainer.add(health);
+
+    ListView<Card> characterCard = new ListView<Card>("character-card-panel1", p1character) {
+   	 private static final long serialVersionUID = 1L;
+   	 @Override
+        protected void populateItem(ListItem<Card> item) {
+   		 Card characterCard = item.getModelObject();
+   		 characterCard.setVisible(true);
+          item.add(new CardPanel("card", new CompoundPropertyModel<Card>(Model.of(characterCard))));
+        }
+   };
+   characterCard.setOutputMarkupId(true);
+   healthRoleContainer.add(characterCard);
 
     /*
      * role card
@@ -681,14 +691,23 @@ public class FourBoard extends GameView {
     playerCardContainer2.add(healthRoleContainer);
 
     /*
-     * mental health
-     * show current mental health
+     * show character card
      */
-    Label health = new Label("health-player2", "mental health of player 2");
-    healthRoleContainer.add(health);
 
-    /*
-     * role card
+    ListView<Card> characterCard = new ListView<Card>("character-card-panel2", p2character) {
+      	 private static final long serialVersionUID = 1L;
+      	 @Override
+           protected void populateItem(ListItem<Card> item) {
+      		 Card characterCard = item.getModelObject();
+      		 characterCard.setVisible(true);
+             item.add(new CardPanel("card", new CompoundPropertyModel<Card>(Model.of(characterCard))));
+           }
+      };
+      characterCard.setOutputMarkupId(true);
+      healthRoleContainer.add(characterCard);
+
+     /*
+     * role card TODO: put real role card here TODO: show or hide card depending
      * on player and card
      */
     ListView<Card> roleCard = new ListView<Card>("role-card-panel2", p2role) {
@@ -817,12 +836,23 @@ public class FourBoard extends GameView {
     healthRoleContainer.setOutputMarkupId(true);
     playerCardContainer3.add(healthRoleContainer);
 
+
     /*
-     * mental health
-     * show current mental health
+     * show character card
      */
-    Label health = new Label("health-player3", "mental health of player 3");
-    healthRoleContainer.add(health);
+
+    ListView<Card> characterCard = new ListView<Card>("character-card-panel3", p3character) {
+    	 private static final long serialVersionUID = 1L;
+    	 @Override
+         protected void populateItem(ListItem<Card> item) {
+    		 Card characterCard = item.getModelObject();
+    		 characterCard.setVisible(true);
+           item.add(new CardPanel("card", new CompoundPropertyModel<Card>(Model.of(characterCard))));
+         }
+    };
+    characterCard.setOutputMarkupId(true);
+    healthRoleContainer.add(characterCard);
+
 
     /*
      * role card
@@ -932,14 +962,23 @@ public class FourBoard extends GameView {
     playerCardContainer4.add(healthRoleContainer);
 
     /*
-     * mental health
-     * show current mental health
+     * show character card
      */
-    Label health = new Label("health-player4", "mental health of player 4");
-    healthRoleContainer.add(health);
 
-    /*
-     * role card
+    ListView<Card> characterCard = new ListView<Card>("character-card-panel4", p4character) {
+      	 private static final long serialVersionUID = 1L;
+      	 @Override
+           protected void populateItem(ListItem<Card> item) {
+      		 Card characterCard = item.getModelObject();
+      		 characterCard.setVisible(true);
+             item.add(new CardPanel("card", new CompoundPropertyModel<Card>(Model.of(characterCard))));
+           }
+      };
+      characterCard.setOutputMarkupId(true);
+      healthRoleContainer.add(characterCard);
+
+     /*
+     * role card TODO: put real role card here TODO: show or hide card depending
      * on player and card
      */
     ListView<Card> roleCard = new ListView<Card>("role-card-panel4", p4role) {

@@ -108,25 +108,9 @@ public class FourBoard extends GameView {
       protected void onError(AjaxRequestTarget target) {
       }
     };
-    AjaxButton testButton = new AjaxButton("testButton") {
-      /**
-       * UID for serialization.
-       */
-      private static final long serialVersionUID = 1;
 
-      public void onSubmit(AjaxRequestTarget target) {
-//        User user = ((TBIALSession) getSession()).getUser();
-        System.out.println("game: " + game);
-        game.updateHealth(user.getId(), 1);
-      }
-
-      @Override
-      protected void onError(AjaxRequestTarget target) {
-      }
-    };
     form = new Form<>("controls-form");
     form.add(endTurnButton);
-    form.add(testButton);
     form.setOutputMarkupId(true);
     p3container.add(form);
   }

@@ -10,8 +10,6 @@ import de.lmu.ifi.sosy.tbial.DatabaseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 public abstract class AbstractDatabaseTest {
 
   protected Database database;
@@ -52,8 +50,8 @@ public abstract class AbstractDatabaseTest {
   }
 
   protected void createGame() {
-    createGame(game.getName(), game.getHostName(), game.getPassword(), game.getGameState(), game.getNumPlayers());
-    user.setGame(database.getGame(game.getName()));
+    createGame(game.getGameName(), game.getHostName(), game.getPassword(), game.getGameState(), game.getNumPlayers());
+    user.setGame(database.getGame(game.getGameName()));
   }
 
   protected void setGameState() {

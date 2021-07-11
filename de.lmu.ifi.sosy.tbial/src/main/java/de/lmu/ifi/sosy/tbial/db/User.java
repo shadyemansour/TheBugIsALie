@@ -36,17 +36,22 @@ public class User implements Serializable {
   private Card characterCard;
   private Card roleCard;
   // remove String role, character later
-  private String role; 
+  private String role;
   private String character;
   private List<Card> hand = new ArrayList<Card>();
 
 
-  private Boolean joinedGame;
+  private boolean joinedGame;
 
   private Game game;
-  private Boolean fired;
+  private boolean fired;
+  private boolean myTurn;
+  private boolean hasStumblingCards;
+  private boolean beingAttacked;
+  private boolean hasDelegation;
 
   protected PropertyChangeSupport propertyChangeSupport;
+
 
   public User(String name, String password, Game game) {
     this(-1, name, password, game);
@@ -57,18 +62,37 @@ public class User implements Serializable {
     this.name = requireNonNull(name);
     this.password = requireNonNull(password);
     this.game = game;
-    this.prestige=-1;
-    this.health=-1;
-    this.roleCard=null;
-    this.characterCard=null;
+    this.prestige = -1;
+    this.health = -1;
+    this.roleCard = null;
+    this.characterCard = null;
     this.role = null;
     this.character = null;
     this.hand = null;
     this.joinedGame = game != null;
     this.fired = false;
     this.propertyChangeSupport = new PropertyChangeSupport(this);
+    this.myTurn = false;
+    this.hasStumblingCards = false;
+    this.beingAttacked = false;
+    this.hasDelegation = false;
 
+  }
 
+  public boolean hasStumblingCards() {
+    return hasStumblingCards;
+  }
+
+  public void setHasStumblingCards(boolean hasStumblingCards) {
+    this.hasStumblingCards = hasStumblingCards;
+  }
+
+  public boolean isMyTurn() {
+    return myTurn;
+  }
+
+  public void setMyTurn(boolean myTurn) {
+    this.myTurn = myTurn;
   }
 
   public String getName() {
@@ -135,17 +159,27 @@ public class User implements Serializable {
     return health;
   }
 
-  public Card getRoleCard(){return this.roleCard;}
+  public Card getRoleCard() {
+    return this.roleCard;
+  }
 
-  public void setRoleCard(Card role){this.roleCard=role;}
+  public void setRoleCard(Card role) {
+
+    this.roleCard = role;
+    this.role = role.getTitle();
+  }
 
 
   public void setCharacterCard(Card character) {
-      this.characterCard = character;
+    this.characterCard = character;
   }
 
   public Card getCharacterCard() {
-      return characterCard;
+    return characterCard;
+  }
+
+  public boolean isFired() {
+    return fired;
   }
 
   public String getRole() {
@@ -186,6 +220,13 @@ public class User implements Serializable {
 
   }
 
+  public boolean hasDelegation() {
+    return hasDelegation;
+  }
+
+  public void setHasDelegation(boolean hasDelegation) {
+    this.hasDelegation = hasDelegation;
+  }
 
   @Override
   public String toString() {
@@ -221,15 +262,23 @@ public class User implements Serializable {
   public void setGame(Game game) {
     this.game = game;
   }
-  
+
   public void setFired(Boolean fired) {
-  	this.fired = fired;
+    this.fired = fired;
   }
-  
+
   public Boolean getFired() {
-  	return fired;
+    return fired;
   }
-  
+
+  public boolean isBeingAttacked() {
+    return beingAttacked;
+  }
+
+  public void setBeingAttacked(boolean beingAttacked) {
+    this.beingAttacked = beingAttacked;
+  }
+
   public void addPropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.addPropertyChangeListener(listener);
   }

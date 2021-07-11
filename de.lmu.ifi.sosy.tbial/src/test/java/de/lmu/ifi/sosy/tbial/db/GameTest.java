@@ -1,12 +1,13 @@
 package de.lmu.ifi.sosy.tbial.db;
 
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
@@ -44,11 +45,11 @@ public class GameTest {
     name = "name";
     id = 42;
     numPlayers = 4;
-    host = new User("hostName", "hostPw", null);
-    user1 = new User("user1Name", "user1Pw", null);
-    user2 = new User("user2Name", "user2Pw", null);
-    user3 = new User("user3Name", "user3Pw", null);
-    user4 = new User("user4Name", "user4Pw", null);
+    host = new User(1, "hostName", "hostPw", null);
+    user1 = new User(2, "user1Name", "user1Pw", null);
+    user2 = new User(3, "user2Name", "user2Pw", null);
+    user3 = new User(4, "user3Name", "user3Pw", null);
+    user4 = new User(5, "user4Name", "user4Pw", null);
     game = new Game(id, name, password, numPlayers, "", host.getName());
     game.setHost(host);
     game.addPlayer(host);
@@ -83,19 +84,19 @@ public class GameTest {
 
   @Test
   public void getName_returnsName() {
-    game.setName(name);
-    assertThat(game.getName(), is(name));
+    game.setGameName(name);
+    assertThat(game.getGameName(), is(name));
   }
 
   @Test
   public void getId_returnsId() {
-    game.setId(id);
-    assertThat(game.getId(), is(id));
+    game.setGameId(id);
+    assertThat(game.getGameId(), is(id));
   }
 
   @Test(expected = NullPointerException.class)
   public void setName_whenNullNameGiven_throwsException() {
-    game.setName(null);
+    game.setGameName(null);
   }
 
   @Test(expected = NullPointerException.class)
@@ -216,15 +217,19 @@ public class GameTest {
 
   @Test
   public void gameWonMessageTest() {
+    game.startGame();
+    JSONArray cardsArray = (JSONArray) game.getRoleCardsHostMessage().getMessage().getJSONObject("msgBody").get("roles");
     JSONObject body = new JSONObject();
     body.put("gameID", id);
-    body.put("playerID", 1);
+    body.put("playerIDs", new JSONArray(Collections.singletonList(1)));
+    body.put("roleCards", cardsArray);
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "GameWon");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.gameWonMessage(1).getMessage(), true);
+    System.out.println(game.gameWonMessage(new JSONArray(Collections.singletonList(1))).getMessage());
+    JSONAssert.assertEquals(expected.getMessage(), game.gameWonMessage(new JSONArray(Collections.singletonList(1))).getMessage(), true);
   }
 
   @Test
@@ -236,12 +241,14 @@ public class GameTest {
     body.put("gameID", id);
     body.put("playerID", 1);
     body.put("card", card);
+    body.put("card", card);
+    body.put("defendedWith", card);
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "CardDefended");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.cardDefendedMessage(1, card).getMessage(), true);
+    JSONAssert.assertEquals(expected.getMessage(), game.cardDefendedMessage(1, card, card).getMessage(), true);
   }
 
   @Test
@@ -271,12 +278,13 @@ public class GameTest {
     body.put("gameID", id);
     body.put("playerID", 1);
     body.put("card", card);
+    body.put("discardedFrom", "hand");
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "CardDiscarded");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.discardCardMessage(1, card).getMessage(), true);
+    JSONAssert.assertEquals(expected.getMessage(), game.discardCardMessage(1, card, "hand").getMessage(), true);
   }
 
   @Test
@@ -307,16 +315,27 @@ public class GameTest {
 
   @Test
   public void currentPlayerMessageTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
     game.startGame();
+    int expected = -1;
+    List<User> players = game.getPlayers();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        expected = game.getCurrentID();
+        break;
+      }
+    }
     JSONObject body = new JSONObject();
     body.put("gameID", id);
-    body.put("playerID", host.getId());
+    body.put("playerID", expected);
 
     JSONObject msg = new JSONObject();
     msg.put("msgType", "CurrentPlayer");
     msg.put("msgBody", body);
-    JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.currentPlayerMessage().getMessage(), true);
+    JSONMessage expectedMessage = new JSONMessage(msg);
+    JSONAssert.assertEquals(expectedMessage.getMessage(), game.currentPlayerMessage().getMessage(), true);
   }
 
   @Test
@@ -355,6 +374,177 @@ public class GameTest {
     }
     assertTrue(actual);
     assertEquals(0, game.getRoleCards().size());
+  }
+
+  @Test
+  public void managerStartsFirst() {
+    boolean expected = false;
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    List<User> players = game.getPlayers();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        expected = game.getCurrentID() == player.getId() && game.getCurrentPlayer() == i;
+        break;
+      }
+    }
+    assertTrue(expected);
+  }
+
+  @Test
+  public void endTurnTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    int first = 0;
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        first = i;
+        break;
+      }
+    }
+
+    int next = (first == 3 ? 0 : first + 1);
+    await().until(() -> game.getIsPlaying());
+
+    game.endTurn();
+    await().until(() -> game.getTurn() == 2);
+    assertEquals(game.getPlayers().get(next).getId(), game.getCurrentID());
+    assertEquals(2, game.getTurn());
+    assertEquals(next, game.getCurrentPlayer());
+  }
+
+  @Test
+  public void waitsForStumblingCardsTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    List<User> players = game.getPlayers();
+    int manager = 0;
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        manager = i;
+        break;
+      }
+    }
+    players.get(manager).setHasStumblingCards(true);
+    game.start();
+
+    await().until(() -> game.getIsPlaying());
+    players.get(manager).setHasStumblingCards(false);
+    game.setIsPlaying(false);
+    assertFalse(game.getIsPlaying());
+    await().until(() -> game.getIsPlaying());
+    assertTrue(game.getIsPlaying());
+  }
+
+  @Test
+  public void FireManagerAndGameWonTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    int managerID = 0;
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Manager")) {
+        managerID = player.getId();
+        break;
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    game.playerFired(managerID);
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isManagerFired());
+    assertTrue(game.isGameWon());
+  }
+
+  @Test
+  public void FireEvilMonkeysAndConsultantAndGameWonTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    List<Integer> monkeysIDs = new ArrayList<>();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (player.getRoleCard().getTitle().equals("Evil Code Monkey") || player.getRoleCard().getTitle().equals("Consultant")) {
+        monkeysIDs.add(player.getId());
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    for (int id : monkeysIDs) {
+      game.playerFired(id);
+    }
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isGameWon());
+  }
+
+  @Test
+  public void FireEveryoneExceptConsultantAndGameWonTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    List<Integer> IDs = new ArrayList<>();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (!player.getRoleCard().getTitle().equals("Consultant")) {
+        IDs.add(player.getId());
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    for (int id : IDs) {
+      game.playerFired(id);
+    }
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isGameWon());
+  }
+
+  @Test
+  public void FireEveryoneExceptHonestAndConsultantEvilMonkeysWinTest() {
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+
+    game.startGame();
+    game.start();
+    List<User> players = game.getPlayers();
+    List<Integer> IDs = new ArrayList<>();
+    for (int i = 0; i < players.size(); i++) {
+      User player = players.get(i);
+      if (!player.getRoleCard().getTitle().equals("Consultant") || !player.getRoleCard().getTitle().equals("Honest Developer")) {
+        IDs.add(player.getId());
+      }
+    }
+    await().until(() -> game.getIsPlaying());
+    for (int id : IDs) {
+      game.playerFired(id);
+    }
+
+    game.endTurn();
+    await().until(() -> game.isGameWon());
+    assertTrue(game.isGameWon());
   }
 
 

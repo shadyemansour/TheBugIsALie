@@ -77,7 +77,7 @@ public abstract class PageTestBase {
     FormTester form = tester.newFormTester("tabs:panel:create");
     form.setValue("name", gameName);
     form.submit("submitgame");
-    assertTrue(getSession().getUser().getGame().getName().equals(gameName));
+    assertTrue(getSession().getUser().getGame().getGameName().equals(gameName));
 
   }
 

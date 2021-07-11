@@ -4,7 +4,6 @@ import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.SQLDatabase;
 import de.lmu.ifi.sosy.tbial.db.User;
-import de.lmu.ifi.sosy.tbial.gametable.GameView;
 import de.lmu.ifi.sosy.tbial.util.VisibleForTesting;
 
 import java.beans.PropertyChangeEvent;
@@ -15,13 +14,11 @@ import org.apache.wicket.*;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.ws.WebSocketSettings;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
-import org.apache.wicket.util.lang.Bytes;
 
 
 /**
@@ -159,12 +156,14 @@ public class TBIALApplication extends WebApplication {
      return new ArrayList<>(availableGames);
    }  */
   public List<Game> getAvailableGames() {
-    if (availableGames.isEmpty()) {
-      List<Game> games = ((Database) database).getGames();
+    List<Game> games = database.getGames();
+    if (games.size() != availableGames.size()) {
       for (Game g : games) {
-        GameListener listener = new GameListener();
-        g.addPropertyChangeListener(listener);
-        availableGames.add(g);
+        if (!availableGames.contains(g)) {
+          GameListener listener = new GameListener();
+          g.addPropertyChangeListener(listener);
+          availableGames.add(g);
+        }
       }
     }
     return new ArrayList<>(availableGames);
@@ -188,7 +187,7 @@ public class TBIALApplication extends WebApplication {
   public Game getGame(String gameName) {
     Game game = null;
     for (Game g : availableGames) {
-      if (g.getName().equals(gameName)) {
+      if (g.getGameName().equals(gameName)) {
         game = g;
         break;
       }
@@ -201,12 +200,12 @@ public class TBIALApplication extends WebApplication {
     @Override
     public void propertyChange(PropertyChangeEvent event) {
       if (event.getPropertyName().equals("GameStateProperty")) {
-        ((Database) database).setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
+        database.setGameState(Integer.parseInt(event.getOldValue().toString()), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("GameHostProperty")) {
         for (User u : allUsers) {
           if (u.getName().equals(event.getNewValue().toString())) {
             Game g = ((Game) event.getOldValue());
-            ((Database) database).setGameHost(((Game) event.getOldValue()).getId(), event.getNewValue().toString());
+            database.setGameHost(((Game) event.getOldValue()).getGameId(), event.getNewValue().toString());
             g.setHost(u);
             g.setHostName(u.getName());
             break;
@@ -216,29 +215,29 @@ public class TBIALApplication extends WebApplication {
       } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {
         Game game = (Game) event.getNewValue();
         removeGame(game);
-        ((Database) database).removeGame(game.getId());
+        database.removeGame(game.getGameId());
       } else if (event.getPropertyName().equals("PlayerAdded")) {
         Game game = (Game) event.getOldValue();
-        ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+        database.addPlayerToGame(game.getGameId(), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("PlayerAddedGameRunning")) {
         Game game = (Game) event.getOldValue();
-        ((Database) database).addPlayerToGame(game.getId(), event.getNewValue().toString());
+        database.addPlayerToGame(game.getGameId(), event.getNewValue().toString());
         if (game.getActivePlayers() == game.getNumPlayers()) {
 
         }
       } else if (event.getPropertyName().equals("PlayerRemoved")) {
         Game game = (Game) event.getOldValue();
-        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+        database.removePlayerFromGame(game.getGameId(), event.getNewValue().toString());
       } else if (event.getPropertyName().equals("PlayerRemovedGameRunning")) {
         Game game = (Game) event.getOldValue();
-        ((Database) database).removePlayerFromGame(game.getId(), event.getNewValue().toString());
+        database.removePlayerFromGame(game.getGameId(), event.getNewValue().toString());
 
       } else if (event.getPropertyName().equals("GameIsNewAddPlayers")) {
         Game game = (Game) event.getOldValue();
         String[] players = (String[]) event.getNewValue();
         for (int i = 0; i < players.length; i++) {
           if (!players[i].equals(game.getHostName())) {
-            game.addPlayerCreate(((Database) database).getUser(players[i]));
+            game.addPlayerCreate(database.getUser(players[i]));
           }
         }
       }
@@ -252,16 +251,16 @@ public class TBIALApplication extends WebApplication {
 
       if (event.getPropertyName().equals("PrestigeProperty")) {
         int prestige = Integer.parseInt(event.getNewValue().toString());
-        ((Database) database).setUserPrestige(id, prestige);
+        database.setUserPrestige(id, prestige);
       } else if (event.getPropertyName().equals("HealthProperty")) {
         int health = Integer.parseInt(event.getNewValue().toString());
-        ((Database) database).setUserHealth(id, health);
+        database.setUserHealth(id, health);
       } else if (event.getPropertyName().equals("RoleProperty")) {
         String role = event.getNewValue().toString();
-        ((Database) database).setUserRole(id, role);
+        database.setUserRole(id, role);
       } else if (event.getPropertyName().equals("CharacterProperty")) {
         String character = event.getNewValue().toString();
-        ((Database) database).setUserCharacter(id, character);
+        database.setUserCharacter(id, character);
       }
     }
   }

@@ -12,9 +12,9 @@ public enum ErrorCategory {
   DatabaseError(1),
   ConfigurationError(2);
 
-  private int errorCode;
+  private final int errorCode;
 
-  private ErrorCategory(int errorCode) {
+  ErrorCategory(int errorCode) {
     this.errorCode = errorCode;
   }
 

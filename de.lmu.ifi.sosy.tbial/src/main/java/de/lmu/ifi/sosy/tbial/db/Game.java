@@ -1,7 +1,5 @@
 package de.lmu.ifi.sosy.tbial.db;
 
-import org.apache.wicket.model.IModel;
-
 import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosy.tbial.networking.JSONMessage;
@@ -23,7 +21,7 @@ public class Game extends Thread implements Serializable {
 
 	private String name;
 	private int id;
-	private Boolean pwProtected;
+	private final Boolean pwProtected;
 	private String password;
 	private Integer numPlayers; // 4 - 7
 	private List<User> players;
@@ -38,28 +36,23 @@ public class Game extends Thread implements Serializable {
 	private transient Timer timer;
 	private boolean gameInitiated;
 	private boolean gameWon;
-	private List<User> firedPlayers;
+	private final List<User> firedPlayers;
 	private boolean isPlaying;
 	private boolean managerFired;
 	private boolean consultantFired;
 	private int numEvilMonkeys;
 	private int turn;
 
-
-	//   private  ArrayList<Card> charakterCards = new  ArrayList<Card>(); TODO later (US37)
-
 	private List<Card> roleCards;
-	private List<Card> characterCards;
-	private List<Card> stack; // all action, ability, and stumbling blocks cards
-	//	private List<Card> playableStack; // only bugs, exuses, solutions playable
+	private final List<Card> characterCards;
+	private final List<Card> stack;
 	private transient JSONMessage roleCardsHostMessage;
 	private transient JSONMessage characterCardsHostMessage;
 	private transient JSONMessage gameStartedMessageHost;
-	private transient List<JSONMessage> cardsHostMessages;
+	private final transient List<JSONMessage> cardsHostMessages;
 
-	private List<Card> heap = new ArrayList<Card>();
+	private final List<Card> heap = new ArrayList<>();
 
-	//	private GameState state;
 	private volatile String gameState; // waiting for players, ready, playing, stopped, game over
 	protected PropertyChangeSupport propertyChangeSupport;
 
@@ -70,25 +63,20 @@ public class Game extends Thread implements Serializable {
 		this.gameState = gameState;
 		this.gameStarted = gameState.equals("running");
 
-		if (password.length() == 0) {
-			this.pwProtected = false;
-		} else {
-			this.pwProtected = true;
-		}
+		this.pwProtected = password.length() != 0;
 		this.gamePaused = false;
 		this.numPlayers = requireNonNull(numPlayers);
-		this.players = new ArrayList<User>();
+		this.players = new ArrayList<>();
 		this.hostName = requireNonNull(hostName);
 		for (int i = 0; i < numPlayers; i++) {
 			this.players.add(null);
 		}
-		//	this.generatePlayerAttributes();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
 		this.addedPlayers = false;
 
-		this.roleCards = new ArrayList<Card>();
-		this.characterCards = new ArrayList<Card>();
-		this.stack = new ArrayList<Card>();
+		this.roleCards = new ArrayList<>();
+		this.characterCards = new ArrayList<>();
+		this.stack = new ArrayList<>();
 		this.cardsHostMessages = new ArrayList<>();
 		this.gameInitiated = false;
 		this.gameWon = false;
@@ -102,56 +90,6 @@ public class Game extends Thread implements Serializable {
 
 	}
 
-	/**
-	 * method created for setup of us7
-	 * player attributes should be generated random for real game
-	 */
-
-
-//	public void generatePlayerAttributes() {
-//
-//		String managerRole = "Manager"; // only 1 card exists
-//		String consultantRole = "Consultant"; // only 1 card exists
-//		String honestDeveloperRole = "Honest Developer"; // 2 cards exist
-//		String evilCodeMonkeyRole = "Evil Code Monkey"; // 3 cards exist
-//
-//		String markZuckerbergCharacter = "Mark Zuckerberg";
-//		String tomAndersonCharacter = "Tom Anderson";
-//		String jeffTaylorCharacter = "Jeff Taylor";
-//		String larryPageCharacter = "Larry Page";
-//		String larryEllisonCharacter = "Larry Ellison";
-//		String kentBeckCharacter = "Kent Beck";
-//		String steveJobsCharacter = "Steve Jobs";
-//
-//		for (int i = 0; i < this.players.size(); i++) {
-//			if (this.players.get(i) != null) {
-//				if (i == 0) {
-//					this.players.get(i).setRole(managerRole);
-//					this.players.get(i).setCharacter(markZuckerbergCharacter);
-//				} else if (i == 1) {
-//					this.players.get(i).setRole(consultantRole);
-//					this.players.get(i).setCharacter(tomAndersonCharacter);
-//				} else if (i == 2) {
-//					this.players.get(i).setRole(honestDeveloperRole);
-//					this.players.get(i).setCharacter(jeffTaylorCharacter);
-//				} else if (i == 3) {
-//					this.players.get(i).setRole(evilCodeMonkeyRole);
-//					this.players.get(i).setCharacter(larryPageCharacter);
-//				} else if (i == 4) {
-//					this.players.get(i).setRole(honestDeveloperRole);
-//					this.players.get(i).setCharacter(larryEllisonCharacter);
-//				} else if (i == 5) {
-//					this.players.get(i).setRole(evilCodeMonkeyRole);
-//					this.players.get(i).setCharacter(kentBeckCharacter);
-//				} else if (i == 6) {
-//					this.players.get(i).setRole(evilCodeMonkeyRole);
-//					this.players.get(i).setCharacter(steveJobsCharacter);
-//				}
-//				this.players.get(i).setHealth(3);
-//				this.players.get(i).setPrestige(1);
-//			}
-//		}
-//	}
 	public void addPlayer(User player) {
 		for (int i = 0; i < players.size(); i++) {
 			if (this.players.get(i) == null) {
@@ -166,19 +104,13 @@ public class Game extends Thread implements Serializable {
 				break;
 			}
 		}
-//		if (!players.contains(player)){
-//			players.add(player);
-//		}
 		if (!gameState.equals("running")) {
 			this.gameLobbyGameState();
 		}
-		//	this.generatePlayerAttributes(); // only necessary for debug
 	}
 
 	public void startGame() {
 		gameStarted = true;
-		//	playableStack = new ArrayList<Card>();
-
 
 		setRoleCards();
 		Collections.shuffle(roleCards);
@@ -190,8 +122,6 @@ public class Game extends Thread implements Serializable {
 
 		Collections.shuffle(stack);
 
-		//	setPlayableStack(stack);
-		//Collections.shuffle(playableStack);
 
 		gameStartedMessage();
 
@@ -250,7 +180,7 @@ public class Game extends Thread implements Serializable {
 				charactersArray.put(character);
 
 
-				List<Card> hand = new ArrayList<Card>();
+				List<Card> hand = new ArrayList<>();
 				JSONArray handArray = new JSONArray();
 
 				for (int j = 0; j < player.getHealth(); j++) {
@@ -262,7 +192,6 @@ public class Game extends Thread implements Serializable {
 				drawCardsMessage(player.getId(), handArray);
 			}
 		}
-		System.out.println(rolesArray);
 		rolesAndCharactersMessage("Roles", rolesArray);
 		rolesAndCharactersMessage("Characters", charactersArray);
 
@@ -271,7 +200,6 @@ public class Game extends Thread implements Serializable {
 		this.timer = new Timer();
 		timer.schedule(new RemindTask(), 1000);
 		this.gameInitiated = true;
-		System.out.println("Stack size after initialization: " + stack.size());
 	}
 
 	@Override
@@ -283,7 +211,6 @@ public class Game extends Thread implements Serializable {
 				currentPlayerMessage();
 				if (player.hasStumblingCards()) {
 					isPlaying = true;
-					//todo deal with them
 					synchronized (this) {
 						while (isPlaying) {
 							try {
@@ -297,7 +224,6 @@ public class Game extends Thread implements Serializable {
 
 				drawCards(currentID, 2);
 				isPlaying = true;
-				// TODO turn logic
 				synchronized (this) {
 					while (isPlaying) {
 						try {
@@ -360,7 +286,6 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void endTurn() {
-		System.out.println(noOneIsDefending());
 		if (noOneIsDefending()) {
 			setIsPlaying(false);
 		}
@@ -377,7 +302,6 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void playerFired(int playerID) {
-		//TODO implementation
 		Card role = null;
 		for (User player : players) {
 			if (player.getId() == playerID) {
@@ -412,20 +336,19 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void decksShuffled() {
-		System.out.println("heap size before shuffle: " + heap.size());
 		stack.addAll(heap);
 		heap.clear();
-		decksShuffledMessage(stack.size(), 0);
+		decksShuffledMessage(stack.size());
 	}
 
 	/**
 	 * sends Shuffle Message
 	 */
-	protected JSONMessage decksShuffledMessage(int cardsInDeck, int cardsInHeap) {
+	protected JSONMessage decksShuffledMessage(int cardsInDeck) {
 		JSONObject msgBody = new JSONObject();
 		msgBody.put("gameID", id);
 		msgBody.put("cardsInDeck", cardsInDeck);
-		msgBody.put("cardsInHeap", cardsInHeap);
+		msgBody.put("cardsInHeap", 0);
 		JSONMessage msg = createJSONMessage("Shuffle", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
 		return msg;
@@ -463,7 +386,6 @@ public class Game extends Thread implements Serializable {
 	}
 
 	public void gameWon(List<Integer> playerIDs) {
-		//TODO implementation
 		JSONArray ids = new JSONArray(playerIDs);
 		gameWonMessage(ids);
 	}
@@ -476,7 +398,6 @@ public class Game extends Thread implements Serializable {
 		msgBody.put("gameID", id);
 		msgBody.put("playerIDs", playerIDs);
 		msgBody.put("roleCards", roleCardsHostMessage.getMessage().getJSONObject("msgBody").get("roles"));
-		System.out.println("gameWon roleCards: " + roleCardsHostMessage.getMessage().getJSONObject("msgBody").get("roles"));
 
 		JSONMessage msg = createJSONMessage("GameWon", msgBody);
 		propertyChangeSupport.firePropertyChange("SendMessage", msg, players);
@@ -486,7 +407,6 @@ public class Game extends Thread implements Serializable {
 	public void defendCard(int playerID, Card excuseCard, Card bugCard) {
 		heap.add(excuseCard);
 		heap.add(bugCard);
-		//TODO implementation
 		cardDefendedMessage(playerID, excuseCard, bugCard);
 	}
 
@@ -555,7 +475,6 @@ public class Game extends Thread implements Serializable {
 					break;
 				}
 			}
-			//TODO Draw cards from stack and save in Array
 			cards.put(stack.get(0));
 			stack.remove(0);
 		}
@@ -695,10 +614,6 @@ public class Game extends Thread implements Serializable {
 				break;
 			}
 		}
-//		if (!players.contains(player)){
-//			players.add(player);
-//		}
-		//	this.generatePlayerAttributes(); // only necessary for debug
 	}
 
 	public void removePlayer(User player) {
@@ -714,10 +629,8 @@ public class Game extends Thread implements Serializable {
 				}
 			}
 		}
-//		this.players.remove(player);
 		this.gameLobbyGameState();
 
-		// handle if host leaves the game
 		if (player.equals(host)) {
 			if (this.getActivePlayers() > 0) {
 				for (int i = 0; i < this.players.size(); i++) {
@@ -727,7 +640,6 @@ public class Game extends Thread implements Serializable {
 					}
 				}
 			} else {
-				// TODO: delete game
 				propertyChangeSupport.firePropertyChange("LastPlayerRemovedProperty", null, this);
 			}
 		}
@@ -740,14 +652,13 @@ public class Game extends Thread implements Serializable {
 				openSpots++;
 			}
 		}
-//		return numPlayers-players.size();
 		return openSpots;
 	}
 
 	private void gameLobbyGameState() {
 		int openSpots = this.calcOpenSpots();
 		if (openSpots > 1) {
-			this.setGameState(String.valueOf(openSpots) + " players missing");
+			this.setGameState(openSpots + " players missing");
 		} else if (openSpots == 1) {
 			this.setGameState("1 player missing");
 		} else {
@@ -755,10 +666,6 @@ public class Game extends Thread implements Serializable {
 		}
 	}
 
-//	@Override
-//	public String toString() {
-//		return "Game(" + id + ", " + name + ", " + password + ")";
-//	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -790,10 +697,6 @@ public class Game extends Thread implements Serializable {
 		this.name = requireNonNull(name);
 	}
 
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return propertyChangeSupport;
-	}
-
 	public int getGameId() {
 		return id;
 	}
@@ -802,20 +705,12 @@ public class Game extends Thread implements Serializable {
 		this.id = requireNonNull(id);
 	}
 
-	public String[] getPlayerNames() {
-		return playerNames;
-	}
-
 	public void setPlayerNames(String[] playerNames) {
 		this.playerNames = playerNames;
 	}
 
 	public Boolean getPwProtected() {
 		return pwProtected;
-	}
-
-	public void setPwProtected(Boolean pwProtected) {
-		this.pwProtected = pwProtected;
 	}
 
 	public String getPassword() {
@@ -857,11 +752,6 @@ public class Game extends Thread implements Serializable {
 
 	public JSONMessage getRoleCardsHostMessage() {
 		return roleCardsHostMessage;
-	}
-
-
-	public JSONMessage getCharacterCardsHostMessage() {
-		return characterCardsHostMessage;
 	}
 
 
@@ -1095,7 +985,7 @@ public class Game extends Thread implements Serializable {
 			stack.add(new Card("Ability", "Microsoft", "(Previous Job)", "",
 					"1 prestige", false, false, ""));
 			stack.add(new Card("Action", "System Integration", "", "",
-					"My code is better than \nyours!", false, false, ""));  //should be 9?
+					"My code is better than \nyours!", false, false, ""));
 		}
 		for (int i = 0; i < 2; i++) {
 			stack.add(new Card("Action", "Coffee", "--Solution--", "",
@@ -1148,22 +1038,10 @@ public class Game extends Thread implements Serializable {
 
 	}
 
-//	public void setPlayableStack(List<Card> stack) {
-//		for (Card card : this.stack) {
-//			if (card.isPlayable())
-//				this.playableStack.add(card);
-//
-//		}
-//
-//	}
 
 	public List<Card> getStack() {
 		return stack;
 	}
-
-//	public List<Card> getPlayableStack() {
-//		return playableStack;
-//	}
 
 	public List<Card> getRoleCards() {
 		return roleCards;
@@ -1182,17 +1060,7 @@ public class Game extends Thread implements Serializable {
 
 		public void run() {
 			sendMessagesToHostOnStart();
-			//	drawCards(getCurrentID(),2);
 		}
 	}
-
-
-//
-//	public List<Card> getHeap() {
-//		return heap;
-//	}
-//	public void setHeap(List<Card> heap) {
-//		this.heap = heap;
-//	}
 
 }

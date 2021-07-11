@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosy.tbial;
 
-import de.lmu.ifi.sosy.tbial.db.Database;
 import de.lmu.ifi.sosy.tbial.db.Game;
 import de.lmu.ifi.sosy.tbial.db.User;
 import de.lmu.ifi.sosy.tbial.gametable.*;
@@ -101,7 +100,7 @@ public class Lobby extends BasePage {
         };
         tabs.add(tab1);
         tabs.add(tab2);
-        if (!((TBIALSession) getSession()).getUser().getJoinedGame()) {
+        if (!getSession().getUser().getJoinedGame()) {
             tabs.add(tab3);
         } else {
             tabs.add(tab4);
@@ -111,7 +110,7 @@ public class Lobby extends BasePage {
         tabbedPanel = new AjaxTabbedPanel<>("tabs", tabs);
         tabbedPanel.add(AttributeModifier.replace("class", Lobby.this.getDefaultModel()));
         add(tabbedPanel);
-        game = ((TBIALSession) getSession()).getUser().getGame();
+        game = getSession().getUser().getGame();
     }
 
     @Override
@@ -130,9 +129,9 @@ public class Lobby extends BasePage {
 
             add(new FeedbackPanel("feedback"));
             IModel<List<User>> playerModel =
-                (IModel<List<User>>) () -> getTbialApplication().getLoggedInUsers();
+                () -> getTbialApplication().getLoggedInUsers();
             PageableListView<User> playerList =
-                new PageableListView<User>("loggedInUsers", playerModel, 4) {
+                new PageableListView<>("loggedInUsers", playerModel, 4) {
 
                     private static final long serialVersionUID = 1L;
 
@@ -153,8 +152,6 @@ public class Lobby extends BasePage {
         }
     }
 
-    ;
-
 
     private class TabPanel2 extends Panel {
         /**
@@ -169,14 +166,14 @@ public class Lobby extends BasePage {
             add(new FeedbackPanel("feedback"));
 
             IModel<List<Game>> gameModel =
-                (IModel<List<Game>>) () -> getTbialApplication().getAvailableGames();
+                () -> getTbialApplication().getAvailableGames();
 
             PageableListView<Game> gameList = new PageableListView<>("availableGames", gameModel, 4) {
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 protected void populateItem(final ListItem<Game> listItem) {
-                    listItem.add(new Label("name", listItem.getModelObject().getGameName())); //TODO GAMENAME AFTER THREADS
+                    listItem.add(new Label("name", listItem.getModelObject().getGameName()));
                     listItem.add(new Label("players", listItem.getModelObject().getActivePlayers() + "/" + listItem.getModelObject().getNumPlayers()));
                     listItem.add(new Label("status", listItem.getModelObject().getGameState()));
                     listItem.add(new Label("protection", !listItem.getModelObject().getPwProtected() ? "Public" : "Private"));
@@ -317,8 +314,6 @@ public class Lobby extends BasePage {
         }
     }
 
-    ;
-
 
     private class TabPanel3 extends Panel {
         /**
@@ -331,7 +326,7 @@ public class Lobby extends BasePage {
         private final Button submitGame;
         private final Button cancelGame;
         private final TextField<String> gameName;
-        private List players = Arrays.asList(new Integer[]{4, 5, 6, 7});
+        private final List players = Arrays.asList(4, 5, 6, 7);
         public Integer selected = 4;
         private final CheckBox publicGame;
         private final Model<Boolean> checkboxState = Model.of(true);
@@ -373,7 +368,6 @@ public class Lobby extends BasePage {
                     String pw = "";
                     String gamestate = "new";
                     int numplayers = selected;
-                    String pub = publicGame.getModelObject().toString();
                     if (!publicGame.getModelObject()) {
                         pw = password.getModelObject();
                     }
@@ -414,8 +408,6 @@ public class Lobby extends BasePage {
         }
     }
 
-    ;
-
 
     private class TabPanel4 extends Panel {
         /**
@@ -425,7 +417,7 @@ public class Lobby extends BasePage {
 
         private final AjaxButton leaveButton;
         private final AjaxButton startButton;
-        private User user;
+        private final User user;
 
         public TabPanel4(String id) {
             super(id);
@@ -444,19 +436,11 @@ public class Lobby extends BasePage {
                     break;
                 }
             }
-//            game.addPlayer(new User("Player 2", "pw",null));
-//            game.addPlayer(new User("Player 3", "pw",null));
-
-//    				game = getSession().getGame(gameId);
 
             final Label label = new Label("gamename", game.getGameName());
             add(label);
 
-            /**
-             * self updating game status
-             */
             Label gameState = new Label("gamestate", new PropertyModel<String>(game, "gameState"));
-//    				add(gameState);
             gameState.setOutputMarkupId(true);
             gameState.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(1)));
 
@@ -467,11 +451,10 @@ public class Lobby extends BasePage {
 
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
-                    System.out.println("leavebutton");
                     game.removePlayer(user);
                     user.setGame(null);
                     user.setJoinedGame(false);
-                    ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
+                    getDatabase().setUserGame(user.getId(), "NULL");
                     tabs.remove(2);
                     tabs.add(tab3);
                     setResponsePage(getApplication().getHomePage());
@@ -490,16 +473,13 @@ public class Lobby extends BasePage {
 
                 @Override
                 public void onSubmit(AjaxRequestTarget target) {
-                    System.out.println("startbutton");
                     if (user.equals(game.getHost())) {
                         int currentplayers = game.getActivePlayers();
                         int numplayers = game.getNumPlayers();
                         if (currentplayers < numplayers) {
                             info("the game has not enough players");
-                            //game.addPlayer(new User("new Player", "pw", null));
                         } else {
                             game.setGameState("running");
-                            //  game.setGameStarted(true);
                             WebSocketManager.getInstance().sendMessage(startGameJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getGameId()));
                             if (numplayers == 4) {
                                 setResponsePage(FourBoard.class);
@@ -510,7 +490,6 @@ public class Lobby extends BasePage {
                             } else if (numplayers == 7) {
                                 setResponsePage(SevenBoard.class);
                             }
-//                             game.startGame();
 
                         }
                     } else {
@@ -533,18 +512,17 @@ public class Lobby extends BasePage {
 
                 @Override
                 protected void populateItem(final ListItem<User> listItem) {
-                    AjaxLink<Object> removePlayerButton = (new AjaxLink<Object>("removeplayerbutton") {
+                    AjaxLink<Object> removePlayerButton = (new AjaxLink<>("removeplayerbutton") {
 
                         /** UID for serialization. */
                         private static final long serialVersionUID = 1;
 
                         @Override
                         public void onClick(AjaxRequestTarget target) {
-                            System.out.println("remove player button");
                             User user = listItem.getModelObject();
                             user.setGame(null);
                             user.setJoinedGame(false);
-                            ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
+                            getDatabase().setUserGame(user.getId(), "NULL");
                             game.removePlayer(listItem.getModelObject());
                             WebSocketManager.getInstance().sendMessage(removePlayerJSONMessage(((TBIALSession) getSession()).getUser().getId(), user.getId()));
                         }
@@ -596,8 +574,6 @@ public class Lobby extends BasePage {
             joinedPlayerListContainer.setOutputMarkupId(true);
 
 
-//      add(joinedPlayerListContainer);
-
             WebMarkupContainer boxedGameLobby = new WebMarkupContainer("boxedGameLobby");
             boxedGameLobby.add(gameState).add(form).add(joinedPlayerListContainer);
             add(boxedGameLobby);
@@ -607,12 +583,10 @@ public class Lobby extends BasePage {
 
     }
 
-    ;
-
     public void joinGame(Game game, User player) {
         player.setGame(game);
         player.setJoinedGame(true);
-        ((Database) getDatabase()).setUserGame(player.getId(), game.getGameName());
+        getDatabase().setUserGame(player.getId(), game.getGameName());
         game.addPlayer(player);
     }
 
@@ -622,8 +596,7 @@ public class Lobby extends BasePage {
         JSONObject msg = new JSONObject();
         msg.put("msgType", "PlayerRemoved");
         msg.put("msgBody", msgBody);
-        JSONMessage message = new JSONMessage(msg);
-        return message;
+        return new JSONMessage(msg);
     }
 
     private JSONMessage startGameJSONMessage(int userId, int gameId) {
@@ -634,8 +607,7 @@ public class Lobby extends BasePage {
         msg.put("msgType", "StartGame");
         msg.put("msgBody", msgBody);
 
-        JSONMessage message = new JSONMessage(msg);
-        return message;
+        return new JSONMessage(msg);
     }
 
     public void handleMessage(JSONMessage message) {
@@ -646,13 +618,12 @@ public class Lobby extends BasePage {
         switch (msgType) {
             case "PlayerRemoved":
                 body = jsonMsg.getJSONObject("msgBody");
-                System.out.println(body);
                 id = (int) body.get("id");
-                if (getSession().isSignedIn() && id == ((TBIALSession) getSession()).getUser().getId()) {
-                    User user = ((TBIALSession) getSession()).getUser();
+                if (getSession().isSignedIn() && id == getSession().getUser().getId()) {
+                    User user = getSession().getUser();
                     user.setGame(null);
                     user.setJoinedGame(false);
-                    ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
+                    getDatabase().setUserGame(user.getId(), "NULL");
                     game.removePlayer(user);
                     tabs.remove(2);
                     tabs.add(tab3);
@@ -664,7 +635,7 @@ public class Lobby extends BasePage {
                 body = jsonMsg.getJSONObject("msgBody");
                 id = (int) body.get("gameID");
                 int hostID = (int) body.get("hostID");
-                if (hostID != ((TBIALSession) getSession()).getUser().getId() && id == ((TBIALSession) getSession()).getUser().getGame().getGameId()) {
+                if (hostID != getSession().getUser().getId() && id == getSession().getUser().getGame().getGameId()) {
                     int numplayers = game.getNumPlayers();
                     if (numplayers == 4) {
                         setResponsePage(FourBoard.class);

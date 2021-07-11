@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class SQLDatabaseTest extends AbstractDatabaseTest {
 
-  private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
+  private static final EmbeddedDataSource dataSource = new EmbeddedDataSource();
 
   static {
     dataSource.setDatabaseName("tbial_test");

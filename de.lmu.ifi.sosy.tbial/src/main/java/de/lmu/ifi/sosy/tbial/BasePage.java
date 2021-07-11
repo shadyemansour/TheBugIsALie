@@ -23,9 +23,9 @@ public abstract class BasePage extends WebPage {
    */
   private static final long serialVersionUID = 1L;
 
-  private Link<Void> link;
+  private final Link<Void> link;
 
-  private Label users;
+  private final Label users;
 
   protected Database getDatabase() {
     return TBIALApplication.getDatabase();
@@ -75,12 +75,10 @@ public abstract class BasePage extends WebPage {
       username.setVisible(false);
     } else {
 
-      usernameMDL.setObject("Logged in as " + ((TBIALSession) getSession()).getUser().getName());
+      usernameMDL.setObject("Logged in as " + getSession().getUser().getName());
       username.setVisible(true);
 
     }
-    
-    
 
 
   }

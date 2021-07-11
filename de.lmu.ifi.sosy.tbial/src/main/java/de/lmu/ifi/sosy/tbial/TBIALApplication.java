@@ -71,7 +71,6 @@ public class TBIALApplication extends WebApplication {
     initMarkupSettings();
     initPageMounts();
     initAuthorization();
-    // initExceptionHandling();
   }
 
   private void initMarkupSettings() {
@@ -87,7 +86,7 @@ public class TBIALApplication extends WebApplication {
     mountPage("login", Login.class);
     mountPage("register", Register.class);
     mountPage("lobby", Lobby.class);
-    // mountPage("gameview", GameView.class);
+
   }
 
   /**
@@ -209,7 +208,6 @@ public class TBIALApplication extends WebApplication {
             g.setHost(u);
             g.setHostName(u.getName());
             break;
-            //TODO add user not found
           }
         }
       } else if (event.getPropertyName().equals("LastPlayerRemovedProperty")) {

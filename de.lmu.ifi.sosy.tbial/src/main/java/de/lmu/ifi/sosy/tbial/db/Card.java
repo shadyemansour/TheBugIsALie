@@ -5,14 +5,14 @@ import java.util.Objects;
 
 public class Card implements Serializable {
 
-  private String type;
+  private final String type;
   private String title;
-  private String subTitle;
-  private String middleDesc;
-  private String bottomDesc;
+  private final String subTitle;
+  private final String middleDesc;
+  private final String bottomDesc;
   private boolean playable;
   private boolean visible;
-  private String gameLogic;
+  private final String gameLogic;
 
   public Card(String type, String title, String subTitle, String middleDesc,
               String bottomDesc, boolean playable, boolean visible, String gameLogic) {
@@ -68,14 +68,6 @@ public class Card implements Serializable {
     return visible;
   }
 
-
-  public String getGameLogic() {
-    return gameLogic;
-  }
-
-  public void setGameLogic(String gameLogic) {
-    this.gameLogic = gameLogic;
-  }
 
   @Override
   public boolean equals(Object o) {

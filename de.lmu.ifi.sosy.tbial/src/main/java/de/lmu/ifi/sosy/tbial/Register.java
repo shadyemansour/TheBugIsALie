@@ -22,22 +22,24 @@ import org.apache.wicket.model.Model;
  */
 public class Register extends BasePage {
 
-  /** UID for serialization. */
+  /**
+   * UID for serialization.
+   */
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = LogManager.getLogger(Register.class);
 
-  private TextField<String> nameField;
+  private final TextField<String> nameField;
 
-  private PasswordTextField passwordField;
+  private final PasswordTextField passwordField;
 
-  private PasswordTextField passwordConfirmationField;
+  private final PasswordTextField passwordConfirmationField;
 
-  private FeedbackPanel messagePanel;
+  private final FeedbackPanel messagePanel;
 
-  private Button registerButton;
+  private final Button registerButton;
 
-  private Label messageLabel;
+  private final Label messageLabel;
 
   public Register() {
     messagePanel = new FeedbackPanel("feedback");
@@ -81,7 +83,7 @@ public class Register extends BasePage {
           @Override
           protected void onUpdate(AjaxRequestTarget target) {
             String name = nameField.getModelObject();
-            if (getDatabase().nameTaken(name,"user")) {
+            if (getDatabase().nameTaken(name, "user")) {
               messageLabel.setDefaultModelObject("Name already taken.");
             } else {
               messageLabel.setDefaultModelObject(" ");

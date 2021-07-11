@@ -38,7 +38,7 @@ public class User implements Serializable {
   // remove String role, character later
   private String role;
   private String character;
-  private List<Card> hand = new ArrayList<Card>();
+  private List<Card> hand;
 
 
   private boolean joinedGame;
@@ -68,7 +68,7 @@ public class User implements Serializable {
     this.characterCard = null;
     this.role = null;
     this.character = null;
-    this.hand = null;
+    this.hand = new ArrayList<>();
     this.joinedGame = game != null;
     this.fired = false;
     this.propertyChangeSupport = new PropertyChangeSupport(this);

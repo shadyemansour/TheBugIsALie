@@ -27,10 +27,7 @@ public class SevenBoard extends GameView {
    */
   private static final long serialVersionUID = 1L;
 
-  User user = ((TBIALSession) getSession()).getUser();
-  List<Game> appGames = ((TBIALApplication) getApplication()).getAvailableGames();
   List<User> players;
-  // Game game;
   private Label p1prestige, p2prestige, p3prestige, p4prestige, p5prestige, p6prestige, p7prestige;
   private Label p1health, p2health, p3health, p4health, p5health, p6health, p7health;
   private Label p1name, p2name, p3name, p4name, p5name, p6name, p7name;
@@ -75,31 +72,7 @@ public class SevenBoard extends GameView {
   }
 
   protected void createPlayerAttributes() {
-//    for (Game g : appGames) {
-//      if (g.equals(user.getGame())) {
-//        game = g;
-////        user.setGame(game);
-//        break;
-//      }
-//    };
-
-    //game.startGame(); // this is temporary since game is not initialized before starting a game
     players = game.getPlayers();
-    // temporary untill game is get with wbesocket
-//    players.get(0).setHealth(4);
-//    players.get(0).setPrestige(0);
-//    players.get(1).setHealth(4);
-//    players.get(1).setPrestige(0);
-//    players.get(2).setHealth(4);
-//    players.get(2).setPrestige(0);
-//    players.get(3).setHealth(4);
-//    players.get(3).setPrestige(0);
-//    players.get(4).setHealth(4);
-//    players.get(4).setPrestige(0);
-//    players.get(5).setHealth(4);
-//    players.get(5).setPrestige(0);
-//    players.get(6).setHealth(4);
-//    players.get(6).setPrestige(0);
 
     currenthealth1 = players.get(0).getHealth();
     currenthealth2 = players.get(1).getHealth();
@@ -285,10 +258,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -319,16 +292,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -394,10 +366,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -428,16 +400,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -500,10 +471,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -534,16 +505,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -606,10 +576,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -640,16 +610,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -712,10 +681,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -746,16 +715,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -818,10 +786,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -852,16 +820,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 
@@ -924,10 +891,10 @@ public class SevenBoard extends GameView {
         return cardDropModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardDropModels.size() * 50) / (cardDropModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
@@ -958,16 +925,15 @@ public class SevenBoard extends GameView {
         return cardHandModels.iterator();
       }
 
-      int width = 300;
+      final int width = 300;
 
       int posLeft = (width - cardHandModels.size() * 50) / (cardHandModels.size() + 1);
-      int stepSize = posLeft + 50;
+      final int stepSize = posLeft + 50;
 
       @Override
       protected void populateItem(Item<Card> item) {
         item.add(new AttributeAppender("style", "left: " + posLeft + "px;"));
         posLeft += stepSize;
-//				posTop += 2;
         item.add(new CardPanel("card", new CompoundPropertyModel<Card>(item.getModel())));
       }
 

@@ -8,7 +8,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
 import org.apache.wicket.markup.html.form.*;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.WebSocketRequestHandler;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
@@ -32,52 +31,79 @@ public abstract class GameView extends WebPage {
    * UID for serialization.
    */
   private static final long serialVersionUID = 1L;
-  public User user = ((TBIALSession) getSession()).getUser();
+  public User user;
   AjaxButton leaveButton;
-  protected Game game = user.getGame();
-  int currentPlayerId = -1;
-  List<Card> stackTest = game.getStack();
-  public List<User> playerList = game.getPlayers();
-  public List<User> actualPlayerlist = new ArrayList<User>();
+  protected Game game;
+  int currentPlayerId;
+  public List<User> playerList;
+  public List<User> actualPlayerlist;
 
-  public List<Integer> healthList = new ArrayList<Integer>(playerList.size());
+  int p1health, p2health, p3health, p4health;
 
-  Model<String> p1healthModel = Model.of("4");
-  int p1health = -1, p2health = -1, p3health = -1, p4health = -1;
+  public List<Card> p1hand;
+  public List<Card> p2hand;
+  public List<Card> p3hand;
+  public List<Card> p4hand;
 
-  public List<Card> p1hand = new ArrayList<Card>();
-  public List<Card> p2hand = new ArrayList<Card>();
-  public List<Card> p3hand = new ArrayList<Card>();
-  public List<Card> p4hand = new ArrayList<Card>();
+  public List<Card> p1drophand;
+  public List<Card> p2drophand;
+  public List<Card> p3drophand;
+  public List<Card> p4drophand;
 
-  public List<Card> p1drophand = new ArrayList<Card>();
-  public List<Card> p2drophand = new ArrayList<Card>();
-  public List<Card> p3drophand = new ArrayList<Card>();
-  public List<Card> p4drophand = new ArrayList<Card>();
+  List<Card> p1role;
+  List<Card> p2role;
+  List<Card> p3role;
+  List<Card> p4role;
 
-  List<Card> p1role = new ArrayList<Card>();
-  List<Card> p2role = new ArrayList<Card>();
-  List<Card> p3role = new ArrayList<Card>();
-  List<Card> p4role = new ArrayList<Card>();
-
-  List<Card> p1character = new ArrayList<Card>();
-  List<Card> p2character = new ArrayList<Card>();
-  List<Card> p3character = new ArrayList<Card>();
-  List<Card> p4character = new ArrayList<Card>();
+  List<Card> p1character;
+  List<Card> p2character;
+  List<Card> p3character;
+  List<Card> p4character;
 
 
-  List<Card> stackList = new ArrayList<Card>();
-  List<Card> heapList = new ArrayList<Card>();
+  List<Card> stackList;
+  List<Card> heapList;
 
-  //  ModalWindow modalWindow;
   Form<?> form;
 
   public GameView() {
+    user = ((TBIALSession) getSession()).getUser();
+    game = user.getGame();
+    currentPlayerId = -1;
+    playerList = game.getPlayers();
+    actualPlayerlist = new ArrayList<>();
+
+    p1health = -1;
+    p2health = -1;
+    p3health = -1;
+    p4health = -1;
+
+    p1hand = new ArrayList<>();
+    p2hand = new ArrayList<>();
+    p3hand = new ArrayList<>();
+    p4hand = new ArrayList<>();
+
+    p1drophand = new ArrayList<>();
+    p2drophand = new ArrayList<>();
+    p3drophand = new ArrayList<>();
+    p4drophand = new ArrayList<>();
+
+    p1role = new ArrayList<>();
+    p2role = new ArrayList<>();
+    p3role = new ArrayList<>();
+    p4role = new ArrayList<>();
+
+    p1character = new ArrayList<>();
+    p2character = new ArrayList<>();
+    p3character = new ArrayList<>();
+    p4character = new ArrayList<>();
+
+
+    stackList = new ArrayList<>();
+    heapList = new ArrayList<>();
+
     setPlayerList();
     this.game.addPropertyChangeListener(new GameViewListener());
-
-    //   System.out.println("GameView init" + game + " " + user);
-//    Card testCard = new Card("Role", "Evil Code Monkey", null, "Aim: Get the Manager \nfired.", "Has no skills in \ncoding, testing, \nand design.", false, true, null);
 
     add(new WebSocketBehavior() {
       private static final long serialVersionUID = 1L;
@@ -99,8 +125,6 @@ public abstract class GameView extends WebPage {
       }
     });
 
-//    add(modalWindow = new ModalWindow("gamePaused"));
-//    modalWindow.setOutputMarkupId(true);
 
     leaveButton = new AjaxButton("leaveButton") {
       /**
@@ -113,7 +137,7 @@ public abstract class GameView extends WebPage {
         game.removePlayer(user);
         user.setGame(null);
         user.setJoinedGame(false);
-        ((Database) getDatabase()).setUserGame(user.getId(), "NULL");
+        getDatabase().setUserGame(user.getId(), "NULL");
         WebSocketManager.getInstance().sendMessage(gamePausedJSONMessage(((TBIALSession) getSession()).getUser().getId(), game.getGameId()));
         setResponsePage(Lobby.class);
       }
@@ -123,15 +147,13 @@ public abstract class GameView extends WebPage {
       }
     };
     form = new Form<>("form");
-//    modalWindow.setVisible(true);
     form.add(leaveButton);
-//    form..add(modalWindow);
     form.setOutputMarkupId(true);
     add(form);
 
     if (!game.isGameStarted() && ((TBIALSession) getSession()).getUser().getId() == game.getHost().getId()) {
       try {
-        Thread.sleep(1000); //TODO delay this till all other gameviews have started
+        Thread.sleep(1000);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
@@ -175,19 +197,14 @@ public abstract class GameView extends WebPage {
   public void handleMessage(JSONMessage message) {
     JSONObject jsonMsg = message.getMessage();
     String msgType = (String) jsonMsg.get("msgType");
-    Iterator<Object> iterator;
     JSONObject body = jsonMsg.getJSONObject("msgBody");
-//    System.out.println(body);
-//    System.out.println("playerList: " + playerList);
+
     int gameID = (int) body.get("gameID");
     int userID;
-    System.out.println("-m to: " + user + " " + msgType + " with gameId: " + gameID);
-    System.out.println(game.getGameId());
     int playerId = -1;
     try {
       playerId = body.getInt("playerID");
     } catch (JSONException e) {
-//    	e.printStackTrace();
     }
     int playerPos = 0;
 
@@ -214,16 +231,12 @@ public abstract class GameView extends WebPage {
           }
           break;
         case "GameStarted":
-//        	System.out.println("---XXX---game started message received in game view");
           int cardsInDeck = (int) body.get("cardsInDeck");
           int numPlayers = (int) body.get("numPlayers");
-          //TODO USE THE DATA
           break;
         case "Roles":
-          System.out.println("roles: " + body);
-          System.out.println("playerList: " + playerList);
           JSONArray roles = (JSONArray) body.get("roles");
-          List<Card> roleCards = new ArrayList<Card>();
+          List<Card> roleCards = new ArrayList<>();
           for (int i = 0; i < roles.length(); i++) {
             JSONObject container = (JSONObject) roles.get(i);
             Card roleCard = (Card) container.get("roleCard");
@@ -231,7 +244,6 @@ public abstract class GameView extends WebPage {
           }
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == user.getId()) {
-              System.out.println("assign roles for: " + user);
               switch (i) {
                 case 0:
                   p1role.add(roleCards.get(2).getTitle().equals("Manager") ? roleCards.get(2) : new Card("", "Hidden Role", "", "", "", false, false, ""));
@@ -263,7 +275,7 @@ public abstract class GameView extends WebPage {
           break;
         case "Characters":
           JSONArray characters = (JSONArray) body.get("characters");
-          List<Card> characterCards = new ArrayList<Card>();
+          List<Card> characterCards = new ArrayList<>();
           for (int i = 0; i < characters.length(); i++) {
             JSONObject container = (JSONObject) characters.get(i);
 
@@ -276,7 +288,6 @@ public abstract class GameView extends WebPage {
               int health = container.getInt("health");
               user.setHealth(health);
               user.setCharacter(character);
-              //TODO USE THE DATA
             } else if (playerID == game.getPlayers().get(i).getId()) {
               int health = container.getInt("health");
               game.getPlayers().get(i).setHealth(health);
@@ -287,39 +298,38 @@ public abstract class GameView extends WebPage {
           }
 
           for (int i = 0; i < playerList.size(); i++) {
-        	  if (playerList.get(i).getId() == user.getId()) {
-        		  switch (i) {
-        		  case 0:
-                      p1character.add(characterCards.get(2));
-                      p2character.add(characterCards.get(3));
-                      p3character.add(characterCards.get(0));
-                      p4character.add(characterCards.get(1));
-                      break;
-        		  case 1:
-                      p1character.add(characterCards.get(3));
-                      p2character.add(characterCards.get(0));
-                      p3character.add(characterCards.get(1));
-                      p4character.add(characterCards.get(2));
-                      break;
-        		  case 2:
-                      p1character.add(characterCards.get(0));
-                      p2character.add(characterCards.get(1));
-                      p3character.add(characterCards.get(2));
-                      p4character.add(characterCards.get(3));
-                      break;
-        		  case 3:
-                      p1character.add(characterCards.get(1));
-                      p2character.add(characterCards.get(2));
-                      p3character.add(characterCards.get(3));
-                      p4character.add(characterCards.get(0));
-                      break;
-        		  }
-        	  }
+            if (playerList.get(i).getId() == user.getId()) {
+              switch (i) {
+                case 0:
+                  p1character.add(characterCards.get(2));
+                  p2character.add(characterCards.get(3));
+                  p3character.add(characterCards.get(0));
+                  p4character.add(characterCards.get(1));
+                  break;
+                case 1:
+                  p1character.add(characterCards.get(3));
+                  p2character.add(characterCards.get(0));
+                  p3character.add(characterCards.get(1));
+                  p4character.add(characterCards.get(2));
+                  break;
+                case 2:
+                  p1character.add(characterCards.get(0));
+                  p2character.add(characterCards.get(1));
+                  p3character.add(characterCards.get(2));
+                  p4character.add(characterCards.get(3));
+                  break;
+                case 3:
+                  p1character.add(characterCards.get(1));
+                  p2character.add(characterCards.get(2));
+                  p3character.add(characterCards.get(3));
+                  p4character.add(characterCards.get(0));
+                  break;
+              }
+            }
           }
           break;
         case "CurrentPlayer":
           currentPlayerId = playerId;
-          //TODO USE THE DATA
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == playerId) {
               playerPos = i;
@@ -359,7 +369,7 @@ public abstract class GameView extends WebPage {
             int winner = (int) idsJSON.get(i);
             //TODO USE THE DATA
           }
-          List<Card> roleCardsWon = new ArrayList<Card>();
+          List<Card> roleCardsWon = new ArrayList<>();
           JSONArray roleCardsJSON = (JSONArray) body.get("roleCards");
           for (int i = 0; i < roleCardsJSON.length(); i++) {
             JSONObject container = (JSONObject) roleCardsJSON.get(i);
@@ -367,11 +377,8 @@ public abstract class GameView extends WebPage {
             roleCard.setVisible(true);
             roleCardsWon.add(roleCard);
           }
-          System.out.println("roleJSON" + roleCardsJSON);
-          System.out.println("roleCards" + roleCardsWon);
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == user.getId()) {
-              System.out.println("assign roles for: " + user);
               p1role.clear();
               p2role.clear();
               p3role.clear();
@@ -404,10 +411,7 @@ public abstract class GameView extends WebPage {
               }
             }
           }
-          // all roles are visible for all players
-          //TODO display a message with the winner and that the game has ended
           break;
-
         case "YourCards":
           JSONArray cardsJSON = (JSONArray) body.get("cards");
           for (int i = 0; i < cardsJSON.length(); i++) {
@@ -419,8 +423,7 @@ public abstract class GameView extends WebPage {
         case "CardsDrawn":
           int numCards = body.getInt("cards");
           int numDeckCards = body.getInt("cardsInDeck");
-          //TODO USE THE DATA
-          List<Card> cardsDrawn = new ArrayList<Card>();
+          List<Card> cardsDrawn = new ArrayList<>();
           for (int j = 0; j < numCards; j++) {
             Card hiddenCard = new Card("", "Hidden Card", "", "", "", false, false, "");
             cardsDrawn.add(hiddenCard);
@@ -432,82 +435,56 @@ public abstract class GameView extends WebPage {
           }
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == user.getId()) {
-              System.out.println("assign drawn cards for: " + user);
-              System.out.println("assign: i=" + i + " playerPos=" + playerPos);
               switch (i) {
                 case 0:
                   switch (playerPos) {
                     case 1:
-                      for (Card card : cardsDrawn) {
-                        p4hand.add(card);
-                      }
+                      p4hand.addAll(cardsDrawn);
                       break;
                     case 2:
-                      for (Card card : cardsDrawn) {
-                        p1hand.add(card);
-                      }
+                      p1hand.addAll(cardsDrawn);
                       break;
                     case 3:
-                      for (Card card : cardsDrawn) {
-                        p2hand.add(card);
-                      }
+                      p2hand.addAll(cardsDrawn);
                       break;
                   }
                   break;
                 case 1:
                   switch (playerPos) {
                     case 0:
-                      for (Card card : cardsDrawn) {
-                        p2hand.add(card);
-                      }
+                      p2hand.addAll(cardsDrawn);
                       break;
                     case 2:
-                      for (Card card : cardsDrawn) {
-                        p4hand.add(card);
-                      }
+                      p4hand.addAll(cardsDrawn);
                       break;
                     case 3:
-                      for (Card card : cardsDrawn) {
-                        p1hand.add(card);
-                      }
+                      p1hand.addAll(cardsDrawn);
                       break;
                   }
                   break;
                 case 2:
                   switch (playerPos) {
                     case 0:
-                      for (Card card : cardsDrawn) {
-                        p1hand.add(card);
-                      }
+                      p1hand.addAll(cardsDrawn);
                       break;
                     case 1:
-                      for (Card card : cardsDrawn) {
-                        p2hand.add(card);
-                      }
+                      p2hand.addAll(cardsDrawn);
                       break;
                     case 3:
-                      for (Card card : cardsDrawn) {
-                        p4hand.add(card);
-                      }
+                      p4hand.addAll(cardsDrawn);
                       break;
                   }
                   break;
                 case 3:
                   switch (playerPos) {
                     case 0:
-                      for (Card card : cardsDrawn) {
-                        p4hand.add(card);
-                      }
+                      p4hand.addAll(cardsDrawn);
                       break;
                     case 1:
-                      for (Card card : cardsDrawn) {
-                        p1hand.add(card);
-                      }
+                      p1hand.addAll(cardsDrawn);
                       break;
                     case 2:
-                      for (Card card : cardsDrawn) {
-                        p2hand.add(card);
-                      }
+                      p2hand.addAll(cardsDrawn);
                       break;
                   }
                   break;
@@ -550,7 +527,6 @@ public abstract class GameView extends WebPage {
             Card delegation = p3drophand.get(0);
             Random random = new Random();
             double r = random.nextDouble();
-            System.out.println("random number: " + r);
             if (r < 0.25) {
               cardDelegated(car, delegation);
               user.setBeingAttacked(false);
@@ -563,10 +539,8 @@ public abstract class GameView extends WebPage {
           break;
         case "CardDelegated":
           int playerr = body.getInt("playerID");
-          System.out.println(playerr);
           Card c = (Card) body.get("card");
           Card delegation = (Card) body.get("delegationCard");
-          System.out.println(c.getTitle());
           updatePlayersDropAreas(playerr, delegation);
           updatePlayersDropAreas(playerr, c);
           heapList.add(delegation);
@@ -575,7 +549,7 @@ public abstract class GameView extends WebPage {
         case "CardDiscarded":
           int player = body.getInt("playerID");
           Card card = (Card) body.get("card");
-          boolean discardedFromHand = ((String) body.get("discardedFrom")).equals("hand");
+          boolean discardedFromHand = body.get("discardedFrom").equals("hand");
           if (discardedFromHand) {
             updatePlayerHands(player, card);
           } else {
@@ -602,7 +576,7 @@ public abstract class GameView extends WebPage {
         case "PlayerFired":
           int playID = (int) body.get("playerID");
           Card role = (Card) body.get("role");
-          // player card is set visible
+
           int playerPosition = 0;
           for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getId() == playID) {
@@ -725,24 +699,20 @@ public abstract class GameView extends WebPage {
     }
   }
 
-  private void updatePlayersDropAreas(int pl, Card ca) {  //TODO BUG?
+  private void updatePlayersDropAreas(int pl, Card ca) {
     for (int i = 0; i < actualPlayerlist.size(); i++) {
       if (pl == actualPlayerlist.get(i).getId()) {
         switch (i) {
           case 0:
-            System.out.println("p1 drophand before remove: " + p1drophand);
             p1drophand.remove(ca);
             break;
           case 1:
-            System.out.println("p2 drophand before remove: " + p2drophand);
             p2drophand.remove(ca);
             break;
           case 2:
-            System.out.println("p3 drophand before remove: " + p3drophand);
             p3drophand.remove(ca);
             break;
           case 3:
-            System.out.println("p4 drophand before remove: " + p4drophand);
             p4drophand.remove(ca);
             break;
         }
@@ -824,11 +794,9 @@ public abstract class GameView extends WebPage {
   private boolean allUsersHaveHealth() {
     for (User user : game.getPlayers()) {
       if (user.getHealth() == -1) {
-        System.out.println(((TBIALSession) getSession()).getUser().getId() + ": false");
         return false;
       }
     }
-    System.out.println(((TBIALSession) getSession()).getUser().getId() + ": true");
     return true;
   }
 
@@ -838,19 +806,10 @@ public abstract class GameView extends WebPage {
 
   protected abstract void updateHealth();
 
-  public void drawCards() {
-    game.drawCards(((TBIALSession) getSession()).getUser().getId(), 2 /*TODO CHANGE TO VARIABLE*/);
-  }
 
   public void discardCard(Card card, String discardFrom) {
-    //TODO
     if (user.isMyTurn() || user.isBeingAttacked()) {
-//      if (discardFrom.equals("hand")) {
-//        user.getHand().remove(card);
-//      }
       game.discardCard(((TBIALSession) getSession()).getUser().getId(), card, discardFrom);
-    } else {
-      //TODO message on ui?
     }
   }
 
@@ -860,7 +819,6 @@ public abstract class GameView extends WebPage {
   }
 
   public void playCard(int to, Card card) {
-    //TODO implementation
     game.playCard(((TBIALSession) getSession()).getUser().getId(), to, card);
   }
 
@@ -869,8 +827,7 @@ public abstract class GameView extends WebPage {
       game.defendCard(((TBIALSession) getSession()).getUser().getId(), excuseCard, bugCard);
       user.getHand().remove(excuseCard);
       user.setBeingAttacked(false);
-      //game.discardCard(((TBIALSession) getSession()).getUser().getId(), p3drophand.get(0));
-      //TODO
+
     }
   }
 
@@ -935,7 +892,6 @@ public abstract class GameView extends WebPage {
   }
 
   void endTurn() {
-    System.out.println(user.getHand().size());
     if (user.getHealth() >= user.getHand().size()) {
       game.endTurn();
 

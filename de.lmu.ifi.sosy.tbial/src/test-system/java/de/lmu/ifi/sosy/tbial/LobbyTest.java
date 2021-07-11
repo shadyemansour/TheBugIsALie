@@ -28,7 +28,7 @@ public class LobbyTest extends PageTestBase {
   User player5;
   User player6;
 
-  private static EmbeddedDataSource dataSource = new EmbeddedDataSource();
+  private static final EmbeddedDataSource dataSource = new EmbeddedDataSource();
 
   static {
     dataSource.setDatabaseName("tbial_test");

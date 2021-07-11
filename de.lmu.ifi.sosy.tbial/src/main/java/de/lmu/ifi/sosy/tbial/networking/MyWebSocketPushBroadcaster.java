@@ -22,7 +22,7 @@ import static java.util.Collections.singletonList;
 public class MyWebSocketPushBroadcaster {
 
   private final IWebSocketConnectionRegistry registry;
-  private Executor webSocketPushMessageExecutor;
+  private final Executor webSocketPushMessageExecutor;
 
   public MyWebSocketPushBroadcaster(IWebSocketConnectionRegistry registry) {
 

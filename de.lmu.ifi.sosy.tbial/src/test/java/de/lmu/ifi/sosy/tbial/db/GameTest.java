@@ -6,7 +6,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,23 +57,19 @@ public class GameTest {
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullNameGiven_throwsException() {
-    new Game(id, null, password, numPlayers, null, host.getName());
+    new Game(id, null, password, numPlayers, "", host.getName());
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullPasswordGiven_throwsException() {
-    new Game(id, name, null, numPlayers, null, host.getName());
+    new Game(id, name, null, numPlayers, "", host.getName());
   }
 
   @Test(expected = NullPointerException.class)
   public void constructor_whenNullNumPlayersGiven_throwsException() {
-    new Game(id, name, password, null, null, host.getName());
+    new Game(id, name, password, null, "", host.getName());
   }
 
-//  @Test(expected = NullPointerException.class)
-//  public void constructor_whenNullHostGiven_throwsException() {
-//    new Game(id, name, password, numPlayers, null);
-//  }
 
   @Test
   public void getPassword_returnsPassword() {
@@ -111,7 +106,7 @@ public class GameTest {
 
   @Test
   public void getPlayers_returnPlayers() {
-    List<User> expected = new ArrayList<User>(4);
+    List<User> expected = new ArrayList<>(4);
     expected.add(host);
     expected.add(user1);
     expected.add(null);
@@ -121,7 +116,7 @@ public class GameTest {
 
   @Test
   public void addPlayer_addsPlayer() {
-    List<User> expected = new ArrayList<User>(4);
+    List<User> expected = new ArrayList<>(4);
     expected.add(host);
     expected.add(user1);
     expected.add(user2);
@@ -132,7 +127,7 @@ public class GameTest {
 
   @Test
   public void removePlayer_removesPlayer() {
-    List<User> expected = new ArrayList<User>(4);
+    List<User> expected = new ArrayList<>(4);
     expected.add(host);
     expected.add(null);
     expected.add(null);
@@ -198,7 +193,7 @@ public class GameTest {
     msg.put("msgType", "Shuffle");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    JSONAssert.assertEquals(expected.getMessage(), game.decksShuffledMessage(game.getStack().size(), 0).getMessage(), true);
+    JSONAssert.assertEquals(expected.getMessage(), game.decksShuffledMessage(game.getStack().size()).getMessage(), true);
   }
 
   @Test
@@ -228,7 +223,6 @@ public class GameTest {
     msg.put("msgType", "GameWon");
     msg.put("msgBody", body);
     JSONMessage expected = new JSONMessage(msg);
-    System.out.println(game.gameWonMessage(new JSONArray(Collections.singletonList(1))).getMessage());
     JSONAssert.assertEquals(expected.getMessage(), game.gameWonMessage(new JSONArray(Collections.singletonList(1))).getMessage(), true);
   }
 
@@ -292,7 +286,6 @@ public class GameTest {
     game.startGame();
     JSONArray cards = new JSONArray();
     for (int n = 0; n < 2; n++) {
-      //TODO Draw cards from stack and save in Array
       cards.put(game.getStack().get(n));
     }
 
@@ -320,8 +313,7 @@ public class GameTest {
     game.startGame();
     int expected = -1;
     List<User> players = game.getPlayers();
-    for (int i = 0; i < players.size(); i++) {
-      User player = players.get(i);
+    for (User player : players) {
       if (player.getRoleCard().getTitle().equals("Manager")) {
         expected = game.getCurrentID();
         break;
@@ -456,8 +448,7 @@ public class GameTest {
     game.start();
     List<User> players = game.getPlayers();
     int managerID = 0;
-    for (int i = 0; i < players.size(); i++) {
-      User player = players.get(i);
+    for (User player : players) {
       if (player.getRoleCard().getTitle().equals("Manager")) {
         managerID = player.getId();
         break;
@@ -481,8 +472,7 @@ public class GameTest {
     game.start();
     List<User> players = game.getPlayers();
     List<Integer> monkeysIDs = new ArrayList<>();
-    for (int i = 0; i < players.size(); i++) {
-      User player = players.get(i);
+    for (User player : players) {
       if (player.getRoleCard().getTitle().equals("Evil Code Monkey") || player.getRoleCard().getTitle().equals("Consultant")) {
         monkeysIDs.add(player.getId());
       }
@@ -506,8 +496,7 @@ public class GameTest {
     game.start();
     List<User> players = game.getPlayers();
     List<Integer> IDs = new ArrayList<>();
-    for (int i = 0; i < players.size(); i++) {
-      User player = players.get(i);
+    for (User player : players) {
       if (!player.getRoleCard().getTitle().equals("Consultant")) {
         IDs.add(player.getId());
       }
@@ -531,8 +520,7 @@ public class GameTest {
     game.start();
     List<User> players = game.getPlayers();
     List<Integer> IDs = new ArrayList<>();
-    for (int i = 0; i < players.size(); i++) {
-      User player = players.get(i);
+    for (User player : players) {
       if (!player.getRoleCard().getTitle().equals("Consultant") || !player.getRoleCard().getTitle().equals("Honest Developer")) {
         IDs.add(player.getId());
       }

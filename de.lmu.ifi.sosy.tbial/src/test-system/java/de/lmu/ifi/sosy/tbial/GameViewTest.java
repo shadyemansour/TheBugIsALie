@@ -285,6 +285,16 @@ public class GameViewTest extends PageTestBase {
 		gameView.handleMessage(msg);
 
 		assertEquals(card, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:heap")).getModelObject().get(0));
+
+		msgBody.put("playerID", user2.getId());
+		gameView.handleMessage(msg);
+		assertEquals(card, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:heap")).getModelObject().get(0));
+		msgBody.put("playerID", user3.getId());
+		gameView.handleMessage(msg);
+		assertEquals(card, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:heap")).getModelObject().get(0));
+		msgBody.put("playerID", host.getId());
+		gameView.handleMessage(msg);
+		assertEquals(card, ((ListView) tester.getComponentFromLastRenderedPage("middle-table-container:heap")).getModelObject().get(0));
 	}
 
 
@@ -333,6 +343,31 @@ public class GameViewTest extends PageTestBase {
 		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0)).getTitle());
 		assertEquals(role1card, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:health-role-container3:role-card-panel3")).getModelObject().get(0));
 		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+
+		setOption1();
+		gameView.handleMessage(msg);
+
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0)).getTitle());
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0)).getTitle());
+		assertEquals(role1card, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:health-role-container3:role-card-panel3")).getModelObject().get(0));
+		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+
+		setOption2();
+		gameView.handleMessage(msg);
+
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0)).getTitle());
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0)).getTitle());
+		assertEquals(role1card, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:health-role-container3:role-card-panel3")).getModelObject().get(0));
+		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+
+		setOption3();
+		gameView.handleMessage(msg);
+
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p1-container:player-card-container1:health-role-container1:role-card-panel1")).getModelObject().get(0)).getTitle());
+		assertEquals("Hidden Role", ((Card) ((ListView) tester.getComponentFromLastRenderedPage("p2-container:player-card-container2:health-role-container2:role-card-panel2")).getModelObject().get(0)).getTitle());
+		assertEquals(role1card, ((ListView) tester.getComponentFromLastRenderedPage("p3-container:player-card-container3:health-role-container3:role-card-panel3")).getModelObject().get(0));
+		assertEquals(role2card, ((ListView) tester.getComponentFromLastRenderedPage("p4-container:player-card-container4:health-role-container4:role-card-panel4")).getModelObject().get(0));
+
 	}
 
 	@Test

@@ -179,6 +179,70 @@ public class GameBoardTest extends PageTestBase {
       assertEquals(0, ((ListView) tester.getComponentFromLastRenderedPage(droparea1)).getViewSize());
     }
   }
+  
+  @Test
+  public void defendCard() {
+	renderFourBoard();
+	game.startGame();
+	
+	Card bugCard = new Card("Action", "Nullpointer!", "--bug--", null, "-1 mental health", true, false, null);
+	gameView.p3drophand.add(bugCard);
+	
+	Card defendCard = null;
+	for (int i = 0; i < host.getHand().size(); i++) {
+	  if (host.getHand().get(i).getSubTitle() == "--lame excuse--" || host.getHand().get(i).getSubTitle() == "--Solution--") {
+		defendCard = host.getHand().get(i);
+	  }
+	}
+	
+	assertEquals(0, gameView.heapList.size());
+	int hostHandSize = host.getHand().size();
+	
+	if (defendCard != null) {
+	  JSONObject body = new JSONObject();
+	  body.put("gameID", 1);
+	  body.put("playerID", host.getId());
+	  body.put("card", bugCard);
+	  body.put("defendedWith", defendCard);
+	  JSONObject msg = new JSONObject();
+	  msg.put("msgType", "CardDefended");
+	  msg.put("msgBody", body);
+	  JSONMessage expected = new JSONMessage(msg);
+	  gameView.handleMessage(expected);
+	  
+	  assertEquals(2, gameView.heapList.size());
+	  assertEquals(host.getHand().size(), hostHandSize-1);
+	  assertEquals(0, gameView.p3drophand.size());
+	}
+  }
+  
+  @Test
+  public void delegateCard() {
+	renderFourBoard();
+	game.startGame();
+	
+	Card bugCard = new Card("Action", "Nullpointer!", "--bug--", null, "-1 mental health", true, false, null);
+	Card delCard = new Card("Ability", "Bug Delegation", "", "", "Delegates bug report. \n.25 chance to work", false, false, "");
+	gameView.p3drophand.add(delCard);
+	assertEquals(1, gameView.p3drophand.size());
+	host.setHasDelegation(true);
+	gameView.p3drophand.add(bugCard);
+	assertEquals(2, gameView.p3drophand.size());
+	
+	JSONObject body = new JSONObject();
+	body.put("gameID", 1);
+	body.put("playerID", host.getId());
+	body.put("card", bugCard);
+	body.put("delegationCard", delCard);
+	JSONObject msg = new JSONObject();
+	msg.put("msgType", "CardDelegated");
+	msg.put("msgBody", body);
+	JSONMessage expected = new JSONMessage(msg);
+	gameView.handleMessage(expected);
+	
+	assertEquals(2, gameView.heapList.size());
+	assertEquals(0, gameView.p3drophand.size());
+  }
 
   @Test
   public void samedroppedCard() {

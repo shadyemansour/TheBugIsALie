@@ -1,22 +1,8 @@
-# Praktikum Software Engineering für Fortgeschrittene: The Bug is a Lie 🐞
-
-Dieses Repository soll als Einstieg in das Praktikum dienen.
-Es wird eine Beispielanwendung (Prototyp) bereitgestellt,
-welche bereits einige der erforderlichen Technologien verwendet.
-
-Weitere Informationen befinden sich im [Uni2Work](https://uni2work.ifi.lmu.de/course/S21/IfI/SWEP).
+#The Bug is a Lie 🐞
 
 ## Spielanleitung
 
 Eine Spielanleitung ist [hier als PDF](TBIAL_Spielanleitung.pdf) verfügbar.
-Die Spielkarten finden sich [hier als PDF](TBIAL_Spielkarten.pdf).
-
-## Beispielanwendung ausführen
-
-Dieses Repository stellt eine lauffähige Beispielanwendung zur Verfügung,
-die bereits auf den notwendigen Technologien (Apache Tomcat, Apache Derby, Wicket) basiert.
-Die Beispielanwendung ist als Projekt für Eclipse verfügbar.
-Nachfolgend ist grob skizziert, wie das Projekt in Eclipse ausgeführt wird.
 
 ### Vorbereitung
 
